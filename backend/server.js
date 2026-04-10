@@ -10,19 +10,9 @@ const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 4000;
 
-// CORS: tillat frontend-domenet
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  "http://localhost:3000",
-  "http://localhost:5173",
-].filter(Boolean);
-
+// CORS: tillat alle origins
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    callback(new Error(`CORS blokkert: ${origin}`));
-  },
+  origin: true,
   credentials: true,
 }));
 
@@ -31,7 +21,7 @@ app.use(express.json());
 // ── Socket.io ──────────────────────────────────────────────────────────────
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: true,
     credentials: true,
   },
 });
