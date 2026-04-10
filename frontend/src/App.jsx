@@ -639,6 +639,10 @@ export default function HelpTruth() {
   const [unreadMessages, setUnreadMessages]   = useState(0);
   const chatEndRef = useRef();
 
+  // Admin state
+  const [adminLogs, setAdminLogs] = useState([]);
+  const [adminLoading, setAdminLoading] = useState(false);
+
   // Varsler state
   const [notifications, setNotifications] = useState([]);
   const [unreadNotifs, setUnreadNotifs]     = useState(0);
@@ -1126,6 +1130,25 @@ export default function HelpTruth() {
                   )}
                 </div>
               ))}
+              {currentUser.verified && (
+                <div
+                  onClick={() => { setActivePage("admin"); setThreadPost(null); setViewProfile(null); setHashtagView(null); setActiveConversation(null); }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 14,
+                    padding: "10px 12px", borderRadius: 28, cursor: "pointer", marginBottom: 4,
+                    color: activePage === "admin" ? "#4ade80" : "#c8e8c8",
+                    fontWeight: activePage === "admin" ? 700 : 400,
+                    fontSize: 17, fontFamily: "'DM Serif Display', serif",
+                    background: activePage === "admin" ? "rgba(74,222,128,0.1)" : "transparent",
+                    transition: "background 0.15s",
+                  }}
+                  onMouseEnter={e => { if (activePage !== "admin") e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                  onMouseLeave={e => { if (activePage !== "admin") e.currentTarget.style.background = "transparent"; }}
+                >
+                  <span style={{ fontSize: 20, width: 24, textAlign: "center" }}>⚙️</span>
+                  Admin
+                </div>
+              )}
             </nav>
 
             <button
@@ -1605,6 +1628,68 @@ export default function HelpTruth() {
                     </div>
                   </div>
                 )}
+              </>
+            )}
+
+            {/* ═══ ADMIN ═══ */}
+            {activePage === "admin" && currentUser.verified && (
+              <>
+                <div style={S.feedHeader}>
+                  <div style={{ padding: "16px 20px" }}>
+                    <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#e8f5e8" }}>Admin — Innloggingslogg</span>
+                  </div>
+                </div>
+                <div style={{ padding: "16px 20px" }}>
+                  <button onClick={async () => {
+                    setAdminLoading(true);
+                    try {
+                      const data = await api("/admin/logs");
+                      setAdminLogs(data.logs);
+                    } catch (e) { setToast("Feil: " + e.message); }
+                    setAdminLoading(false);
+                  }} style={{
+                    background: "linear-gradient(135deg,#1a6b4a,#0e4f3a)", color: "#fff",
+                    border: "none", borderRadius: 20, padding: "10px 24px", cursor: "pointer",
+                    fontFamily: "'DM Serif Display', serif", fontSize: 14, marginBottom: 16,
+                  }}>
+                    {adminLoading ? "Laster..." : "Hent logger"}
+                  </button>
+
+                  {adminLogs.length > 0 && (
+                    <div style={{ overflowX: "auto" }}>
+                      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                        <thead>
+                          <tr style={{ borderBottom: "2px solid #1e2a1e", textAlign: "left" }}>
+                            <th style={{ padding: "10px 8px", color: "#4ade80", fontFamily: "'DM Serif Display', serif" }}>Bruker</th>
+                            <th style={{ padding: "10px 8px", color: "#4ade80", fontFamily: "'DM Serif Display', serif" }}>IP</th>
+                            <th style={{ padding: "10px 8px", color: "#4ade80", fontFamily: "'DM Serif Display', serif" }}>Enhet</th>
+                            <th style={{ padding: "10px 8px", color: "#4ade80", fontFamily: "'DM Serif Display', serif" }}>Tidspunkt</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {adminLogs.map(log => (
+                            <tr key={log.id} style={{ borderBottom: "1px solid #1e2a1e" }}>
+                              <td style={{ padding: "10px 8px", color: "#e8f5e8" }}>
+                                <div style={{ fontWeight: 700 }}>{log.name}</div>
+                                <div style={{ color: "#4a7a4a", fontSize: 11 }}>@{log.handle}</div>
+                              </td>
+                              <td style={{ padding: "10px 8px", color: "#c8e8c8", fontFamily: "monospace", fontSize: 12 }}>{log.ip_address || "—"}</td>
+                              <td style={{ padding: "10px 8px", color: "#c8e8c8" }}>{log.device || "—"}</td>
+                              <td style={{ padding: "10px 8px", color: "#4a7a4a", fontSize: 12 }}>{new Date(log.created_at).toLocaleString("no-NO")}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {!adminLoading && adminLogs.length === 0 && (
+                    <div style={{ textAlign: "center", padding: 40, color: "#4a7a4a" }}>
+                      <div style={{ fontSize: 48, marginBottom: 16 }}>📋</div>
+                      <p>Trykk "Hent logger" for å se innloggingshistorikk</p>
+                    </div>
+                  )}
+                </div>
               </>
             )}
 
