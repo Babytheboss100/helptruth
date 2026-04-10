@@ -1,0 +1,30 @@
+databases:
+  - name: helptruth-db
+    plan: free
+    databaseName: helptruth
+    user: helptruth
+
+services:
+  - type: web
+    name: helptruth-backend
+    plan: free
+    runtime: node
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: helptruth-db
+          property: connectionString
+      - key: FRONTEND_URL
+        value: https://helptruth-frontend.vercel.app
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
