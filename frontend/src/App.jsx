@@ -118,7 +118,7 @@ function ProfileImage({ src, initials, color, size = 40, onClick }) {
       <img src={src} alt="" onClick={onClick} style={{
         width: size, height: size, borderRadius: "50%", objectFit: "cover",
         flexShrink: 0, cursor: onClick ? "pointer" : "default",
-        border: `2px solid ${color || "#1a6b4a"}44`,
+        border: `2px solid ${color || "#1a6ef5"}44`,
       }} />
     );
   }
@@ -139,10 +139,10 @@ function ProfileImage({ src, initials, color, size = 40, onClick }) {
 
 function Spinner() {
   return (
-    <div style={{ padding: 40, textAlign: "center", color: "#4ade80" }}>
+    <div style={{ padding: 40, textAlign: "center", color: "#1a6ef5" }}>
       <div style={{
         width: 28, height: 28, borderRadius: "50%",
-        border: "3px solid #1e2a1e", borderTopColor: "#4ade80",
+        border: "3px solid #e2eaf8", borderTopColor: "#1a6ef5",
         animation: "spin 0.8s linear infinite", margin: "0 auto",
       }} />
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
@@ -154,7 +154,7 @@ function Toast({ message, type = "success" }) {
   return (
     <div style={{
       position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)",
-      background: type === "error" ? "#f91880" : "#1a6b4a",
+      background: type === "error" ? "#f91880" : "#1a6ef5",
       color: "#fff", padding: "12px 24px", borderRadius: 24,
       fontSize: 14, fontFamily: "'Crimson Pro', serif",
       boxShadow: "0 4px 20px #000a", zIndex: 9999,
@@ -177,7 +177,7 @@ function ActionBtn({ icon, count, active, activeColor, label, onClick, loading }
       style={{
         background: hovered ? `${activeColor}18` : "transparent",
         border: "none", cursor: loading ? "wait" : "pointer",
-        color: active ? activeColor : hovered ? activeColor : "#4a7a4a",
+        color: active ? activeColor : hovered ? activeColor : "#718096",
         display: "flex", alignItems: "center", gap: 5,
         fontSize: 13, fontFamily: "'Crimson Pro', serif",
         padding: "4px 8px", borderRadius: 20, transition: "all 0.15s",
@@ -224,18 +224,18 @@ function PollDisplay({ post, onVote }) {
             onClick={e => { e.stopPropagation(); onVote(post.id, i); }}
             style={{
               width: "100%", position: "relative", overflow: "hidden",
-              background: showResults ? "transparent" : "#0d1a0d",
-              border: `1px solid ${isMyVote ? "#4ade80" : "#2d4a2d"}`,
+              background: showResults ? "transparent" : "#f7faff",
+              border: `1px solid ${isMyVote ? "#1a6ef5" : "#c0cedf"}`,
               borderRadius: 8, padding: "10px 14px", marginBottom: 6,
               cursor: showResults ? "default" : "pointer",
-              color: "#e8f5e8", fontSize: 14, fontFamily: "'Crimson Pro', serif",
+              color: "#0d1f3c", fontSize: 14, fontFamily: "'Crimson Pro', serif",
               textAlign: "left", transition: "all 0.2s",
             }}
           >
             {showResults && (
               <div style={{
                 position: "absolute", left: 0, top: 0, bottom: 0,
-                width: `${pct}%`, background: isWinner ? "rgba(74,222,128,0.15)" : "rgba(74,222,128,0.06)",
+                width: `${pct}%`, background: isWinner ? "rgba(26,110,245,0.15)" : "rgba(26,110,245,0.06)",
                 transition: "width 0.5s ease",
               }} />
             )}
@@ -246,7 +246,7 @@ function PollDisplay({ post, onVote }) {
           </button>
         );
       })}
-      <div style={{ color: "#4a7a4a", fontSize: 12, marginTop: 4 }}>
+      <div style={{ color: "#718096", fontSize: 12, marginTop: 4 }}>
         {totalVotes} stemmer · {ended ? "Avsluttet" : `${hoursLeft}t ${minsLeft}m igjen`}
       </div>
     </div>
@@ -259,19 +259,19 @@ function QuoteEmbed({ post }) {
   if (!post.quote_id) return null;
   return (
     <div style={{
-      marginTop: 10, border: "1px solid #2d4a2d", borderRadius: 12,
-      padding: "10px 14px", background: "#0a150a", cursor: "pointer",
+      marginTop: 10, border: "1px solid #c0cedf", borderRadius: 12,
+      padding: "10px 14px", background: "#ffffff", cursor: "pointer",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
         <ProfileImage src={post.quote_user_profile_image} initials={post.quote_user_avatar}
           color={post.quote_user_avatar_color} size={18} />
-        <span style={{ fontWeight: 700, fontSize: 13, color: "#e8f5e8" }}>{post.quote_user_name}</span>
-        {post.quote_user_verified && <span style={{ color: "#4ade80", fontSize: 12 }}>✓</span>}
-        <span style={{ color: "#4a7a4a", fontSize: 12 }}>@{post.quote_user_handle}</span>
-        <span style={{ color: "#2d4a2d" }}>·</span>
-        <span style={{ color: "#4a7a4a", fontSize: 12 }}>{timeAgo(post.quote_created_at)}</span>
+        <span style={{ fontWeight: 700, fontSize: 13, color: "#0d1f3c" }}>{post.quote_user_name}</span>
+        {post.quote_user_verified && <span style={{ color: "#1a6ef5", fontSize: 12 }}>✓</span>}
+        <span style={{ color: "#718096", fontSize: 12 }}>@{post.quote_user_handle}</span>
+        <span style={{ color: "#c0cedf" }}>·</span>
+        <span style={{ color: "#718096", fontSize: 12 }}>{timeAgo(post.quote_created_at)}</span>
       </div>
-      <p style={{ color: "#c8e8c8", fontSize: 13, lineHeight: 1.5 }}>{post.quote_content}</p>
+      <p style={{ color: "#4a5568", fontSize: 13, lineHeight: 1.5 }}>{post.quote_content}</p>
       {post.quote_image_url && (
         <img src={post.quote_image_url} alt="" style={{ width: "100%", borderRadius: 8, marginTop: 8, maxHeight: 200, objectFit: "cover" }} />
       )}
@@ -303,11 +303,11 @@ function PostCard({ post, onLike, onRepost, onBookmark, onDelete, onReply, onVot
 
   return (
     <div style={{
-      borderBottom: "1px solid #1e2a1e", padding: "16px 20px",
+      borderBottom: "1px solid #e2eaf8", padding: "16px 20px",
       transition: "background 0.15s", cursor: onClickPost ? "pointer" : "default",
     }}
       onClick={() => onClickPost && onClickPost(p.id)}
-      onMouseEnter={e => e.currentTarget.style.background = "rgba(74,222,128,0.02)"}
+      onMouseEnter={e => e.currentTarget.style.background = "rgba(26,110,245,0.05)"}
       onMouseLeave={e => e.currentTarget.style.background = "transparent"}
     >
       <div style={{ display: "flex", gap: 12 }}>
@@ -323,14 +323,14 @@ function PostCard({ post, onLike, onRepost, onBookmark, onDelete, onReply, onVot
             <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
               <span
                 onClick={e => { e.stopPropagation(); onClickUser && onClickUser(p.user_handle); }}
-                style={{ fontWeight: 700, color: "#e8f5e8", fontSize: 15, fontFamily: "'DM Serif Display', serif", cursor: "pointer" }}
+                style={{ fontWeight: 700, color: "#0d1f3c", fontSize: 15, fontFamily: "'DM Serif Display', serif", cursor: "pointer" }}
               >
                 {p.user_name || p.user}
               </span>
-              {(p.user_verified || p.verified) && <span style={{ color: "#4ade80" }}>✓</span>}
-              <span style={{ color: "#4a7a4a", fontSize: 14 }}>@{p.user_handle || p.handle?.replace("@","")}</span>
-              <span style={{ color: "#2d4a2d" }}>·</span>
-              <span style={{ color: "#4a7a4a", fontSize: 14 }}>
+              {(p.user_verified || p.verified) && <span style={{ color: "#1a6ef5" }}>✓</span>}
+              <span style={{ color: "#718096", fontSize: 14 }}>@{p.user_handle || p.handle?.replace("@","")}</span>
+              <span style={{ color: "#c0cedf" }}>·</span>
+              <span style={{ color: "#718096", fontSize: 14 }}>
                 {p.created_at ? timeAgo(p.created_at) : p.time}
               </span>
             </div>
@@ -338,14 +338,14 @@ function PostCard({ post, onLike, onRepost, onBookmark, onDelete, onReply, onVot
             {/* Meny */}
             <div style={{ position: "relative" }} ref={menuRef}>
               <button onClick={e => { e.stopPropagation(); setShowMenu(!showMenu); }}
-                style={{ background: "none", border: "none", color: "#4a7a4a", cursor: "pointer", fontSize: 18, padding: "2px 8px", borderRadius: "50%" }}
-                onMouseEnter={e => e.currentTarget.style.background = "rgba(74,222,128,0.1)"}
+                style={{ background: "none", border: "none", color: "#718096", cursor: "pointer", fontSize: 18, padding: "2px 8px", borderRadius: "50%" }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(26,110,245,0.1)"}
                 onMouseLeave={e => e.currentTarget.style.background = "none"}
               >···</button>
               {showMenu && (
                 <div style={{
                   position: "absolute", right: 0, top: "100%", zIndex: 100,
-                  background: "#0a150a", border: "1px solid #2d4a2d",
+                  background: "#ffffff", border: "1px solid #c0cedf",
                   borderRadius: 12, minWidth: 180, boxShadow: "0 8px 32px #000a",
                 }}>
                   {[
@@ -358,11 +358,11 @@ function PostCard({ post, onLike, onRepost, onBookmark, onDelete, onReply, onVot
                       style={{
                         display: "flex", alignItems: "center", gap: 10, width: "100%",
                         background: "none", border: "none", padding: "12px 16px",
-                        color: item.danger ? "#f91880" : "#e8f5e8",
+                        color: item.danger ? "#f91880" : "#0d1f3c",
                         cursor: "pointer", fontSize: 14, fontFamily: "'Crimson Pro', serif",
-                        borderBottom: "1px solid #1e2a1e",
+                        borderBottom: "1px solid #e2eaf8",
                       }}
-                      onMouseEnter={e => e.currentTarget.style.background = "rgba(74,222,128,0.05)"}
+                      onMouseEnter={e => e.currentTarget.style.background = "rgba(26,110,245,0.05)"}
                       onMouseLeave={e => e.currentTarget.style.background = "none"}
                     >
                       <span>{item.icon}</span>{item.label}
@@ -377,13 +377,13 @@ function PostCard({ post, onLike, onRepost, onBookmark, onDelete, onReply, onVot
           <p style={{ color: "#d4e8d4", fontSize: 15, lineHeight: 1.6, margin: "6px 0 0", wordBreak: "break-word", fontFamily: "'Crimson Pro', serif" }}>
             {p.content.split(/(@\w+|#\w+)/g).map((part, i) =>
               part.startsWith("#")
-                ? <span key={i} style={{ color: "#4ade80", cursor: "pointer" }}
+                ? <span key={i} style={{ color: "#1a6ef5", cursor: "pointer" }}
                     onClick={e => { e.stopPropagation(); onClickUser && onClickUser(null, part.slice(1)); }}
                     onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
                     onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
                   >{part}</span>
                 : part.startsWith("@")
-                ? <span key={i} style={{ color: "#4ade80", cursor: "pointer" }}
+                ? <span key={i} style={{ color: "#1a6ef5", cursor: "pointer" }}
                     onClick={e => { e.stopPropagation(); onClickUser && onClickUser(part.slice(1)); }}
                     onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
                     onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
@@ -396,7 +396,7 @@ function PostCard({ post, onLike, onRepost, onBookmark, onDelete, onReply, onVot
           {p.image_url && (
             <img src={p.image_url} alt="" onClick={e => e.stopPropagation()} style={{
               width: "100%", borderRadius: 12, marginTop: 10,
-              maxHeight: 400, objectFit: "cover", border: "1px solid #1e2a1e",
+              maxHeight: 400, objectFit: "cover", border: "1px solid #e2eaf8",
             }} />
           )}
 
@@ -411,37 +411,37 @@ function PostCard({ post, onLike, onRepost, onBookmark, onDelete, onReply, onVot
             <ActionBtn icon="💬" count={p.replies_count ?? p.replies} active={false} activeColor="#1d9bf0"
               label="Svar" loading={loadingAction === "reply"}
               onClick={() => setShowReplyBox(!showReplyBox)} />
-            <ActionBtn icon="🔁" count={p.reposts_count ?? p.reposts} active={!!p.reposted} activeColor="#4ade80"
+            <ActionBtn icon="🔁" count={p.reposts_count ?? p.reposts} active={!!p.reposted} activeColor="#1a6ef5"
               label="Repost" loading={loadingAction === "repost"}
               onClick={() => handleAction("repost", () => onRepost(p.id))} />
             <ActionBtn icon="❤️" count={p.likes_count ?? p.likes} active={!!p.liked} activeColor="#f91880"
               label="Lik" loading={loadingAction === "like"}
               onClick={() => handleAction("like", () => onLike(p.id))} />
-            <ActionBtn icon="👁️" count={p.views_count ?? p.views ?? 0} active={false} activeColor="#4a7a4a"
+            <ActionBtn icon="👁️" count={p.views_count ?? p.views ?? 0} active={false} activeColor="#718096"
               label="Visninger" onClick={() => {}} />
-            <ActionBtn icon="🔖" count={null} active={!!p.bookmarked} activeColor="#4ade80"
+            <ActionBtn icon="🔖" count={null} active={!!p.bookmarked} activeColor="#1a6ef5"
               label="Bokmerk" loading={loadingAction === "bookmark"}
               onClick={() => handleAction("bookmark", () => onBookmark(p.id))} />
           </div>
 
           {/* Svar-boks */}
           {showReplyBox && (
-            <div style={{ marginTop: 12, padding: 12, background: "#0a150a", borderRadius: 12, border: "1px solid #1e2a1e" }}
+            <div style={{ marginTop: 12, padding: 12, background: "#ffffff", borderRadius: 12, border: "1px solid #e2eaf8" }}
               onClick={e => e.stopPropagation()}>
               <div style={{ display: "flex", gap: 10 }}>
-                <ProfileImage src={currentUser?.profile_image} initials={currentUser?.avatar || "DU"} color={currentUser?.avatar_color || "#1a6b4a"} size={32} />
+                <ProfileImage src={currentUser?.profile_image} initials={currentUser?.avatar || "DU"} color={currentUser?.avatar_color || "#1a6ef5"} size={32} />
                 <div style={{ flex: 1 }}>
                   <textarea value={replyText} onChange={e => setReplyText(e.target.value)}
                     placeholder={`Svar @${p.user_handle || p.handle?.replace("@","")}...`}
                     autoFocus
                     style={{
                       width: "100%", background: "transparent", border: "none", outline: "none",
-                      color: "#e8f5e8", fontFamily: "'Crimson Pro', serif", fontSize: 14,
+                      color: "#0d1f3c", fontFamily: "'Crimson Pro', serif", fontSize: 14,
                       resize: "none", minHeight: 60,
                     }}
                   />
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "#4a7a4a", fontSize: 12 }}>{280 - replyText.length}</span>
+                    <span style={{ color: "#718096", fontSize: 12 }}>{280 - replyText.length}</span>
                     <button
                       disabled={!replyText.trim()}
                       onClick={async () => {
@@ -449,8 +449,8 @@ function PostCard({ post, onLike, onRepost, onBookmark, onDelete, onReply, onVot
                         setReplyText(""); setShowReplyBox(false);
                       }}
                       style={{
-                        background: replyText.trim() ? "linear-gradient(135deg,#1a6b4a,#0e4f3a)" : "#0d2a0d",
-                        color: replyText.trim() ? "#fff" : "#2d4a2d",
+                        background: replyText.trim() ? "linear-gradient(135deg,#1a6ef5,#0f4fc9)" : "#e2eaf8",
+                        color: replyText.trim() ? "#fff" : "#c0cedf",
                         border: "none", borderRadius: 20, padding: "6px 18px",
                         fontWeight: 700, cursor: "pointer", fontSize: 13, fontFamily: "'DM Serif Display', serif",
                       }}
@@ -498,19 +498,19 @@ function AuthPage({ onLogin }) {
       onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
       onKeyDown={e => e.key === "Enter" && handleSubmit()}
       style={{
-        width: "100%", background: "#0a150a", border: "1px solid #2d4a2d",
-        borderRadius: 10, padding: "12px 16px", color: "#e8f5e8",
+        width: "100%", background: "#ffffff", border: "1px solid #c0cedf",
+        borderRadius: 10, padding: "12px 16px", color: "#0d1f3c",
         fontSize: 15, fontFamily: "'Crimson Pro', serif", outline: "none",
         marginBottom: 12, transition: "border-color 0.2s",
       }}
-      onFocus={e => e.target.style.borderColor = "#4ade80"}
-      onBlur={e => e.target.style.borderColor = "#2d4a2d"}
+      onFocus={e => e.target.style.borderColor = "#1a6ef5"}
+      onBlur={e => e.target.style.borderColor = "#c0cedf"}
     />
   );
 
   return (
     <div style={{
-      minHeight: "100vh", background: "#050e05",
+      minHeight: "100vh", background: "#eef2f8",
       display: "flex", alignItems: "center", justifyContent: "center",
       fontFamily: "'Crimson Pro', serif",
     }}>
@@ -518,21 +518,21 @@ function AuthPage({ onLogin }) {
 
       <div style={{
         width: "100%", maxWidth: 420, padding: 40,
-        background: "#0a150a", border: "1px solid #1e2a1e",
-        borderRadius: 20, boxShadow: "0 20px 60px #000a",
+        background: "#ffffff", border: "1px solid #e2eaf8",
+        borderRadius: 20, boxShadow: "0 20px 60px rgba(26,58,110,0.12)",
       }}>
         <div style={{
           textAlign: "center", marginBottom: 32,
           fontFamily: "'DM Serif Display', serif",
-          fontSize: 36, color: "#4ade80",
-          textShadow: "0 0 20px #4ade8044",
+          fontSize: 36, color: "#1a6ef5",
+          textShadow: "0 0 20px rgba(26,110,245,0.25)",
         }}>
           HelpTruth
         </div>
 
         <h2 style={{
           fontFamily: "'DM Serif Display', serif", fontSize: 22,
-          color: "#e8f5e8", marginBottom: 24, textAlign: "center",
+          color: "#0d1f3c", marginBottom: 24, textAlign: "center",
         }}>
           {mode === "login" ? "Logg inn på kontoen din" : "Opprett en ny konto"}
         </h2>
@@ -554,22 +554,22 @@ function AuthPage({ onLogin }) {
 
         <button onClick={handleSubmit} disabled={loading}
           style={{
-            width: "100%", background: "linear-gradient(135deg, #1a6b4a, #0e4f3a)",
+            width: "100%", background: "linear-gradient(135deg, #1a6ef5, #0f4fc9)",
             color: "#fff", border: "none", borderRadius: 24,
             padding: "14px", fontWeight: 700, fontSize: 16,
             fontFamily: "'DM Serif Display', serif",
             cursor: loading ? "wait" : "pointer",
             opacity: loading ? 0.7 : 1,
-            boxShadow: "0 4px 16px #1a6b4a44", transition: "all 0.2s",
+            boxShadow: "0 4px 16px rgba(26,110,245,0.25)", transition: "all 0.2s",
           }}
         >
           {loading ? "Laster..." : mode === "login" ? "Logg inn" : "Registrer deg"}
         </button>
 
-        <div style={{ textAlign: "center", marginTop: 20, color: "#4a7a4a", fontSize: 14 }}>
+        <div style={{ textAlign: "center", marginTop: 20, color: "#718096", fontSize: 14 }}>
           {mode === "login" ? "Har du ikke konto? " : "Har du allerede konto? "}
           <span onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }}
-            style={{ color: "#4ade80", cursor: "pointer", fontWeight: 700 }}
+            style={{ color: "#1a6ef5", cursor: "pointer", fontWeight: 700 }}
           >
             {mode === "login" ? "Registrer deg" : "Logg inn"}
           </span>
@@ -577,16 +577,16 @@ function AuthPage({ onLogin }) {
 
         <div style={{
           marginTop: 20, padding: "12px 16px",
-          background: "#0d1a0d", borderRadius: 10, border: "1px solid #1e2a1e",
+          background: "#f7faff", borderRadius: 10, border: "1px solid #e2eaf8",
         }}>
-          <div style={{ color: "#4a7a4a", fontSize: 12, marginBottom: 8, textAlign: "center" }}>
+          <div style={{ color: "#718096", fontSize: 12, marginBottom: 8, textAlign: "center" }}>
             Demo-konto (testdata)
           </div>
           <button
             onClick={() => { setForm(f => ({ ...f, email: "heljar@startfunder.no", password: "password123" })); setMode("login"); }}
             style={{
-              width: "100%", background: "transparent", border: "1px solid #2d4a2d",
-              borderRadius: 8, padding: "8px", color: "#4ade80",
+              width: "100%", background: "transparent", border: "1px solid #c0cedf",
+              borderRadius: 8, padding: "8px", color: "#1a6ef5",
               cursor: "pointer", fontSize: 13, fontFamily: "'Crimson Pro', serif",
             }}
           >
@@ -1046,7 +1046,7 @@ export default function HelpTruth() {
 
   // ── Render guards ─────────────────────────────────────────────────────────
   if (!authChecked) return (
-    <div style={{ minHeight: "100vh", background: "#050e05", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ minHeight: "100vh", background: "#eef2f8", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <Spinner />
     </div>
   );
@@ -1061,13 +1061,13 @@ export default function HelpTruth() {
 
   // ── LAYOUT ────────────────────────────────────────────────────────────────
   const S = {
-    app: { minHeight: "100vh", background: "#050e05", color: "#e8f5e8", fontFamily: "'Crimson Pro', serif", display: "flex", justifyContent: "center" },
+    app: { minHeight: "100vh", background: "#eef2f8", color: "#0d1f3c", fontFamily: "'Crimson Pro', serif", display: "flex", justifyContent: "center" },
     container: { width: "100%", maxWidth: 1200, display: "flex" },
-    sidebar: { width: 260, padding: "20px 12px", position: "sticky", top: 0, height: "100vh", overflowY: "auto", flexShrink: 0, borderRight: "1px solid #1e2a1e" },
-    feed: { flex: 1, borderRight: "1px solid #1e2a1e", maxWidth: 620 },
-    feedHeader: { position: "sticky", top: 0, background: "rgba(5,14,5,0.9)", backdropFilter: "blur(12px)", zIndex: 10, borderBottom: "1px solid #1e2a1e" },
+    sidebar: { width: 260, padding: "20px 12px", position: "sticky", top: 0, height: "100vh", overflowY: "auto", flexShrink: 0, borderRight: "1px solid #e2eaf8" },
+    feed: { flex: 1, borderRight: "1px solid #e2eaf8", maxWidth: 620 },
+    feedHeader: { position: "sticky", top: 0, background: "rgba(238,242,248,0.9)", backdropFilter: "blur(12px)", zIndex: 10, borderBottom: "1px solid #e2eaf8" },
     rightSidebar: { width: 300, padding: "20px 16px", position: "sticky", top: 0, height: "100vh", overflowY: "auto", flexShrink: 0 },
-    backBtn: { background: "none", border: "none", color: "#4ade80", cursor: "pointer", fontSize: 18, padding: "8px 12px", borderRadius: "50%", marginRight: 8 },
+    backBtn: { background: "none", border: "none", color: "#1a6ef5", cursor: "pointer", fontSize: 18, padding: "8px 12px", borderRadius: "50%", marginRight: 8 },
   };
 
   const postCardProps = {
@@ -1086,8 +1086,8 @@ export default function HelpTruth() {
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Crimson+Pro:wght@400;600;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #2d4a2d; border-radius: 2px; }
-        textarea::placeholder, input::placeholder { color: #2d4a2d !important; }
+        ::-webkit-scrollbar-thumb { background: #c0cedf; border-radius: 2px; }
+        textarea::placeholder, input::placeholder { color: #c0cedf !important; }
       `}</style>
 
       {toast && <Toast message={toast.message} type={toast.type} />}
@@ -1099,7 +1099,7 @@ export default function HelpTruth() {
 
           {/* ── VENSTRE SIDEBAR ── */}
           <div style={S.sidebar}>
-            <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 28, color: "#4ade80", padding: "8px 12px", marginBottom: 16, cursor: "pointer" }}
+            <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 28, color: "#1a6ef5", padding: "8px 12px", marginBottom: 16, cursor: "pointer" }}
               onClick={() => { setActivePage("home"); setThreadPost(null); setViewProfile(null); setHashtagView(null); setSearchResults(null); }}
             >
               HelpTruth
@@ -1112,19 +1112,19 @@ export default function HelpTruth() {
                   style={{
                     display: "flex", alignItems: "center", gap: 14,
                     padding: "10px 12px", borderRadius: 28, cursor: "pointer", marginBottom: 4,
-                    color: activePage === item.key ? "#4ade80" : "#c8e8c8",
+                    color: activePage === item.key ? "#1a6ef5" : "#4a5568",
                     fontWeight: activePage === item.key ? 700 : 400,
                     fontSize: 17, fontFamily: "'DM Serif Display', serif",
-                    background: activePage === item.key ? "rgba(74,222,128,0.1)" : "transparent",
+                    background: activePage === item.key ? "rgba(26,110,245,0.1)" : "transparent",
                     transition: "background 0.15s",
                   }}
-                  onMouseEnter={e => { if (activePage !== item.key) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                  onMouseEnter={e => { if (activePage !== item.key) e.currentTarget.style.background = "rgba(26,110,245,0.05)"; }}
                   onMouseLeave={e => { if (activePage !== item.key) e.currentTarget.style.background = "transparent"; }}
                 >
                   <span style={{ fontSize: 20, width: 24, textAlign: "center" }}>{item.icon}</span>
                   {item.label}
                   {(navBadges[item.key] > 0) && (
-                    <span style={{ background: "#4ade80", color: "#050e05", borderRadius: 10, padding: "1px 7px", fontSize: 11, fontWeight: 700, marginLeft: 4 }}>
+                    <span style={{ background: "#1a6ef5", color: "#eef2f8", borderRadius: 10, padding: "1px 7px", fontSize: 11, fontWeight: 700, marginLeft: 4 }}>
                       {navBadges[item.key]}
                     </span>
                   )}
@@ -1136,13 +1136,13 @@ export default function HelpTruth() {
                   style={{
                     display: "flex", alignItems: "center", gap: 14,
                     padding: "10px 12px", borderRadius: 28, cursor: "pointer", marginBottom: 4,
-                    color: activePage === "admin" ? "#4ade80" : "#c8e8c8",
+                    color: activePage === "admin" ? "#1a6ef5" : "#4a5568",
                     fontWeight: activePage === "admin" ? 700 : 400,
                     fontSize: 17, fontFamily: "'DM Serif Display', serif",
-                    background: activePage === "admin" ? "rgba(74,222,128,0.1)" : "transparent",
+                    background: activePage === "admin" ? "rgba(26,110,245,0.1)" : "transparent",
                     transition: "background 0.15s",
                   }}
-                  onMouseEnter={e => { if (activePage !== "admin") e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                  onMouseEnter={e => { if (activePage !== "admin") e.currentTarget.style.background = "rgba(26,110,245,0.05)"; }}
                   onMouseLeave={e => { if (activePage !== "admin") e.currentTarget.style.background = "transparent"; }}
                 >
                   <span style={{ fontSize: 20, width: 24, textAlign: "center" }}>⚙️</span>
@@ -1155,10 +1155,10 @@ export default function HelpTruth() {
               onClick={() => { setActivePage("home"); setTimeout(() => textareaRef.current?.focus(), 100); }}
               style={{
                 width: "100%", marginTop: 16,
-                background: "linear-gradient(135deg, #1a6b4a, #0e4f3a)",
+                background: "linear-gradient(135deg, #1a6ef5, #0f4fc9)",
                 color: "#fff", border: "none", borderRadius: 28, padding: "14px",
                 fontWeight: 700, cursor: "pointer", fontSize: 16,
-                fontFamily: "'DM Serif Display', serif", boxShadow: "0 4px 16px #1a6b4a44",
+                fontFamily: "'DM Serif Display', serif", boxShadow: "0 4px 16px rgba(26,110,245,0.25)",
               }}
             >
               Skriv innlegg
@@ -1169,15 +1169,15 @@ export default function HelpTruth() {
               display: "flex", alignItems: "center", gap: 10,
               padding: "10px 12px", borderRadius: 16, cursor: "pointer",
             }}>
-              <ProfileImage src={currentUser.profile_image} initials={currentUser.avatar} color={currentUser.avatar_color || "#1a6b4a"} size={36} />
+              <ProfileImage src={currentUser.profile_image} initials={currentUser.avatar} color={currentUser.avatar_color || "#1a6ef5"} size={36} />
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 700, fontSize: 13, color: "#e8f5e8", fontFamily: "'DM Serif Display', serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <div style={{ fontWeight: 700, fontSize: 13, color: "#0d1f3c", fontFamily: "'DM Serif Display', serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {currentUser.name}
                 </div>
-                <div style={{ color: "#4a7a4a", fontSize: 11 }}>@{currentUser.handle}</div>
+                <div style={{ color: "#718096", fontSize: 11 }}>@{currentUser.handle}</div>
               </div>
               <button onClick={handleLogout} title="Logg ut"
-                style={{ background: "none", border: "none", color: "#4a7a4a", cursor: "pointer", fontSize: 16, padding: "4px" }}
+                style={{ background: "none", border: "none", color: "#718096", cursor: "pointer", fontSize: 16, padding: "4px" }}
               >↩</button>
             </div>
           </div>
@@ -1189,15 +1189,15 @@ export default function HelpTruth() {
             {activePage === "home" && (
               <>
                 <div style={S.feedHeader}>
-                  <div style={{ padding: "16px 20px 0", fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#e8f5e8" }}>Hjem</div>
+                  <div style={{ padding: "16px 20px 0", fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#0d1f3c" }}>Hjem</div>
                   <div style={{ display: "flex" }}>
                     {["forDeg", "følger"].map(tab => (
                       <button key={tab} onClick={() => setActiveTab(tab)} style={{
                         flex: 1, padding: "12px 0", textAlign: "center",
                         fontFamily: "'DM Serif Display', serif", fontSize: 15,
                         cursor: "pointer", border: "none", background: "transparent",
-                        color: activeTab === tab ? "#e8f5e8" : "#4a7a4a",
-                        borderBottom: activeTab === tab ? "2px solid #4ade80" : "2px solid transparent",
+                        color: activeTab === tab ? "#0d1f3c" : "#718096",
+                        borderBottom: activeTab === tab ? "2px solid #1a6ef5" : "2px solid transparent",
                       }}>
                         {tab === "forDeg" ? "For deg" : "Følger"}
                       </button>
@@ -1206,8 +1206,8 @@ export default function HelpTruth() {
                 </div>
 
                 {/* Compose */}
-                <div style={{ padding: "16px 20px", borderBottom: "1px solid #1e2a1e", display: "flex", gap: 12 }}>
-                  <ProfileImage src={currentUser.profile_image} initials={currentUser.avatar} color={currentUser.avatar_color || "#1a6b4a"} />
+                <div style={{ padding: "16px 20px", borderBottom: "1px solid #e2eaf8", display: "flex", gap: 12 }}>
+                  <ProfileImage src={currentUser.profile_image} initials={currentUser.avatar} color={currentUser.avatar_color || "#1a6ef5"} />
                   <div style={{ flex: 1 }}>
                     <textarea
                       ref={textareaRef} value={newPost}
@@ -1216,7 +1216,7 @@ export default function HelpTruth() {
                       onKeyDown={e => { if (e.key === "Enter" && e.metaKey) handlePost(); }}
                       style={{
                         width: "100%", background: "transparent", border: "none", outline: "none",
-                        resize: "none", color: "#e8f5e8", fontSize: 18, minHeight: 70,
+                        resize: "none", color: "#0d1f3c", fontSize: 18, minHeight: 70,
                         fontFamily: "'Crimson Pro', serif", lineHeight: 1.5,
                       }}
                     />
@@ -1253,13 +1253,13 @@ export default function HelpTruth() {
 
                     {/* Poll-opprettar */}
                     {showPollCreator && (
-                      <div style={{ marginBottom: 10, padding: 12, background: "#0a150a", borderRadius: 12, border: "1px solid #2d4a2d" }}>
+                      <div style={{ marginBottom: 10, padding: 12, background: "#ffffff", borderRadius: 12, border: "1px solid #c0cedf" }}>
                         {pollOptions.map((opt, i) => (
                           <input key={i} value={opt} placeholder={`Alternativ ${i + 1}`}
                             onChange={e => setPollOptions(prev => prev.map((o, j) => j === i ? e.target.value : o))}
                             style={{
-                              width: "100%", background: "#0d1a0d", border: "1px solid #2d4a2d",
-                              borderRadius: 8, padding: "8px 12px", color: "#e8f5e8",
+                              width: "100%", background: "#f7faff", border: "1px solid #c0cedf",
+                              borderRadius: 8, padding: "8px 12px", color: "#0d1f3c",
                               fontSize: 14, fontFamily: "'Crimson Pro', serif", outline: "none",
                               marginBottom: 6,
                             }}
@@ -1268,12 +1268,12 @@ export default function HelpTruth() {
                         <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
                           {pollOptions.length < 4 && (
                             <button onClick={() => setPollOptions(prev => [...prev, ""])}
-                              style={{ background: "none", border: "1px solid #2d4a2d", borderRadius: 8, padding: "4px 12px", color: "#4ade80", cursor: "pointer", fontSize: 13 }}>
+                              style={{ background: "none", border: "1px solid #c0cedf", borderRadius: 8, padding: "4px 12px", color: "#1a6ef5", cursor: "pointer", fontSize: 13 }}>
                               + Alternativ
                             </button>
                           )}
                           <select value={pollDuration} onChange={e => setPollDuration(parseInt(e.target.value))}
-                            style={{ background: "#0d1a0d", border: "1px solid #2d4a2d", borderRadius: 8, padding: "4px 8px", color: "#e8f5e8", fontSize: 13 }}>
+                            style={{ background: "#f7faff", border: "1px solid #c0cedf", borderRadius: 8, padding: "4px 8px", color: "#0d1f3c", fontSize: 13 }}>
                             <option value={1}>1 time</option>
                             <option value={6}>6 timer</option>
                             <option value={24}>1 dag</option>
@@ -1286,26 +1286,26 @@ export default function HelpTruth() {
                       </div>
                     )}
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #1e2a1e", paddingTop: 10 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #e2eaf8", paddingTop: 10 }}>
                       <div style={{ display: "flex", gap: 4 }}>
                         <button onClick={() => imageInputRef.current?.click()} title="Legg til bilde"
-                          style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#4ade80", padding: "4px 6px", borderRadius: 8 }}
+                          style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#1a6ef5", padding: "4px 6px", borderRadius: 8 }}
                         >🖼️</button>
                         <button onClick={() => setShowPollCreator(!showPollCreator)} title="Lag avstemning"
-                          style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: showPollCreator ? "#f91880" : "#4ade80", padding: "4px 6px", borderRadius: 8 }}
+                          style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: showPollCreator ? "#f91880" : "#1a6ef5", padding: "4px 6px", borderRadius: 8 }}
                         >📊</button>
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         {charCount > 200 && (
-                          <span style={{ color: charCount > 260 ? "#f91880" : "#4a7a4a", fontSize: 13 }}>
+                          <span style={{ color: charCount > 260 ? "#f91880" : "#718096", fontSize: 13 }}>
                             {280 - charCount}
                           </span>
                         )}
                         <button onClick={handlePost}
                           disabled={!newPost.trim() || newPost.length > 280 || posting}
                           style={{
-                            background: newPost.trim() && !posting ? "linear-gradient(135deg,#1a6b4a,#0e4f3a)" : "#0d2a0d",
-                            color: newPost.trim() && !posting ? "#fff" : "#2d4a2d",
+                            background: newPost.trim() && !posting ? "linear-gradient(135deg,#1a6ef5,#0f4fc9)" : "#e2eaf8",
+                            color: newPost.trim() && !posting ? "#fff" : "#c0cedf",
                             border: "none", borderRadius: 20, padding: "8px 20px",
                             fontWeight: 700, cursor: "pointer", fontSize: 14,
                             fontFamily: "'DM Serif Display', serif",
@@ -1329,14 +1329,14 @@ export default function HelpTruth() {
             {activePage === "explore" && (
               <>
                 <div style={S.feedHeader}>
-                  <div style={{ padding: "14px 20px", fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#e8f5e8" }}>Utforsk</div>
+                  <div style={{ padding: "14px 20px", fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#0d1f3c" }}>Utforsk</div>
                   <div style={{ padding: "0 20px 14px" }}>
-                    <div style={{ background: "#0d1a0d", borderRadius: 24, padding: "10px 16px", display: "flex", gap: 10, border: "1px solid #2d4a2d" }}>
-                      <span style={{ color: "#4ade80" }}>🔍</span>
+                    <div style={{ background: "#f7faff", borderRadius: 24, padding: "10px 16px", display: "flex", gap: 10, border: "1px solid #c0cedf" }}>
+                      <span style={{ color: "#1a6ef5" }}>🔍</span>
                       <input value={searchQuery}
                         onChange={e => handleSearch(e.target.value)}
                         placeholder="Søk innlegg og brukere"
-                        style={{ background: "none", border: "none", outline: "none", color: "#e8f5e8", flex: 1, fontSize: 15, fontFamily: "'Crimson Pro', serif" }}
+                        style={{ background: "none", border: "none", outline: "none", color: "#0d1f3c", flex: 1, fontSize: 15, fontFamily: "'Crimson Pro', serif" }}
                       />
                     </div>
                   </div>
@@ -1344,18 +1344,18 @@ export default function HelpTruth() {
                 {searchResults ? (
                   <>
                     {searchResults.users.length > 0 && (
-                      <div style={{ borderBottom: "1px solid #1e2a1e" }}>
-                        <div style={{ padding: "12px 20px", color: "#4a7a4a", fontSize: 13, fontWeight: 700 }}>BRUKERE</div>
+                      <div style={{ borderBottom: "1px solid #e2eaf8" }}>
+                        <div style={{ padding: "12px 20px", color: "#718096", fontSize: 13, fontWeight: 700 }}>BRUKERE</div>
                         {searchResults.users.map(u => (
                           <div key={u.id} onClick={() => handleClickUser(u.handle)}
                             style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", cursor: "pointer" }}
-                            onMouseEnter={e => e.currentTarget.style.background = "rgba(74,222,128,0.02)"}
+                            onMouseEnter={e => e.currentTarget.style.background = "rgba(26,110,245,0.05)"}
                             onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                           >
                             <ProfileImage src={u.profile_image} initials={u.avatar} color={u.avatar_color} size={40} />
                             <div>
-                              <div style={{ fontWeight: 700, color: "#e8f5e8", fontSize: 15 }}>{u.name} {u.verified && <span style={{ color: "#4ade80" }}>✓</span>}</div>
-                              <div style={{ color: "#4a7a4a", fontSize: 13 }}>@{u.handle} · {formatCount(u.followers_count)} følgere</div>
+                              <div style={{ fontWeight: 700, color: "#0d1f3c", fontSize: 15 }}>{u.name} {u.verified && <span style={{ color: "#1a6ef5" }}>✓</span>}</div>
+                              <div style={{ color: "#718096", fontSize: 13 }}>@{u.handle} · {formatCount(u.followers_count)} følgere</div>
                             </div>
                           </div>
                         ))}
@@ -1363,14 +1363,14 @@ export default function HelpTruth() {
                     )}
                     {searchResults.posts.length > 0 && (
                       <>
-                        <div style={{ padding: "12px 20px", color: "#4a7a4a", fontSize: 13, fontWeight: 700 }}>INNLEGG</div>
+                        <div style={{ padding: "12px 20px", color: "#718096", fontSize: 13, fontWeight: 700 }}>INNLEGG</div>
                         {searchResults.posts.map(post => (
                           <PostCard key={post.id} post={post} {...postCardProps} isOwn={post.user_id === currentUser.id} />
                         ))}
                       </>
                     )}
                     {searchResults.users.length === 0 && searchResults.posts.length === 0 && (
-                      <div style={{ padding: 40, textAlign: "center", color: "#4a7a4a" }}>Ingen resultater</div>
+                      <div style={{ padding: 40, textAlign: "center", color: "#718096" }}>Ingen resultater</div>
                     )}
                   </>
                 ) : (
@@ -1385,10 +1385,10 @@ export default function HelpTruth() {
             {activePage === "bookmarks" && (
               <>
                 <div style={S.feedHeader}>
-                  <div style={{ padding: "16px 20px", fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#e8f5e8" }}>Bokmerker</div>
+                  <div style={{ padding: "16px 20px", fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#0d1f3c" }}>Bokmerker</div>
                 </div>
                 {loadingPosts ? <Spinner /> : posts.length === 0
-                  ? <div style={{ padding: 40, textAlign: "center", color: "#4a7a4a" }}>Ingen bokmerker ennå</div>
+                  ? <div style={{ padding: 40, textAlign: "center", color: "#718096" }}>Ingen bokmerker ennå</div>
                   : posts.map(post => (
                     <PostCard key={post.id} post={post} {...postCardProps} isOwn={post.user_id === currentUser.id} />
                   ))
@@ -1402,34 +1402,34 @@ export default function HelpTruth() {
                 <div style={S.feedHeader}>
                   <div style={{ padding: "14px 20px", display: "flex", alignItems: "center", gap: 12 }}>
                     <div>
-                      <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 18, color: "#e8f5e8" }}>{currentUser.name}</div>
-                      <div style={{ color: "#4a7a4a", fontSize: 13 }}>{posts.length} innlegg</div>
+                      <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 18, color: "#0d1f3c" }}>{currentUser.name}</div>
+                      <div style={{ color: "#718096", fontSize: 13 }}>{posts.length} innlegg</div>
                     </div>
                   </div>
                 </div>
-                <div style={{ height: 120, background: "linear-gradient(135deg,#0a2a0a,#1a6b4a33)", position: "relative", marginBottom: 56 }}>
+                <div style={{ height: 120, background: "linear-gradient(135deg,#0a2a0a,#1a6ef533)", position: "relative", marginBottom: 56 }}>
                   <div style={{ position: "absolute", bottom: -44, left: 20 }}>
                     <div style={{ position: "relative" }}>
-                      <ProfileImage src={currentUser.profile_image} initials={currentUser.avatar} color={currentUser.avatar_color || "#1a6b4a"} size={80} />
+                      <ProfileImage src={currentUser.profile_image} initials={currentUser.avatar} color={currentUser.avatar_color || "#1a6ef5"} size={80} />
                       <button onClick={() => avatarInputRef.current?.click()} title="Endre profilbilde"
                         style={{
                           position: "absolute", bottom: 0, right: 0,
-                          background: "#0a150a", border: "2px solid #1e2a1e", borderRadius: "50%",
+                          background: "#ffffff", border: "2px solid #e2eaf8", borderRadius: "50%",
                           width: 28, height: 28, cursor: "pointer", fontSize: 12,
                           display: "flex", alignItems: "center", justifyContent: "center",
                         }}>📷</button>
                     </div>
                   </div>
                 </div>
-                <div style={{ padding: "0 20px 16px", borderBottom: "1px solid #1e2a1e" }}>
-                  <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#e8f5e8" }}>
-                    {currentUser.name} {currentUser.verified && <span style={{ color: "#4ade80" }}>✓</span>}
+                <div style={{ padding: "0 20px 16px", borderBottom: "1px solid #e2eaf8" }}>
+                  <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#0d1f3c" }}>
+                    {currentUser.name} {currentUser.verified && <span style={{ color: "#1a6ef5" }}>✓</span>}
                   </div>
-                  <div style={{ color: "#4a7a4a", marginBottom: 8 }}>@{currentUser.handle}</div>
+                  <div style={{ color: "#718096", marginBottom: 8 }}>@{currentUser.handle}</div>
                   {currentUser.bio && <p style={{ color: "#d4e8d4", fontSize: 15, marginBottom: 12 }}>{currentUser.bio}</p>}
                   <div style={{ display: "flex", gap: 20, fontSize: 14 }}>
-                    <span><strong style={{ color: "#e8f5e8" }}>{currentUser.following_count ?? 0}</strong> <span style={{ color: "#4a7a4a" }}>Følger</span></span>
-                    <span><strong style={{ color: "#e8f5e8" }}>{currentUser.followers_count ?? 0}</strong> <span style={{ color: "#4a7a4a" }}>Følgere</span></span>
+                    <span><strong style={{ color: "#0d1f3c" }}>{currentUser.following_count ?? 0}</strong> <span style={{ color: "#718096" }}>Følger</span></span>
+                    <span><strong style={{ color: "#0d1f3c" }}>{currentUser.followers_count ?? 0}</strong> <span style={{ color: "#718096" }}>Følgere</span></span>
                   </div>
                 </div>
                 {loadingPosts ? <Spinner /> : posts.map(post => (
@@ -1445,42 +1445,42 @@ export default function HelpTruth() {
                   <div style={{ padding: "14px 20px", display: "flex", alignItems: "center" }}>
                     <button onClick={() => setActivePage("home")} style={S.backBtn}>←</button>
                     <div>
-                      <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 18, color: "#e8f5e8" }}>{viewProfile?.name || "..."}</div>
-                      <div style={{ color: "#4a7a4a", fontSize: 13 }}>{viewProfilePosts.length} innlegg</div>
+                      <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 18, color: "#0d1f3c" }}>{viewProfile?.name || "..."}</div>
+                      <div style={{ color: "#718096", fontSize: 13 }}>{viewProfilePosts.length} innlegg</div>
                     </div>
                   </div>
                 </div>
                 {viewProfile ? (
                   <>
-                    <div style={{ height: 120, background: "linear-gradient(135deg,#0a2a0a,#1a6b4a33)", position: "relative", marginBottom: 56 }}>
+                    <div style={{ height: 120, background: "linear-gradient(135deg,#0a2a0a,#1a6ef533)", position: "relative", marginBottom: 56 }}>
                       <div style={{ position: "absolute", bottom: -44, left: 20 }}>
                         <ProfileImage src={viewProfile.profile_image} initials={viewProfile.avatar} color={viewProfile.avatar_color} size={80} />
                       </div>
                       <div style={{ position: "absolute", bottom: -40, right: 20, display: "flex", gap: 8 }}>
                         <button onClick={() => startConversation(viewProfile)}
-                          style={{ background: "transparent", border: "1px solid #4a7a4a", borderRadius: 20, padding: "6px 14px", color: "#e8f5e8", cursor: "pointer", fontSize: 13, fontFamily: "'DM Serif Display', serif" }}>
+                          style={{ background: "transparent", border: "1px solid #718096", borderRadius: 20, padding: "6px 14px", color: "#0d1f3c", cursor: "pointer", fontSize: 13, fontFamily: "'DM Serif Display', serif" }}>
                           ✉️
                         </button>
                         <button onClick={() => handleFollow(viewProfile.handle)}
                           style={{
-                            background: viewProfile.is_following ? "transparent" : "#e8f5e8",
-                            color: viewProfile.is_following ? "#e8f5e8" : "#050e05",
-                            border: viewProfile.is_following ? "1px solid #4a7a4a" : "none",
+                            background: viewProfile.is_following ? "transparent" : "#0d1f3c",
+                            color: viewProfile.is_following ? "#0d1f3c" : "#eef2f8",
+                            border: viewProfile.is_following ? "1px solid #718096" : "none",
                             borderRadius: 20, padding: "6px 18px", fontWeight: 700, cursor: "pointer", fontSize: 14, fontFamily: "'DM Serif Display', serif",
                           }}>
                           {viewProfile.is_following ? "Følger" : "Følg"}
                         </button>
                       </div>
                     </div>
-                    <div style={{ padding: "0 20px 16px", borderBottom: "1px solid #1e2a1e" }}>
-                      <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#e8f5e8" }}>
-                        {viewProfile.name} {viewProfile.verified && <span style={{ color: "#4ade80" }}>✓</span>}
+                    <div style={{ padding: "0 20px 16px", borderBottom: "1px solid #e2eaf8" }}>
+                      <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#0d1f3c" }}>
+                        {viewProfile.name} {viewProfile.verified && <span style={{ color: "#1a6ef5" }}>✓</span>}
                       </div>
-                      <div style={{ color: "#4a7a4a", marginBottom: 8 }}>@{viewProfile.handle}</div>
+                      <div style={{ color: "#718096", marginBottom: 8 }}>@{viewProfile.handle}</div>
                       {viewProfile.bio && <p style={{ color: "#d4e8d4", fontSize: 15, marginBottom: 12 }}>{viewProfile.bio}</p>}
                       <div style={{ display: "flex", gap: 20, fontSize: 14 }}>
-                        <span><strong style={{ color: "#e8f5e8" }}>{viewProfile.following_count ?? 0}</strong> <span style={{ color: "#4a7a4a" }}>Følger</span></span>
-                        <span><strong style={{ color: "#e8f5e8" }}>{viewProfile.followers_count ?? 0}</strong> <span style={{ color: "#4a7a4a" }}>Følgere</span></span>
+                        <span><strong style={{ color: "#0d1f3c" }}>{viewProfile.following_count ?? 0}</strong> <span style={{ color: "#718096" }}>Følger</span></span>
+                        <span><strong style={{ color: "#0d1f3c" }}>{viewProfile.followers_count ?? 0}</strong> <span style={{ color: "#718096" }}>Følgere</span></span>
                       </div>
                     </div>
                     {viewProfilePosts.map(post => (
@@ -1495,36 +1495,36 @@ export default function HelpTruth() {
             {activePage === "notifications" && (
               <>
                 <div style={S.feedHeader}>
-                  <div style={{ padding: "16px 20px", fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#e8f5e8" }}>Varsler</div>
+                  <div style={{ padding: "16px 20px", fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#0d1f3c" }}>Varsler</div>
                 </div>
                 {loadingNotifs ? <Spinner /> : notifications.length === 0
-                  ? <div style={{ padding: 40, textAlign: "center", color: "#4a7a4a" }}>Ingen varsler ennå</div>
+                  ? <div style={{ padding: 40, textAlign: "center", color: "#718096" }}>Ingen varsler ennå</div>
                   : notifications.map(n => (
                     <div key={n.id} onClick={() => n.post_id && openThread(n.post_id)}
                       style={{
-                        display: "flex", gap: 12, padding: "16px 20px", borderBottom: "1px solid #1e2a1e",
+                        display: "flex", gap: 12, padding: "16px 20px", borderBottom: "1px solid #e2eaf8",
                         cursor: n.post_id ? "pointer" : "default",
-                        background: n.read ? "transparent" : "rgba(74,222,128,0.03)",
+                        background: n.read ? "transparent" : "rgba(26,110,245,0.03)",
                       }}
-                      onMouseEnter={e => e.currentTarget.style.background = "rgba(74,222,128,0.04)"}
-                      onMouseLeave={e => e.currentTarget.style.background = n.read ? "transparent" : "rgba(74,222,128,0.03)"}
+                      onMouseEnter={e => e.currentTarget.style.background = "rgba(26,110,245,0.04)"}
+                      onMouseLeave={e => e.currentTarget.style.background = n.read ? "transparent" : "rgba(26,110,245,0.03)"}
                     >
                       <span style={{ fontSize: 22 }}>{NOTIF_ICONS[n.type] || "🔔"}</span>
                       <div style={{ flex: 1 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
                           <ProfileImage src={n.from_profile_image} initials={n.from_avatar} color={n.from_avatar_color} size={24} />
-                          <span style={{ fontWeight: 700, color: "#e8f5e8", fontSize: 14 }}>{n.from_name}</span>
-                          {n.from_verified && <span style={{ color: "#4ade80", fontSize: 12 }}>✓</span>}
+                          <span style={{ fontWeight: 700, color: "#0d1f3c", fontSize: 14 }}>{n.from_name}</span>
+                          {n.from_verified && <span style={{ color: "#1a6ef5", fontSize: 12 }}>✓</span>}
                         </div>
                         <p style={{ color: "#d4e8d4", fontSize: 14, fontFamily: "'Crimson Pro', serif" }}>
                           <strong>@{n.from_handle}</strong> {NOTIF_TEXT[n.type] || n.type}
                         </p>
                         {n.post_content && (
-                          <p style={{ color: "#4a7a4a", fontSize: 13, marginTop: 4, fontStyle: "italic" }}>
+                          <p style={{ color: "#718096", fontSize: 13, marginTop: 4, fontStyle: "italic" }}>
                             "{n.post_content.slice(0, 80)}{n.post_content.length > 80 ? "..." : ""}"
                           </p>
                         )}
-                        <span style={{ color: "#4a7a4a", fontSize: 12 }}>{timeAgo(n.created_at)}</span>
+                        <span style={{ color: "#718096", fontSize: 12 }}>{timeAgo(n.created_at)}</span>
                       </div>
                     </div>
                   ))
@@ -1540,7 +1540,7 @@ export default function HelpTruth() {
                     {activeConversation && (
                       <button onClick={() => setActiveConversation(null)} style={S.backBtn}>←</button>
                     )}
-                    <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#e8f5e8" }}>
+                    <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#0d1f3c" }}>
                       {activeConversation ? activeConversation.other_name : "Meldinger"}
                     </span>
                   </div>
@@ -1549,34 +1549,34 @@ export default function HelpTruth() {
                 {!activeConversation ? (
                   // Samtale-liste
                   loadingMessages ? <Spinner /> : conversations.length === 0
-                    ? <div style={{ padding: 40, textAlign: "center", color: "#4a7a4a" }}>
+                    ? <div style={{ padding: 40, textAlign: "center", color: "#718096" }}>
                         <div style={{ fontSize: 48, marginBottom: 16 }}>✉️</div>
-                        <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: "#e8f5e8", marginBottom: 8 }}>Ingen meldinger ennå</div>
+                        <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: "#0d1f3c", marginBottom: 8 }}>Ingen meldinger ennå</div>
                         <p>Besøk en profil og send en melding!</p>
                       </div>
                     : conversations.map(c => (
                       <div key={c.other_user_id} onClick={() => setActiveConversation(c)}
                         style={{
                           display: "flex", alignItems: "center", gap: 12,
-                          padding: "14px 20px", borderBottom: "1px solid #1e2a1e", cursor: "pointer",
+                          padding: "14px 20px", borderBottom: "1px solid #e2eaf8", cursor: "pointer",
                         }}
-                        onMouseEnter={e => e.currentTarget.style.background = "rgba(74,222,128,0.02)"}
+                        onMouseEnter={e => e.currentTarget.style.background = "rgba(26,110,245,0.05)"}
                         onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                       >
                         <ProfileImage src={c.other_profile_image} initials={c.other_avatar} color={c.other_avatar_color} size={44} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ fontWeight: 700, color: "#e8f5e8", fontSize: 15 }}>
-                              {c.other_name} {c.other_verified && <span style={{ color: "#4ade80" }}>✓</span>}
+                            <span style={{ fontWeight: 700, color: "#0d1f3c", fontSize: 15 }}>
+                              {c.other_name} {c.other_verified && <span style={{ color: "#1a6ef5" }}>✓</span>}
                             </span>
-                            <span style={{ color: "#4a7a4a", fontSize: 12 }}>{timeAgo(c.last_message_at)}</span>
+                            <span style={{ color: "#718096", fontSize: 12 }}>{timeAgo(c.last_message_at)}</span>
                           </div>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                            <p style={{ color: "#4a7a4a", fontSize: 13, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 300 }}>
+                            <p style={{ color: "#718096", fontSize: 13, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 300 }}>
                               {c.last_sender_id === currentUser.id && "Du: "}{c.last_message}
                             </p>
                             {c.unread_count > 0 && (
-                              <span style={{ background: "#4ade80", color: "#050e05", borderRadius: 10, padding: "1px 7px", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+                              <span style={{ background: "#1a6ef5", color: "#eef2f8", borderRadius: 10, padding: "1px 7px", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
                                 {c.unread_count}
                               </span>
                             )}
@@ -1595,11 +1595,11 @@ export default function HelpTruth() {
                         }}>
                           <div style={{
                             maxWidth: "70%", padding: "10px 14px", borderRadius: 16,
-                            background: msg.sender_id === currentUser.id ? "#1a6b4a" : "#0d1a0d",
-                            border: msg.sender_id === currentUser.id ? "none" : "1px solid #1e2a1e",
+                            background: msg.sender_id === currentUser.id ? "#1a6ef5" : "#f7faff",
+                            border: msg.sender_id === currentUser.id ? "none" : "1px solid #e2eaf8",
                           }}>
-                            <p style={{ color: "#e8f5e8", fontSize: 14, lineHeight: 1.5 }}>{msg.content}</p>
-                            <span style={{ color: msg.sender_id === currentUser.id ? "#a8e8a8" : "#4a7a4a", fontSize: 11 }}>
+                            <p style={{ color: "#0d1f3c", fontSize: 14, lineHeight: 1.5 }}>{msg.content}</p>
+                            <span style={{ color: msg.sender_id === currentUser.id ? "#8ab4f8" : "#718096", fontSize: 11 }}>
                               {timeAgo(msg.created_at)}
                             </span>
                           </div>
@@ -1607,21 +1607,21 @@ export default function HelpTruth() {
                       ))}
                       <div ref={chatEndRef} />
                     </div>
-                    <div style={{ padding: "12px 20px", borderTop: "1px solid #1e2a1e", display: "flex", gap: 10 }}>
+                    <div style={{ padding: "12px 20px", borderTop: "1px solid #e2eaf8", display: "flex", gap: 10 }}>
                       <input value={messageText}
                         onChange={e => setMessageText(e.target.value)}
                         onKeyDown={e => e.key === "Enter" && handleSendMessage()}
                         placeholder="Skriv en melding..."
                         style={{
-                          flex: 1, background: "#0d1a0d", border: "1px solid #2d4a2d",
-                          borderRadius: 24, padding: "10px 16px", color: "#e8f5e8",
+                          flex: 1, background: "#f7faff", border: "1px solid #c0cedf",
+                          borderRadius: 24, padding: "10px 16px", color: "#0d1f3c",
                           fontSize: 14, fontFamily: "'Crimson Pro', serif", outline: "none",
                         }}
                       />
                       <button onClick={handleSendMessage} disabled={!messageText.trim()}
                         style={{
-                          background: messageText.trim() ? "linear-gradient(135deg,#1a6b4a,#0e4f3a)" : "#0d2a0d",
-                          color: messageText.trim() ? "#fff" : "#2d4a2d",
+                          background: messageText.trim() ? "linear-gradient(135deg,#1a6ef5,#0f4fc9)" : "#e2eaf8",
+                          color: messageText.trim() ? "#fff" : "#c0cedf",
                           border: "none", borderRadius: 20, padding: "8px 18px",
                           fontWeight: 700, cursor: "pointer", fontSize: 14, fontFamily: "'DM Serif Display', serif",
                         }}>Send</button>
@@ -1636,7 +1636,7 @@ export default function HelpTruth() {
               <>
                 <div style={S.feedHeader}>
                   <div style={{ padding: "16px 20px" }}>
-                    <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#e8f5e8" }}>Admin — Innloggingslogg</span>
+                    <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#0d1f3c" }}>Admin — Innloggingslogg</span>
                   </div>
                 </div>
                 <div style={{ padding: "16px 20px" }}>
@@ -1648,7 +1648,7 @@ export default function HelpTruth() {
                     } catch (e) { setToast("Feil: " + e.message); }
                     setAdminLoading(false);
                   }} style={{
-                    background: "linear-gradient(135deg,#1a6b4a,#0e4f3a)", color: "#fff",
+                    background: "linear-gradient(135deg,#1a6ef5,#0f4fc9)", color: "#fff",
                     border: "none", borderRadius: 20, padding: "10px 24px", cursor: "pointer",
                     fontFamily: "'DM Serif Display', serif", fontSize: 14, marginBottom: 16,
                   }}>
@@ -1659,23 +1659,23 @@ export default function HelpTruth() {
                     <div style={{ overflowX: "auto" }}>
                       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                         <thead>
-                          <tr style={{ borderBottom: "2px solid #1e2a1e", textAlign: "left" }}>
-                            <th style={{ padding: "10px 8px", color: "#4ade80", fontFamily: "'DM Serif Display', serif" }}>Bruker</th>
-                            <th style={{ padding: "10px 8px", color: "#4ade80", fontFamily: "'DM Serif Display', serif" }}>IP</th>
-                            <th style={{ padding: "10px 8px", color: "#4ade80", fontFamily: "'DM Serif Display', serif" }}>Enhet</th>
-                            <th style={{ padding: "10px 8px", color: "#4ade80", fontFamily: "'DM Serif Display', serif" }}>Tidspunkt</th>
+                          <tr style={{ borderBottom: "2px solid #e2eaf8", textAlign: "left" }}>
+                            <th style={{ padding: "10px 8px", color: "#1a6ef5", fontFamily: "'DM Serif Display', serif" }}>Bruker</th>
+                            <th style={{ padding: "10px 8px", color: "#1a6ef5", fontFamily: "'DM Serif Display', serif" }}>IP</th>
+                            <th style={{ padding: "10px 8px", color: "#1a6ef5", fontFamily: "'DM Serif Display', serif" }}>Enhet</th>
+                            <th style={{ padding: "10px 8px", color: "#1a6ef5", fontFamily: "'DM Serif Display', serif" }}>Tidspunkt</th>
                           </tr>
                         </thead>
                         <tbody>
                           {adminLogs.map(log => (
-                            <tr key={log.id} style={{ borderBottom: "1px solid #1e2a1e" }}>
-                              <td style={{ padding: "10px 8px", color: "#e8f5e8" }}>
+                            <tr key={log.id} style={{ borderBottom: "1px solid #e2eaf8" }}>
+                              <td style={{ padding: "10px 8px", color: "#0d1f3c" }}>
                                 <div style={{ fontWeight: 700 }}>{log.name}</div>
-                                <div style={{ color: "#4a7a4a", fontSize: 11 }}>@{log.handle}</div>
+                                <div style={{ color: "#718096", fontSize: 11 }}>@{log.handle}</div>
                               </td>
-                              <td style={{ padding: "10px 8px", color: "#c8e8c8", fontFamily: "monospace", fontSize: 12 }}>{log.ip_address || "—"}</td>
-                              <td style={{ padding: "10px 8px", color: "#c8e8c8" }}>{log.device || "—"}</td>
-                              <td style={{ padding: "10px 8px", color: "#4a7a4a", fontSize: 12 }}>{new Date(log.created_at).toLocaleString("no-NO")}</td>
+                              <td style={{ padding: "10px 8px", color: "#4a5568", fontFamily: "monospace", fontSize: 12 }}>{log.ip_address || "—"}</td>
+                              <td style={{ padding: "10px 8px", color: "#4a5568" }}>{log.device || "—"}</td>
+                              <td style={{ padding: "10px 8px", color: "#718096", fontSize: 12 }}>{new Date(log.created_at).toLocaleString("no-NO")}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -1684,7 +1684,7 @@ export default function HelpTruth() {
                   )}
 
                   {!adminLoading && adminLogs.length === 0 && (
-                    <div style={{ textAlign: "center", padding: 40, color: "#4a7a4a" }}>
+                    <div style={{ textAlign: "center", padding: 40, color: "#718096" }}>
                       <div style={{ fontSize: 48, marginBottom: 16 }}>📋</div>
                       <p>Trykk "Hent logger" for å se innloggingshistorikk</p>
                     </div>
@@ -1699,7 +1699,7 @@ export default function HelpTruth() {
                 <div style={S.feedHeader}>
                   <div style={{ padding: "14px 20px", display: "flex", alignItems: "center" }}>
                     <button onClick={() => setActivePage("home")} style={S.backBtn}>←</button>
-                    <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#e8f5e8" }}>Innlegg</span>
+                    <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#0d1f3c" }}>Innlegg</span>
                   </div>
                 </div>
                 {loadingThread ? <Spinner /> : threadPost && (
@@ -1708,21 +1708,21 @@ export default function HelpTruth() {
                       onClickPost={null} />
                     {threadReplies.length > 0 && (
                       <>
-                        <div style={{ padding: "12px 20px", borderBottom: "1px solid #1e2a1e", color: "#4a7a4a", fontSize: 13, fontWeight: 700 }}>
+                        <div style={{ padding: "12px 20px", borderBottom: "1px solid #e2eaf8", color: "#718096", fontSize: 13, fontWeight: 700 }}>
                           SVAR ({threadReplies.length})
                         </div>
                         {threadReplies.map(r => (
-                          <div key={r.id} style={{ display: "flex", gap: 12, padding: "12px 20px", borderBottom: "1px solid #1e2a1e" }}>
+                          <div key={r.id} style={{ display: "flex", gap: 12, padding: "12px 20px", borderBottom: "1px solid #e2eaf8" }}>
                             <ProfileImage src={r.user_profile_image} initials={r.user_avatar} color={r.user_avatar_color} size={36}
                               onClick={() => handleClickUser(r.user_handle)} />
                             <div style={{ flex: 1 }}>
                               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                                <span style={{ fontWeight: 700, color: "#e8f5e8", fontSize: 14, cursor: "pointer" }}
+                                <span style={{ fontWeight: 700, color: "#0d1f3c", fontSize: 14, cursor: "pointer" }}
                                   onClick={() => handleClickUser(r.user_handle)}>{r.user_name}</span>
-                                {r.user_verified && <span style={{ color: "#4ade80", fontSize: 12 }}>✓</span>}
-                                <span style={{ color: "#4a7a4a", fontSize: 13 }}>@{r.user_handle}</span>
-                                <span style={{ color: "#2d4a2d" }}>·</span>
-                                <span style={{ color: "#4a7a4a", fontSize: 13 }}>{timeAgo(r.created_at)}</span>
+                                {r.user_verified && <span style={{ color: "#1a6ef5", fontSize: 12 }}>✓</span>}
+                                <span style={{ color: "#718096", fontSize: 13 }}>@{r.user_handle}</span>
+                                <span style={{ color: "#c0cedf" }}>·</span>
+                                <span style={{ color: "#718096", fontSize: 13 }}>{timeAgo(r.created_at)}</span>
                               </div>
                               <p style={{ color: "#d4e8d4", fontSize: 14, lineHeight: 1.5, marginTop: 4 }}>{r.content}</p>
                               {r.image_url && (
@@ -1744,11 +1744,11 @@ export default function HelpTruth() {
                 <div style={S.feedHeader}>
                   <div style={{ padding: "14px 20px", display: "flex", alignItems: "center" }}>
                     <button onClick={() => setActivePage("home")} style={S.backBtn}>←</button>
-                    <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#4ade80" }}>#{hashtagView}</span>
+                    <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#1a6ef5" }}>#{hashtagView}</span>
                   </div>
                 </div>
                 {hashtagPosts.length === 0
-                  ? <div style={{ padding: 40, textAlign: "center", color: "#4a7a4a" }}>Ingen innlegg med #{hashtagView}</div>
+                  ? <div style={{ padding: 40, textAlign: "center", color: "#718096" }}>Ingen innlegg med #{hashtagView}</div>
                   : hashtagPosts.map(post => (
                     <PostCard key={post.id} post={post} {...postCardProps} isOwn={post.user_id === currentUser.id} />
                   ))
@@ -1760,54 +1760,54 @@ export default function HelpTruth() {
 
           {/* ── HØYRE SIDEBAR ── */}
           <aside style={S.rightSidebar}>
-            <div style={{ background: "#0d1a0d", borderRadius: 24, padding: "10px 16px", display: "flex", alignItems: "center", gap: 10, marginBottom: 20, border: "1px solid #1e2a1e" }}>
-              <span style={{ color: "#4a7a4a" }}>🔍</span>
+            <div style={{ background: "#f7faff", borderRadius: 24, padding: "10px 16px", display: "flex", alignItems: "center", gap: 10, marginBottom: 20, border: "1px solid #e2eaf8" }}>
+              <span style={{ color: "#718096" }}>🔍</span>
               <input value={searchQuery}
                 onChange={e => handleSearch(e.target.value)}
                 placeholder="Søk på HelpTruth"
-                style={{ background: "none", border: "none", outline: "none", color: "#e8f5e8", flex: 1, fontSize: 14, fontFamily: "'Crimson Pro', serif" }}
+                style={{ background: "none", border: "none", outline: "none", color: "#0d1f3c", flex: 1, fontSize: 14, fontFamily: "'Crimson Pro', serif" }}
               />
             </div>
 
             {/* Trending */}
-            <div style={{ background: "#0a150a", borderRadius: 16, border: "1px solid #1e2a1e", marginBottom: 16, overflow: "hidden" }}>
-              <div style={{ padding: "14px 16px", fontFamily: "'DM Serif Display', serif", fontSize: 18, color: "#e8f5e8", borderBottom: "1px solid #1e2a1e" }}>
+            <div style={{ background: "#ffffff", borderRadius: 16, border: "1px solid #e2eaf8", marginBottom: 16, overflow: "hidden" }}>
+              <div style={{ padding: "14px 16px", fontFamily: "'DM Serif Display', serif", fontSize: 18, color: "#0d1f3c", borderBottom: "1px solid #e2eaf8" }}>
                 Trending i Norge
               </div>
               {TRENDING.map((t, i) => (
                 <div key={i} onClick={() => handleClickUser(null, t.tag.slice(1))}
-                  style={{ padding: "12px 16px", borderBottom: i < TRENDING.length - 1 ? "1px solid #1e2a1e" : "none", cursor: "pointer", transition: "background 0.15s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = "rgba(74,222,128,0.04)"}
+                  style={{ padding: "12px 16px", borderBottom: i < TRENDING.length - 1 ? "1px solid #e2eaf8" : "none", cursor: "pointer", transition: "background 0.15s" }}
+                  onMouseEnter={e => e.currentTarget.style.background = "rgba(26,110,245,0.04)"}
                   onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                 >
-                  <div style={{ color: "#4a7a4a", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.5px" }}>{t.category} · Trend</div>
-                  <div style={{ color: "#4ade80", fontWeight: 700, fontSize: 15, marginTop: 2 }}>{t.tag}</div>
-                  <div style={{ color: "#4a7a4a", fontSize: 12, marginTop: 2 }}>{t.posts}</div>
+                  <div style={{ color: "#718096", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.5px" }}>{t.category} · Trend</div>
+                  <div style={{ color: "#1a6ef5", fontWeight: 700, fontSize: 15, marginTop: 2 }}>{t.tag}</div>
+                  <div style={{ color: "#718096", fontSize: 12, marginTop: 2 }}>{t.posts}</div>
                 </div>
               ))}
             </div>
 
             {/* Hvem å følge */}
-            <div style={{ background: "#0a150a", borderRadius: 16, border: "1px solid #1e2a1e", overflow: "hidden", marginBottom: 16 }}>
-              <div style={{ padding: "14px 16px", fontFamily: "'DM Serif Display', serif", fontSize: 18, color: "#e8f5e8", borderBottom: "1px solid #1e2a1e" }}>
+            <div style={{ background: "#ffffff", borderRadius: 16, border: "1px solid #e2eaf8", overflow: "hidden", marginBottom: 16 }}>
+              <div style={{ padding: "14px 16px", fontFamily: "'DM Serif Display', serif", fontSize: 18, color: "#0d1f3c", borderBottom: "1px solid #e2eaf8" }}>
                 Hvem å følge
               </div>
               {[
-                { name: "HentePenger", handle: "hentepenger", avatar: "HP", color: "#1a6b4a" },
+                { name: "HentePenger", handle: "hentepenger", avatar: "HP", color: "#1a6ef5" },
                 { name: "StartFunder", handle: "startfunder", avatar: "SF", color: "#0e4f8a" },
                 { name: "Blockchain NO", handle: "blockchainnorge", avatar: "BN", color: "#7b2d8b" },
               ].map((u, i) => (
-                <div key={i} style={{ padding: "12px 16px", borderBottom: i < 2 ? "1px solid #1e2a1e" : "none", display: "flex", alignItems: "center", gap: 10 }}>
+                <div key={i} style={{ padding: "12px 16px", borderBottom: i < 2 ? "1px solid #e2eaf8" : "none", display: "flex", alignItems: "center", gap: 10 }}>
                   <ProfileImage initials={u.avatar} color={u.color} size={36} onClick={() => handleClickUser(u.handle)} />
                   <div style={{ flex: 1, minWidth: 0, cursor: "pointer" }} onClick={() => handleClickUser(u.handle)}>
-                    <div style={{ fontWeight: 700, fontSize: 14, color: "#e8f5e8", fontFamily: "'DM Serif Display', serif" }}>{u.name}</div>
-                    <div style={{ color: "#4a7a4a", fontSize: 12 }}>@{u.handle}</div>
+                    <div style={{ fontWeight: 700, fontSize: 14, color: "#0d1f3c", fontFamily: "'DM Serif Display', serif" }}>{u.name}</div>
+                    <div style={{ color: "#718096", fontSize: 12 }}>@{u.handle}</div>
                   </div>
                   <button onClick={() => handleFollow(u.handle)}
                     style={{
-                      background: following[`@${u.handle}`] ? "transparent" : "#e8f5e8",
-                      color: following[`@${u.handle}`] ? "#e8f5e8" : "#050e05",
-                      border: following[`@${u.handle}`] ? "1px solid #4a7a4a" : "none",
+                      background: following[`@${u.handle}`] ? "transparent" : "#0d1f3c",
+                      color: following[`@${u.handle}`] ? "#0d1f3c" : "#eef2f8",
+                      border: following[`@${u.handle}`] ? "1px solid #718096" : "none",
                       borderRadius: 20, padding: "5px 14px",
                       fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "'DM Serif Display', serif",
                     }}
@@ -1818,7 +1818,7 @@ export default function HelpTruth() {
               ))}
             </div>
 
-            <div style={{ color: "#2d4a2d", fontSize: 11, lineHeight: 2 }}>
+            <div style={{ color: "#c0cedf", fontSize: 11, lineHeight: 2 }}>
               Personvern · Vilkår · Cookies<br />
               © 2026 HelpTruth AS
             </div>
