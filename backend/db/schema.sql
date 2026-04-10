@@ -136,6 +136,17 @@ CREATE TABLE poll_votes (
   UNIQUE(poll_id, user_id)
 );
 
+-- ── LOGIN LOGS ─────────────────────────────────────────────────────────────
+CREATE TABLE login_logs (
+  id         SERIAL PRIMARY KEY,
+  user_id    INT REFERENCES users(id) ON DELETE CASCADE,
+  ip_address VARCHAR(45),
+  user_agent TEXT,
+  device     VARCHAR(50),
+  country    VARCHAR(50),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ── INDEKSER ───────────────────────────────────────────────────────────────
 CREATE INDEX idx_posts_user_id       ON posts(user_id);
 CREATE INDEX idx_posts_created_at    ON posts(created_at DESC);
@@ -149,6 +160,8 @@ CREATE INDEX idx_messages_conv       ON messages(sender_id, receiver_id, created
 CREATE INDEX idx_messages_unread     ON messages(receiver_id) WHERE read = FALSE;
 CREATE INDEX idx_polls_post          ON polls(post_id);
 CREATE INDEX idx_posts_content_trgm  ON posts USING gin (content gin_trgm_ops);
+CREATE INDEX idx_login_logs_user     ON login_logs(user_id);
+CREATE INDEX idx_login_logs_created  ON login_logs(created_at DESC);
 
 -- ── TESTDATA ───────────────────────────────────────────────────────────────
 INSERT INTO users (name, handle, email, password, bio, avatar, avatar_color, verified) VALUES

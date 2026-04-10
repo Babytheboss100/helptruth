@@ -108,6 +108,18 @@ router.post("/login", async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    // Logg innlogging
+    const ip = (req.headers["x-forwarded-for"] || req.socket.remoteAddress || "").split(",")[0].trim();
+    const ua = req.headers["user-agent"] || "";
+    let device = "Desktop";
+    if (/tablet|ipad/i.test(ua)) device = "Tablet";
+    else if (/mobile|iphone|android.*mobile/i.test(ua)) device = "Mobile";
+
+    pool.query(
+      "INSERT INTO login_logs (user_id, ip_address, user_agent, device) VALUES ($1, $2, $3, $4)",
+      [user.id, ip, ua, device]
+    ).catch(err => console.error("Login log error:", err.message));
+
     // Ikke send passordet tilbake!
     delete user.password;
 
