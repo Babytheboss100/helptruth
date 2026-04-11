@@ -643,6 +643,17 @@ export default function HelpTruth() {
   const [adminLogs, setAdminLogs] = useState([]);
   const [adminLoading, setAdminLoading] = useState(false);
 
+  // Responsive state
+  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  const isMobile = windowWidth < 768;
+  const isTablet = windowWidth >= 768 && windowWidth <= 1024;
+
   // Varsler state
   const [notifications, setNotifications] = useState([]);
   const [unreadNotifs, setUnreadNotifs]     = useState(0);
@@ -1061,12 +1072,16 @@ export default function HelpTruth() {
 
   // ── LAYOUT ────────────────────────────────────────────────────────────────
   const S = {
-    app: { minHeight: "100vh", background: "#0f1923", color: "#e2e8f0", fontFamily: "'Crimson Pro', serif", display: "flex", justifyContent: "center" },
-    container: { width: "100%", maxWidth: 1200, display: "flex" },
-    sidebar: { width: 260, padding: "20px 12px", position: "sticky", top: 0, height: "100vh", overflowY: "auto", flexShrink: 0, borderRight: "1px solid #2a3a4a" },
-    feed: { flex: 1, borderRight: "1px solid #2a3a4a", maxWidth: 620 },
+    app: { minHeight: "100vh", background: "#0f1923", color: "#e2e8f0", fontFamily: "'Crimson Pro', serif", display: "flex", justifyContent: "center", paddingBottom: isMobile ? 56 : 0 },
+    container: { width: "100%", maxWidth: 1200, display: "flex", position: "relative" },
+    sidebar: isMobile
+      ? { position: "fixed", top: 0, left: sidebarOpen ? 0 : -280, width: 280, height: "100vh", background: "#1a2535", zIndex: 200, padding: "20px 12px", overflowY: "auto", transition: "left 0.25s ease", borderRight: "1px solid #2a3a4a", boxShadow: sidebarOpen ? "4px 0 20px rgba(0,0,0,0.5)" : "none" }
+      : isTablet
+        ? { width: 60, padding: "20px 6px", position: "sticky", top: 0, height: "100vh", overflowY: "auto", flexShrink: 0, borderRight: "1px solid #2a3a4a" }
+        : { width: 260, padding: "20px 12px", position: "sticky", top: 0, height: "100vh", overflowY: "auto", flexShrink: 0, borderRight: "1px solid #2a3a4a" },
+    feed: { flex: 1, borderRight: isMobile ? "none" : "1px solid #2a3a4a", maxWidth: isMobile ? "100%" : 620 },
     feedHeader: { position: "sticky", top: 0, background: "rgba(15,25,35,0.9)", backdropFilter: "blur(12px)", zIndex: 10, borderBottom: "1px solid #2a3a4a" },
-    rightSidebar: { width: 300, padding: "20px 16px", position: "sticky", top: 0, height: "100vh", overflowY: "auto", flexShrink: 0 },
+    rightSidebar: (isMobile || isTablet) ? { display: "none" } : { width: 300, padding: "20px 16px", position: "sticky", top: 0, height: "100vh", overflowY: "auto", flexShrink: 0 },
     backBtn: { background: "none", border: "none", color: "#3b82f6", cursor: "pointer", fontSize: 18, padding: "8px 12px", borderRadius: "50%", marginRight: 8 },
   };
 
@@ -1088,30 +1103,48 @@ export default function HelpTruth() {
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #2a3a4a; border-radius: 2px; }
         textarea::placeholder, input::placeholder { color: #94a3b8 !important; }
+        @media(max-width:767px) {
+          .post-card { padding: 12px !important; }
+        }
       `}</style>
 
       {toast && <Toast message={toast.message} type={toast.type} />}
       <input type="file" accept="image/*" ref={imageInputRef} style={{ display: "none" }} onChange={handleImageSelect} />
       <input type="file" accept="image/*" ref={avatarInputRef} style={{ display: "none" }} onChange={handleAvatarUpload} />
 
+      {/* Mobile sidebar overlay */}
+      {isMobile && sidebarOpen && (
+        <div onClick={() => setSidebarOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 199 }} />
+      )}
+
       <div style={S.app}>
-        <div style={S.container}>
+        {/* Mobile top bar */}
+        {isMobile && (
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: "rgba(15,25,35,0.95)", backdropFilter: "blur(12px)", borderBottom: "1px solid #2a3a4a", display: "flex", alignItems: "center", padding: "12px 16px", gap: 12 }}>
+            <button onClick={() => setSidebarOpen(true)} style={{ background: "none", border: "none", color: "#e2e8f0", fontSize: 22, cursor: "pointer", padding: 4 }}>☰</button>
+            <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#3b82f6" }}>HelpTruth</span>
+          </div>
+        )}
+
+        <div style={{ ...S.container, marginTop: isMobile ? 48 : 0 }}>
 
           {/* ── VENSTRE SIDEBAR ── */}
           <div style={S.sidebar}>
-            <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 28, color: "#3b82f6", padding: "8px 12px", marginBottom: 16, cursor: "pointer" }}
-              onClick={() => { setActivePage("home"); setThreadPost(null); setViewProfile(null); setHashtagView(null); setSearchResults(null); }}
+            <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: isTablet ? 20 : 28, color: "#3b82f6", padding: "8px 12px", marginBottom: 16, cursor: "pointer", textAlign: isTablet ? "center" : "left" }}
+              onClick={() => { setActivePage("home"); setThreadPost(null); setViewProfile(null); setHashtagView(null); setSearchResults(null); if (isMobile) setSidebarOpen(false); }}
             >
-              HelpTruth
+              {isTablet ? "H" : "HelpTruth"}
             </div>
 
             <nav>
               {NAV_ITEMS.map(item => (
                 <div key={item.key}
-                  onClick={() => { setActivePage(item.key); setThreadPost(null); setViewProfile(null); setHashtagView(null); setActiveConversation(null); }}
+                  onClick={() => { setActivePage(item.key); setThreadPost(null); setViewProfile(null); setHashtagView(null); setActiveConversation(null); if (isMobile) setSidebarOpen(false); }}
+                  title={isTablet ? item.label : undefined}
                   style={{
-                    display: "flex", alignItems: "center", gap: 14,
-                    padding: "10px 12px", borderRadius: 28, cursor: "pointer", marginBottom: 4,
+                    display: "flex", alignItems: "center", gap: isTablet ? 0 : 14,
+                    padding: isTablet ? "10px 0" : "10px 12px", borderRadius: 28, cursor: "pointer", marginBottom: 4,
+                    justifyContent: isTablet ? "center" : "flex-start",
                     color: activePage === item.key ? "#3b82f6" : "#94a3b8",
                     fontWeight: activePage === item.key ? 700 : 400,
                     fontSize: 17, fontFamily: "'DM Serif Display', serif",
@@ -1122,7 +1155,7 @@ export default function HelpTruth() {
                   onMouseLeave={e => { if (activePage !== item.key) e.currentTarget.style.background = "transparent"; }}
                 >
                   <span style={{ fontSize: 20, width: 24, textAlign: "center" }}>{item.icon}</span>
-                  {item.label}
+                  {!isTablet && item.label}
                   {(navBadges[item.key] > 0) && (
                     <span style={{ background: "#3b82f6", color: "#0f1923", borderRadius: 10, padding: "1px 7px", fontSize: 11, fontWeight: 700, marginLeft: 4 }}>
                       {navBadges[item.key]}
@@ -1132,10 +1165,12 @@ export default function HelpTruth() {
               ))}
               {currentUser.verified && (
                 <div
-                  onClick={() => { setActivePage("admin"); setThreadPost(null); setViewProfile(null); setHashtagView(null); setActiveConversation(null); }}
+                  onClick={() => { setActivePage("admin"); setThreadPost(null); setViewProfile(null); setHashtagView(null); setActiveConversation(null); if (isMobile) setSidebarOpen(false); }}
+                  title={isTablet ? "Admin" : undefined}
                   style={{
-                    display: "flex", alignItems: "center", gap: 14,
-                    padding: "10px 12px", borderRadius: 28, cursor: "pointer", marginBottom: 4,
+                    display: "flex", alignItems: "center", gap: isTablet ? 0 : 14,
+                    padding: isTablet ? "10px 0" : "10px 12px", borderRadius: 28, cursor: "pointer", marginBottom: 4,
+                    justifyContent: isTablet ? "center" : "flex-start",
                     color: activePage === "admin" ? "#3b82f6" : "#94a3b8",
                     fontWeight: activePage === "admin" ? 700 : 400,
                     fontSize: 17, fontFamily: "'DM Serif Display', serif",
@@ -1146,7 +1181,7 @@ export default function HelpTruth() {
                   onMouseLeave={e => { if (activePage !== "admin") e.currentTarget.style.background = "transparent"; }}
                 >
                   <span style={{ fontSize: 20, width: 24, textAlign: "center" }}>⚙️</span>
-                  Admin
+                  {!isTablet && "Admin"}
                 </div>
               )}
             </nav>
@@ -1161,9 +1196,10 @@ export default function HelpTruth() {
                 fontFamily: "'DM Serif Display', serif", boxShadow: "0 4px 16px rgba(59,130,246,0.25)",
               }}
             >
-              Skriv innlegg
+              {isTablet ? "+" : "Skriv innlegg"}
             </button>
 
+            {!isTablet && (
             <div style={{
               position: "absolute", bottom: 16, left: 12, right: 12,
               display: "flex", alignItems: "center", gap: 10,
@@ -1180,6 +1216,7 @@ export default function HelpTruth() {
                 style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 16, padding: "4px" }}
               >↩</button>
             </div>
+            )}
           </div>
 
           {/* ── MAIN FEED ── */}
@@ -1825,6 +1862,40 @@ export default function HelpTruth() {
           </aside>
 
         </div>
+
+        {/* ── MOBILE BOTTOM NAV ── */}
+        {isMobile && (
+          <div style={{
+            position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 100,
+            background: "#1a2535", borderTop: "1px solid #2a3a4a",
+            display: "flex", justifyContent: "space-around", alignItems: "center",
+            height: 56, padding: "0 8px",
+          }}>
+            {[
+              { icon: "🏠", key: "home" },
+              { icon: "🔍", key: "explore" },
+              { icon: "🔔", key: "notifications" },
+              { icon: "✉️", key: "messages" },
+              { icon: "👤", key: "profile" },
+            ].map(item => (
+              <button key={item.key}
+                onClick={() => { setActivePage(item.key); setThreadPost(null); setViewProfile(null); setHashtagView(null); setActiveConversation(null); }}
+                style={{
+                  background: "none", border: "none", fontSize: 22, cursor: "pointer", padding: "8px 12px",
+                  color: activePage === item.key ? "#3b82f6" : "#94a3b8",
+                  position: "relative",
+                }}
+              >
+                {item.icon}
+                {navBadges[item.key] > 0 && (
+                  <span style={{ position: "absolute", top: 2, right: 4, background: "#3b82f6", color: "#fff", borderRadius: 10, padding: "0 5px", fontSize: 10, fontWeight: 700 }}>
+                    {navBadges[item.key]}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );
