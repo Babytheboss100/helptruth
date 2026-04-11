@@ -24,10 +24,13 @@ const transporter = nodemailer.createTransport({
 
 // ── REGISTRERING ──────────────────────────────────────────────────────────
 router.post("/register", async (req, res) => {
-  const { name, handle, email, password } = req.body;
+  const { name, handle, email, password, invite_code } = req.body;
 
   if (!name || !handle || !email || !password) {
     return res.status(400).json({ error: "Alle felt er påkrevd" });
+  }
+  if (!invite_code) {
+    return res.status(400).json({ error: "Invitasjonskode er påkrevd" });
   }
   if (password.length < 8) {
     return res.status(400).json({ error: "Passord må være minst 8 tegn" });
@@ -37,6 +40,19 @@ router.post("/register", async (req, res) => {
   }
 
   try {
+    // Sjekk invite-kode
+    const inviteResult = await pool.query(
+      "SELECT id, max_uses, uses_count FROM invite_codes WHERE code = $1 AND active = TRUE",
+      [invite_code.trim().toUpperCase()]
+    );
+    if (inviteResult.rows.length === 0) {
+      return res.status(400).json({ error: "Ugyldig invitasjonskode" });
+    }
+    const invite = inviteResult.rows[0];
+    if (invite.uses_count >= invite.max_uses) {
+      return res.status(400).json({ error: "Invitasjonskoden er brukt opp" });
+    }
+
     const existing = await pool.query(
       "SELECT id FROM users WHERE handle = $1 OR email = $2",
       [handle.toLowerCase(), email.toLowerCase()]
@@ -61,6 +77,12 @@ router.post("/register", async (req, res) => {
     );
 
     const user = result.rows[0];
+
+    // Oppdater invite-kode
+    await pool.query(
+      "UPDATE invite_codes SET uses_count = uses_count + 1, used_by = $1, used_at = NOW() WHERE id = $2",
+      [user.id, invite.id]
+    );
 
     // Send verifiserings-e-post
     const backendUrl = process.env.BACKEND_URL || "https://helptruth-backend.onrender.com";

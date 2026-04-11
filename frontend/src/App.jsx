@@ -470,7 +470,7 @@ function PostCard({ post, onLike, onRepost, onBookmark, onDelete, onReply, onVot
 
 function AuthPage({ onLogin }) {
   const [mode, setMode]         = useState("login");
-  const [form, setForm]         = useState({ name: "", handle: "", email: "", password: "" });
+  const [form, setForm]         = useState({ name: "", handle: "", email: "", password: "", invite_code: "" });
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState("");
 
@@ -481,11 +481,14 @@ function AuthPage({ onLogin }) {
       let result;
       if (mode === "login") {
         result = await api("/auth/login", { method: "POST", body: { email: form.email, password: form.password } });
+        saveToken(result.token);
+        onLogin(result.user);
       } else {
         result = await api("/auth/register", { method: "POST", body: form });
+        setError("");
+        setMode("login");
+        alert(result.message || "Konto opprettet! Sjekk e-posten din.");
       }
-      saveToken(result.token);
-      onLogin(result.user);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -539,6 +542,7 @@ function AuthPage({ onLogin }) {
 
         {mode === "register" && inp("name", "Fullt navn")}
         {mode === "register" && inp("handle", "Brukernavn (uten @)")}
+        {mode === "register" && inp("invite_code", "Invitasjonskode")}
         {inp("email", "E-postadresse", "email")}
         {inp("password", "Passord", "password")}
 

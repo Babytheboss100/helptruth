@@ -138,6 +138,19 @@ CREATE TABLE poll_votes (
   UNIQUE(poll_id, user_id)
 );
 
+-- ── INVITE CODES ───────────────────────────────────────────────────────────
+CREATE TABLE invite_codes (
+  id         SERIAL PRIMARY KEY,
+  code       VARCHAR(20) UNIQUE NOT NULL,
+  created_by INT REFERENCES users(id),
+  used_by    INT REFERENCES users(id),
+  used_at    TIMESTAMPTZ,
+  max_uses   INT DEFAULT 1,
+  uses_count INT DEFAULT 0,
+  active     BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ── LOGIN LOGS ─────────────────────────────────────────────────────────────
 CREATE TABLE login_logs (
   id         SERIAL PRIMARY KEY,
