@@ -579,24 +579,6 @@ function AuthPage({ onLogin }) {
           </span>
         </div>
 
-        <div style={{
-          marginTop: 20, padding: "12px 16px",
-          background: "#152030", borderRadius: 10, border: "1px solid #2a3a4a",
-        }}>
-          <div style={{ color: "#94a3b8", fontSize: 12, marginBottom: 8, textAlign: "center" }}>
-            Demo-konto (testdata)
-          </div>
-          <button
-            onClick={() => { setForm(f => ({ ...f, email: "heljar@startfunder.no", password: "password123" })); setMode("login"); }}
-            style={{
-              width: "100%", background: "transparent", border: "1px solid #2a3a4a",
-              borderRadius: 8, padding: "8px", color: "#3b82f6",
-              cursor: "pointer", fontSize: 13, fontFamily: "'Crimson Pro', serif",
-            }}
-          >
-            Fyll inn demo-bruker
-          </button>
-        </div>
       </div>
     </div>
   );
