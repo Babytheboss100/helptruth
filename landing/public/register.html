@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HelpTruth — Registrer deg</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#020817;font-family:'Manrope',sans-serif;color:#F8FAFC}
+
+.page{display:flex;width:100%;height:100%;position:relative}
+
+/* LEFT SIDE */
+.left{
+  width:58%;height:100%;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+
+/* Logo */
+.logo-wrap{position:relative;z-index:2;text-align:center}
+.logo-glow-1{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(47,107,255,.15),transparent 60%);
+  filter:blur(40px);pointer-events:none;
+}
+.logo-glow-2{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:350px;height:350px;border-radius:50%;
+  background:radial-gradient(circle,rgba(96,165,250,.2),transparent 60%);
+  filter:blur(20px);pointer-events:none;
+}
+.logo-glow-3{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(47,107,255,.25),transparent 60%);
+  filter:blur(8px);pointer-events:none;
+}
+.logo-text{
+  font-family:'Cinzel',serif;font-size:72px;font-weight:900;
+  letter-spacing:16px;position:relative;z-index:3;
+  background:linear-gradient(180deg,#e8edf5 0%,#9ca8c0 40%,#c8d0e0 60%,#6b7a94 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 0 20px rgba(96,165,250,.3));
+}
+
+/* Energy line */
+.energy-line{
+  position:absolute;top:50%;left:0;right:0;height:1px;z-index:1;
+  background:linear-gradient(90deg,transparent 0%,rgba(47,107,255,.1) 15%,rgba(96,165,250,.5) 45%,rgba(255,255,255,.8) 50%,rgba(96,165,250,.5) 55%,rgba(47,107,255,.1) 85%,transparent 100%);
+}
+.energy-line::after{
+  content:'';position:absolute;top:-3px;left:0;right:0;height:7px;
+  background:linear-gradient(90deg,transparent 0%,transparent 40%,rgba(96,165,250,.15) 48%,rgba(255,255,255,.2) 50%,rgba(96,165,250,.15) 52%,transparent 60%,transparent 100%);
+  filter:blur(3px);
+}
+
+/* Flare */
+@keyframes flarePulse{
+  0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}
+  50%{opacity:1;transform:translate(-50%,-50%) scale(1.3)}
+}
+.flare{
+  position:absolute;top:calc(50% + 60px);left:50%;
+  transform:translate(-50%,-50%);z-index:2;
+  width:80px;height:8px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(96,165,250,.6),transparent 70%);
+  filter:blur(4px);
+  animation:flarePulse 3s ease-in-out infinite;
+}
+
+/* Horizon + city */
+.horizon-line{
+  position:absolute;bottom:80px;left:0;right:0;height:1px;z-index:1;
+  background:linear-gradient(90deg,transparent,rgba(47,107,255,.2) 20%,rgba(96,165,250,.3) 50%,rgba(47,107,255,.2) 80%,transparent);
+}
+.horizon-bloom{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  width:500px;height:80px;z-index:0;
+  background:radial-gradient(ellipse,rgba(47,107,255,.06),transparent 70%);
+}
+
+/* RIGHT SIDE */
+.right{
+  width:42%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:2;
+}
+.card{
+  width:430px;max-width:90%;
+  background:rgba(4,10,30,.72);
+  backdrop-filter:blur(28px);
+  border:1px solid rgba(47,107,255,.12);
+  border-radius:28px;
+  padding:48px 36px;
+  box-shadow:0 0 60px rgba(47,107,255,.08),0 0 120px rgba(47,107,255,.04);
+}
+.card h1{
+  font-size:54px;font-weight:800;line-height:1;
+  margin-bottom:4px;
+  background:linear-gradient(135deg,#F8FAFC,#CBD5E1);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.card .sub{font-size:18px;color:#64748B;margin-bottom:32px;font-weight:400}
+
+/* Buttons */
+.btn-social{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:13px;border-radius:24px;font-size:15px;font-weight:600;
+  cursor:pointer;transition:all .2s;margin-bottom:10px;border:none;
+  font-family:'Manrope',sans-serif;
+}
+.btn-google{
+  background:#fff;color:#1f2937;
+}
+.btn-google:hover{box-shadow:0 0 20px rgba(255,255,255,.15)}
+.btn-apple{
+  background:#000;color:#fff;border:1px solid rgba(255,255,255,.15) !important;
+}
+.btn-apple:hover{background:#111;box-shadow:0 0 20px rgba(255,255,255,.1)}
+
+.divider{
+  display:flex;align-items:center;gap:16px;
+  margin:20px 0;color:#475569;font-size:12px;font-weight:600;letter-spacing:2px;
+}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+
+.btn-primary{
+  width:100%;padding:14px;border-radius:24px;border:none;
+  background:linear-gradient(135deg,#2F6BFF,#1d4ed8);
+  color:#fff;font-size:16px;font-weight:700;cursor:pointer;
+  font-family:'Manrope',sans-serif;
+  box-shadow:0 0 24px rgba(47,107,255,.3),inset 0 1px 0 rgba(255,255,255,.1);
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.btn-primary::after{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:60%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+}
+.btn-primary:hover{
+  box-shadow:0 0 40px rgba(47,107,255,.5),inset 0 1px 0 rgba(255,255,255,.15);
+  transform:translateY(-1px);
+}
+
+.terms{font-size:11px;color:#475569;text-align:center;margin-top:16px;line-height:1.5}
+.terms a{color:#60A5FA;text-decoration:underline}
+
+.already{
+  text-align:center;margin-top:28px;padding-top:24px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.already p{font-size:13px;color:#475569;margin-bottom:14px}
+.btn-row{display:flex;gap:10px}
+.btn-secondary{
+  flex:1;padding:11px;border-radius:20px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);
+  color:#CBD5E1;font-size:13px;font-weight:600;
+  cursor:pointer;font-family:'Manrope',sans-serif;
+  transition:all .2s;text-align:center;
+}
+.btn-secondary:hover{
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.2);
+  box-shadow:0 0 16px rgba(47,107,255,.1);
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .page{flex-direction:column}
+  .left{width:100%;height:40%}
+  .right{width:100%;height:60%}
+  .logo-text{font-size:42px;letter-spacing:8px}
+  .card{padding:32px 24px}
+  .card h1{font-size:36px}
+}
+@media(max-width:480px){
+  .left{height:30%}
+  .right{height:70%}
+  .logo-text{font-size:32px;letter-spacing:6px}
+  .card h1{font-size:30px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- LEFT -->
+  <div class="left">
+    <canvas id="stars"></canvas>
+    <div class="energy-line"></div>
+    <div class="logo-wrap">
+      <div class="logo-glow-1"></div>
+      <div class="logo-glow-2"></div>
+      <div class="logo-glow-3"></div>
+      <div class="logo-text">HELPTRUTH</div>
+    </div>
+    <div class="flare"></div>
+    <div class="horizon-line"></div>
+    <div class="horizon-bloom"></div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="card">
+      <h1>Akkurat nå</h1>
+      <p class="sub">Registrer deg i dag.</p>
+
+      <button class="btn-social btn-google" onclick="location.href='https://app.helptruth.com'">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09a7.12 7.12 0 010-4.17V7.07H2.18a11.96 11.96 0 000 9.86l3.66-2.84z" fill="#FBBC05"/><path d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.09 14.97 0 12 0 7.7 0 3.99 2.47 2.18 6.07l3.66 2.84c.87-2.6 3.3-4.16 6.16-4.16z" fill="#EA4335"/></svg>
+        Registrer deg med Google
+      </button>
+
+      <button class="btn-social btn-apple" onclick="location.href='https://app.helptruth.com'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+        Registrer deg med Apple
+      </button>
+
+      <div class="divider">ELLER</div>
+
+      <button class="btn-primary" onclick="location.href='https://app.helptruth.com'">
+        Opprett konto
+      </button>
+
+      <p class="terms">Ved å registrere deg godtar du <a href="#">Vilkår for bruk</a> og <a href="#">Personvernerklæring</a>, inkludert <a href="#">Bruk av informasjonskapsler</a>.</p>
+
+      <div class="already">
+        <p>Har du allerede en konto?</p>
+        <div class="btn-row">
+          <a href="https://app.helptruth.com" class="btn-secondary">Logg inn</a>
+          <a href="https://app.helptruth.com" class="btn-secondary">Få tilgang til HelpTruth</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var c=document.getElementById('stars');
+  var ctx=c.getContext('2d');
+  var W,H;
+  function resize(){
+    var r=c.parentElement.getBoundingClientRect();
+    W=c.width=r.width;H=c.height=r.height;
+  }
+  window.addEventListener('resize',resize);
+  resize();
+
+  // Stars
+  var stars=[];
+  for(var i=0;i<220;i++){
+    stars.push({
+      x:Math.random()*W,y:Math.random()*H,
+      r:Math.random()*1.2+0.2,
+      dx:(Math.random()-0.5)*0.1,
+      dy:(Math.random()-0.5)*0.08,
+      a:Math.random()*0.5+0.2
+    });
+  }
+
+  // Diagonal light trails
+  var trails=[];
+  for(var i=0;i<6;i++){
+    trails.push({
+      x:Math.random()*W,y:Math.random()*H,
+      len:Math.random()*80+40,
+      angle:Math.PI*0.15+Math.random()*0.2,
+      speed:Math.random()*0.8+0.3,
+      a:Math.random()*0.06+0.02
+    });
+  }
+
+  var t=0;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // Stars
+    for(var i=0;i<stars.length;i++){
+      var s=stars[i];
+      s.x+=s.dx;s.y+=s.dy;
+      if(s.x<0)s.x=W;if(s.x>W)s.x=0;
+      if(s.y<0)s.y=H;if(s.y>H)s.y=0;
+      var fl=s.a+Math.sin(t*1.5+i*0.7)*0.15;
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(248,250,252,'+Math.max(0,fl)+')';
+      ctx.fill();
+    }
+
+    // Diagonal light trails
+    for(var i=0;i<trails.length;i++){
+      var tr=trails[i];
+      tr.x+=Math.cos(tr.angle)*tr.speed;
+      tr.y+=Math.sin(tr.angle)*tr.speed;
+      if(tr.x>W+100||tr.y>H+100){tr.x=-50;tr.y=Math.random()*H*0.5}
+      var ex=tr.x+Math.cos(tr.angle)*tr.len;
+      var ey=tr.y+Math.sin(tr.angle)*tr.len;
+      var grad=ctx.createLinearGradient(tr.x,tr.y,ex,ey);
+      grad.addColorStop(0,'rgba(96,165,250,0)');
+      grad.addColorStop(0.5,'rgba(96,165,250,'+tr.a+')');
+      grad.addColorStop(1,'rgba(96,165,250,0)');
+      ctx.beginPath();
+      ctx.moveTo(tr.x,tr.y);
+      ctx.lineTo(ex,ey);
+      ctx.strokeStyle=grad;
+      ctx.lineWidth=1;
+      ctx.stroke();
+    }
+
+    // City silhouettes bottom left
+    ctx.fillStyle='rgba(8,16,40,0.9)';
+    var bld=[[0,25],[15,50],[28,38],[40,65],[55,45],[65,58],[78,35],[90,52],[105,42],[120,60],[138,30],[155,48],[170,36],[185,55],[200,28],[215,42],[230,20]];
+    ctx.beginPath();
+    ctx.moveTo(0,H);
+    for(var i=0;i<bld.length;i++){
+      ctx.lineTo(bld[i][0],H-bld[i][1]);
+      ctx.lineTo(bld[i][0]+10,H-bld[i][1]);
+    }
+    ctx.lineTo(280,H);ctx.closePath();ctx.fill();
+
+    // Tiny window lights
+    for(var i=0;i<bld.length;i++){
+      if(Math.random()>0.3){
+        var wx=bld[i][0]+3+Math.random()*4;
+        var wy=H-bld[i][1]+5+Math.random()*(bld[i][1]-10);
+        ctx.fillStyle='rgba(200,220,255,'+(0.2+Math.random()*0.3)+')';
+        ctx.fillRect(wx,wy,2,2);
+      }
+    }
+
+    t+=0.016;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>

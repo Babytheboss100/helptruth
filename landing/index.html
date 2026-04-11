@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HelpTruth — Grav dypere. Avslør sannheten.</title>
+<meta name="description" content="Plattformen for avsløringer, analyse og diskusjoner av det som er skjult, sensurert og fortrengt.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Inter',sans-serif;
+  background:#050D1F;
+  color:#F8FAFC;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+a{text-decoration:none}
+canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.content{position:relative;z-index:1}
+
+/* NAV */
+nav{
+  display:flex;align-items:center;justify-content:center;
+  padding:24px 48px;position:relative;
+}
+.nav-logo{height:90px;object-fit:contain;mix-blend-mode:screen;position:relative;z-index:2}
+.nav-line{
+  position:absolute;top:50%;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,rgba(47,107,255,.3) 30%,rgba(96,165,250,.5) 50%,rgba(47,107,255,.3) 70%,transparent 100%);
+}
+.nav-right{
+  position:absolute;right:48px;display:flex;align-items:center;gap:12px;z-index:2;
+}
+.btn-dark{
+  font-size:14px;font-weight:500;padding:10px 24px;border-radius:24px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  color:#CBD5E1;transition:all .2s;
+}
+.btn-dark:hover{background:rgba(255,255,255,.15);color:#F8FAFC}
+.btn-glow{
+  font-size:14px;font-weight:600;padding:10px 24px;border-radius:24px;
+  background:#2F6BFF;color:#fff;
+  box-shadow:0 0 20px rgba(47,107,255,.4),0 0 60px rgba(47,107,255,.15);
+  transition:all .2s;
+}
+.btn-glow:hover{box-shadow:0 0 30px rgba(47,107,255,.6),0 0 80px rgba(47,107,255,.25);transform:translateY(-1px)}
+
+/* HERO */
+.hero{
+  text-align:center;padding:80px 24px 60px;
+  max-width:900px;margin:0 auto;
+}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(48px,8vw,80px);font-weight:900;
+  line-height:1.05;margin-bottom:28px;
+  text-shadow:0 0 40px rgba(96,165,250,.15),0 0 80px rgba(96,165,250,.08);
+}
+.hero .sub{
+  font-size:clamp(16px,2.2vw,22px);font-weight:300;
+  color:#CBD5E1;max-width:640px;margin:0 auto 44px;
+  line-height:1.7;
+}
+.hero-btns{
+  display:flex;justify-content:center;align-items:center;
+  gap:20px;margin-bottom:60px;flex-wrap:wrap;
+  position:relative;
+}
+.hero-btns .btn-glow{font-size:16px;padding:14px 36px}
+.btn-outline{
+  font-size:16px;font-weight:500;padding:14px 36px;border-radius:28px;
+  border:1px solid rgba(255,255,255,.25);color:#CBD5E1;
+  transition:all .2s;
+}
+.btn-outline:hover{border-color:rgba(255,255,255,.5);color:#F8FAFC}
+.lens-flare{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:120px;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(96,165,250,.4),rgba(255,255,255,.6),rgba(96,165,250,.4),transparent);
+  pointer-events:none;
+}
+
+/* STATS */
+.stats{
+  display:flex;justify-content:center;align-items:center;gap:0;
+  flex-wrap:wrap;
+}
+.stat{text-align:center;padding:0 32px}
+.stat-num{
+  font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,36px);
+  font-weight:700;color:#F8FAFC;
+  text-shadow:0 0 20px rgba(96,165,250,.2);
+}
+.stat-label{font-size:13px;color:#64748B;margin-top:4px;font-weight:400}
+.stat-sep{width:1px;height:40px;background:rgba(255,255,255,.1)}
+
+/* CITY SILHOUETTES */
+.city-left,.city-right{
+  position:fixed;bottom:0;width:300px;height:200px;z-index:0;
+  opacity:.06;pointer-events:none;
+}
+.city-left{left:0}
+.city-right{right:0;transform:scaleX(-1)}
+
+/* HORIZON */
+.horizon{
+  position:fixed;top:55%;left:0;right:0;height:1px;z-index:0;
+  background:linear-gradient(90deg,transparent 5%,rgba(47,107,255,.2) 30%,rgba(96,165,250,.35) 50%,rgba(47,107,255,.2) 70%,transparent 95%);
+  pointer-events:none;
+}
+.horizon-bloom{
+  position:fixed;top:calc(55% - 60px);left:50%;transform:translateX(-50%);
+  width:600px;height:120px;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse,rgba(47,107,255,.08),transparent 70%);
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  .nav-right{right:20px;gap:8px}
+  .btn-dark,.btn-glow{font-size:12px;padding:8px 16px}
+  .nav-logo{height:60px}
+  .stat{padding:0 16px}
+  .hero{padding:40px 20px 40px}
+}
+@media(max-width:480px){
+  .hero-btns{flex-direction:column}
+  .stats{flex-direction:column;gap:20px}
+  .stat-sep{display:none}
+  .nav-right .btn-dark{display:none}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<div class="horizon"></div>
+<div class="horizon-bloom"></div>
+
+<div class="content">
+
+<nav>
+  <div class="nav-line"></div>
+  <img src="logo.png" alt="HelpTruth" class="nav-logo">
+  <div class="nav-right">
+    <a href="https://app.helptruth.com" class="btn-dark">Logg inn</a>
+    <a href="https://app.helptruth.com" class="btn-glow">Bli med nå</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Grav dypere.<br>Avslør sannheten.</h1>
+  <p class="sub">Plattformen for avsløringer, analyse og diskusjoner av det som er skjult, sensurert og fortrengt.</p>
+  <div class="hero-btns">
+    <a href="https://app.helptruth.com" class="btn-glow">Opprett bruker</a>
+    <div class="lens-flare"></div>
+    <a href="https://app.helptruth.com" class="btn-outline">Logg inn</a>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">120 000+</div>
+      <div class="stat-label">innlegg analysert</div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <div class="stat-num">18 000+</div>
+      <div class="stat-label">aktive brukere</div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <div class="stat-num">2 400 000+</div>
+      <div class="stat-label">kildehenvisninger</div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function(){
+  var c=document.getElementById('bg');
+  var ctx=c.getContext('2d');
+  var W,H;
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+  window.addEventListener('resize',resize);
+  resize();
+
+  // Stars
+  var stars=[];
+  for(var i=0;i<200;i++){
+    stars.push({
+      x:Math.random()*W,
+      y:Math.random()*H,
+      r:Math.random()*1.5+0.3,
+      dx:(Math.random()-0.5)*0.15,
+      dy:(Math.random()-0.5)*0.1,
+      a:Math.random()*0.6+0.2
+    });
+  }
+
+  // Bokeh
+  var bokeh=[];
+  for(var i=0;i<12;i++){
+    bokeh.push({
+      x:Math.random()*W,
+      y:Math.random()*H,
+      r:Math.random()*40+20,
+      dx:(Math.random()-0.5)*0.3,
+      dy:(Math.random()-0.5)*0.2,
+      a:Math.random()*0.04+0.02
+    });
+  }
+
+  var t=0;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // Stars
+    for(var i=0;i<stars.length;i++){
+      var s=stars[i];
+      s.x+=s.dx;s.y+=s.dy;
+      if(s.x<0)s.x=W;if(s.x>W)s.x=0;
+      if(s.y<0)s.y=H;if(s.y>H)s.y=0;
+      var flicker=s.a+Math.sin(t*2+i)*0.15;
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(248,250,252,'+Math.max(0,flicker)+')';
+      ctx.fill();
+    }
+
+    // Bokeh circles
+    for(var i=0;i<bokeh.length;i++){
+      var b=bokeh[i];
+      b.x+=b.dx;b.y+=b.dy;
+      if(b.x<-50)b.x=W+50;if(b.x>W+50)b.x=-50;
+      if(b.y<-50)b.y=H+50;if(b.y>H+50)b.y=-50;
+      var grad=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
+      grad.addColorStop(0,'rgba(47,107,255,'+(b.a+Math.sin(t+i)*0.015)+')');
+      grad.addColorStop(1,'rgba(47,107,255,0)');
+      ctx.beginPath();
+      ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+      ctx.fillStyle=grad;
+      ctx.fill();
+    }
+
+    // Horizontal light beams from center
+    var cy=H*0.55;
+    for(var i=0;i<3;i++){
+      var offset=Math.sin(t*0.5+i*2)*30;
+      var grad=ctx.createLinearGradient(0,0,W,0);
+      grad.addColorStop(0,'rgba(47,107,255,0)');
+      grad.addColorStop(0.3,'rgba(47,107,255,0.02)');
+      grad.addColorStop(0.5,'rgba(96,165,250,'+(0.04+Math.sin(t+i)*0.02)+')');
+      grad.addColorStop(0.7,'rgba(47,107,255,0.02)');
+      grad.addColorStop(1,'rgba(47,107,255,0)');
+      ctx.fillStyle=grad;
+      ctx.fillRect(0,cy+offset-1,W,2);
+    }
+
+    // City silhouettes
+    ctx.fillStyle='rgba(15,25,50,0.8)';
+    // Left city
+    var cx=0;
+    var buildings=[[0,30],[20,60],[35,45],[50,80],[70,55],[85,70],[100,40],[115,65],[135,50],[150,75],[170,35],[190,55]];
+    ctx.beginPath();
+    ctx.moveTo(0,H);
+    for(var i=0;i<buildings.length;i++){
+      ctx.lineTo(buildings[i][0],H-buildings[i][1]);
+      ctx.lineTo(buildings[i][0]+12,H-buildings[i][1]);
+    }
+    ctx.lineTo(210,H);ctx.closePath();ctx.fill();
+    // Right city
+    ctx.beginPath();
+    ctx.moveTo(W,H);
+    for(var i=0;i<buildings.length;i++){
+      ctx.lineTo(W-buildings[i][0],H-buildings[i][1]);
+      ctx.lineTo(W-buildings[i][0]-12,H-buildings[i][1]);
+    }
+    ctx.lineTo(W-210,H);ctx.closePath();ctx.fill();
+
+    t+=0.016;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+</body>
+</html>
