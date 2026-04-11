@@ -28,6 +28,8 @@ CREATE TABLE users (
   avatar_color VARCHAR(10) DEFAULT '#1a6b4a',
   profile_image TEXT       DEFAULT NULL,          -- Cloudinary URL
   verified    BOOLEAN      DEFAULT FALSE,
+  email_verified BOOLEAN  DEFAULT FALSE,
+  verification_token VARCHAR(100),
   followers_count  INT DEFAULT 0,
   following_count  INT DEFAULT 0,
   posts_count      INT DEFAULT 0,
