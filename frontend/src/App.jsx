@@ -1053,10 +1053,9 @@ export default function HelpTruth() {
   }
 
   function handleLogout() {
-    removeToken();
     disconnectSocket();
-    setCurrentUser(null);
-    setPosts([]);
+    localStorage.clear();
+    window.location.replace("/");
   }
 
   // ── Render guards ─────────────────────────────────────────────────────────
