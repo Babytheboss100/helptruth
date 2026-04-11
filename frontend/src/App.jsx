@@ -1203,12 +1203,13 @@ export default function HelpTruth() {
               {isTablet ? "+" : "Skriv innlegg"}
             </button>
 
-            {!isTablet && (
             <div style={{
               position: "absolute", bottom: 16, left: 12, right: 12,
-              display: "flex", alignItems: "center", gap: 10,
-              padding: "10px 12px", borderRadius: 16, cursor: "pointer",
+              display: "flex", flexDirection: isTablet ? "column" : "row", alignItems: "center", gap: 10,
+              padding: "10px 12px", borderRadius: 16,
             }}>
+              {!isTablet && (
+              <>
               <ProfileImage src={currentUser.profile_image} initials={currentUser.avatar} color={currentUser.avatar_color || "#3b82f6"} size={36} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 700, fontSize: 13, color: "#e2e8f0", fontFamily: "'DM Serif Display', serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -1216,11 +1217,21 @@ export default function HelpTruth() {
                 </div>
                 <div style={{ color: "#94a3b8", fontSize: 11 }}>@{currentUser.handle}</div>
               </div>
+              </>
+              )}
               <button onClick={handleLogout} title="Logg ut"
-                style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 16, padding: "4px" }}
-              >↩</button>
+                style={{
+                  background: "none", border: "1px solid #2a3a4a", color: "#94a3b8",
+                  cursor: "pointer", fontSize: 13, padding: isTablet ? "8px" : "6px 14px",
+                  borderRadius: 20, fontFamily: "'DM Serif Display', serif",
+                  display: "flex", alignItems: "center", gap: 6,
+                  transition: "all 0.2s", width: isTablet ? 40 : "auto",
+                  justifyContent: "center",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "#ef4444"; e.currentTarget.style.color = "#ef4444"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#2a3a4a"; e.currentTarget.style.color = "#94a3b8"; }}
+              >{isTablet ? "🚪" : "🚪 Logg ut"}</button>
             </div>
-            )}
           </div>
 
           {/* ── MAIN FEED ── */}
