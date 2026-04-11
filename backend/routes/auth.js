@@ -177,9 +177,10 @@ router.post("/login", async (req, res) => {
     }
 
     // Sjekk e-postverifisering
-    if (user.email_verified === false && user.verification_token !== null) {
-      return res.status(403).json({ error: "Vennligst bekreft e-posten din først. Sjekk innboksen din." });
-    }
+    // E-postverifisering deaktivert midlertidig
+    // if (user.email_verified === false && user.verification_token !== null) {
+    //   return res.status(403).json({ error: "Vennligst bekreft e-posten din først. Sjekk innboksen din." });
+    // }
 
     const token = jwt.sign(
       { id: user.id, handle: user.handle },
