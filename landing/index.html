@@ -53,7 +53,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg-page);color:var(--text-m
 @media(max-width:768px){.container{width:calc(100vw - 40px)}}
 
 /* ── NAV ── */
-.nav-outer{
+.nav-outer{overflow:hidden;
   position:sticky;top:0;z-index:100;
   background:rgba(249,251,255,0.88);
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
@@ -61,7 +61,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg-page);color:var(--text-m
 }
 .nav-inner{
   width:min(var(--max-w),calc(100vw - 96px));
-  margin:0 auto;height:92px;
+  margin:0 auto;height:160px;
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
 }
 .nav-center{display:flex;align-items:center;gap:10px;text-decoration:none}
@@ -327,14 +327,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg-page);color:var(--text-m
 <!-- HERO -->
 <div class="container">
   <div class="hero">
-    <div class="hero-logo">
-      <div class="hero-logo-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="7"/><path d="m21 21-3.5-3.5"/><path d="M11 8v3l1.5 1.5"/>
-        </svg>
-      </div>
-      <span class="hero-logo-name">HELPTRUTH</span>
-    </div>
+
 
     <h1>Uavhengig.<br><em>Kritisk. Åpen.</em></h1>
     <p class="hero-body">En åpen plattform for nyheter, analyse og meningsutveksling — uten filter.</p>
