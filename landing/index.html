@@ -370,6 +370,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg-page);color:var(--text-m
           <button class="lang-option" onclick="setLang('en')">🇬🇧 English</button>
           <button class="lang-option" onclick="setLang('es')">🇪🇸 Español</button>
           <button class="lang-option" onclick="setLang('pt')">🇧🇷 Português</button>
+          <button class="lang-option" onclick="setLang('de')">🇩🇪 Deutsch</button>
         </div>
       </div>
       <button class="btn-nav-ghost" id="t-nav-login">Logg inn</button>
@@ -557,11 +558,12 @@ const translations = {
     cta_sub: 'Cadastre-se e seja um dos primeiros a ter acesso.',
     cta_btn1: 'Criar conta', cta_btn2: 'Entrar na lista de espera',
     footer: '© 2026 HelpTruth · Independente · Crítico · Aberto'
-  }
+  },
+  de:{nav_login:'Einloggen',nav_join:'Jetzt mitmachen',hero_h1_1:'Unabhängig.',hero_h1_2:'Kritisch. Offen.',hero_sub:'Eine offene Plattform für Nachrichten, Analysen und Meinungsaustausch — ungefiltert.',btn_register:'Konto erstellen',btn_login:'Einloggen',stat1_num:'120.000+',stat1_lbl:'veröffentlichte Beiträge',stat2_num:'18.000+',stat2_lbl:'aktive Nutzer',stat3_num:'2.400.000+',stat3_lbl:'Quellenangaben',how_title:'So funktioniert es',how_sub:'Drei einfache Schritte zum Einstieg',card1_title:'Veröffentlichen',card1_text:'Veröffentliche Nachrichten, Analysen und Erkenntnisse.',card2_title:'Recherchieren',card2_text:'Gewinne Einblicke, verfolge Quellen und finde Fakten.',card3_title:'Verifizieren',card3_text:'KI und Menschen analysieren und bauen Vertrauen auf.',cta_title:'Eine Plattform für engagierte Bürger, Analysten und Neugierige',cta_sub:'Registriere dich und sei unter den Ersten.',cta_btn1:'Konto erstellen',cta_btn2:'Auf die Warteliste',footer:'© 2026 HelpTruth · Unabhängig · Kritisch · Offen'}
 };
 
-const flags = {no:'🇳🇴',en:'🇬🇧',es:'🇪🇸',pt:'🇧🇷'};
-const codes = {no:'NO',en:'EN',es:'ES',pt:'PT'};
+const flags = {no:'🇳🇴',en:'🇬🇧',es:'🇪🇸',pt:'🇧🇷',de:'🇩🇪'};
+const codes = {no:'NO',en:'EN',es:'ES',pt:'PT',de:'DE'};
 let currentLang = 'no';
 
 function toggleLang() {
