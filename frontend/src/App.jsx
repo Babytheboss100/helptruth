@@ -374,7 +374,7 @@ function PostCard({ post, onLike, onRepost, onBookmark, onDelete, onReply, onVot
           </div>
 
           {/* Innhold */}
-          <p style={{ color: "#d4e8d4", fontSize: 15, lineHeight: 1.6, margin: "6px 0 0", wordBreak: "break-word", fontFamily: "'Crimson Pro', serif" }}>
+          <p style={{ color: "#1E293B", fontSize: 15, lineHeight: 1.6, margin: "6px 0 0", wordBreak: "break-word", fontFamily: "'Crimson Pro', serif" }}>
             {p.content.split(/(@\w+|#\w+)/g).map((part, i) =>
               part.startsWith("#")
                 ? <span key={i} style={{ color: "#356DFF", cursor: "pointer" }}
@@ -1464,7 +1464,7 @@ export default function HelpTruth() {
                     {currentUser.name} {currentUser.verified && <span style={{ color: "#356DFF" }}>✓</span>}
                   </div>
                   <div style={{ color: "#5B6B84", marginBottom: 8 }}>@{currentUser.handle}</div>
-                  {currentUser.bio && <p style={{ color: "#d4e8d4", fontSize: 15, marginBottom: 12 }}>{currentUser.bio}</p>}
+                  {currentUser.bio && <p style={{ color: "#1E293B", fontSize: 15, marginBottom: 12 }}>{currentUser.bio}</p>}
                   <div style={{ display: "flex", gap: 20, fontSize: 14 }}>
                     <span><strong style={{ color: "#0F172A" }}>{currentUser.following_count ?? 0}</strong> <span style={{ color: "#5B6B84" }}>Følger</span></span>
                     <span><strong style={{ color: "#0F172A" }}>{currentUser.followers_count ?? 0}</strong> <span style={{ color: "#5B6B84" }}>Følgere</span></span>
@@ -1515,7 +1515,7 @@ export default function HelpTruth() {
                         {viewProfile.name} {viewProfile.verified && <span style={{ color: "#356DFF" }}>✓</span>}
                       </div>
                       <div style={{ color: "#5B6B84", marginBottom: 8 }}>@{viewProfile.handle}</div>
-                      {viewProfile.bio && <p style={{ color: "#d4e8d4", fontSize: 15, marginBottom: 12 }}>{viewProfile.bio}</p>}
+                      {viewProfile.bio && <p style={{ color: "#1E293B", fontSize: 15, marginBottom: 12 }}>{viewProfile.bio}</p>}
                       <div style={{ display: "flex", gap: 20, fontSize: 14 }}>
                         <span><strong style={{ color: "#0F172A" }}>{viewProfile.following_count ?? 0}</strong> <span style={{ color: "#5B6B84" }}>Følger</span></span>
                         <span><strong style={{ color: "#0F172A" }}>{viewProfile.followers_count ?? 0}</strong> <span style={{ color: "#5B6B84" }}>Følgere</span></span>
@@ -1554,7 +1554,7 @@ export default function HelpTruth() {
                           <span style={{ fontWeight: 700, color: "#0F172A", fontSize: 14 }}>{n.from_name}</span>
                           {n.from_verified && <span style={{ color: "#356DFF", fontSize: 12 }}>✓</span>}
                         </div>
-                        <p style={{ color: "#d4e8d4", fontSize: 14, fontFamily: "'Crimson Pro', serif" }}>
+                        <p style={{ color: "#1E293B", fontSize: 14, fontFamily: "'Crimson Pro', serif" }}>
                           <strong>@{n.from_handle}</strong> {NOTIF_TEXT[n.type] || n.type}
                         </p>
                         {n.post_content && (
@@ -1762,7 +1762,7 @@ export default function HelpTruth() {
                                 <span style={{ color: "#E2E8F0" }}>·</span>
                                 <span style={{ color: "#5B6B84", fontSize: 13 }}>{timeAgo(r.created_at)}</span>
                               </div>
-                              <p style={{ color: "#d4e8d4", fontSize: 14, lineHeight: 1.5, marginTop: 4 }}>{r.content}</p>
+                              <p style={{ color: "#1E293B", fontSize: 14, lineHeight: 1.5, marginTop: 4 }}>{r.content}</p>
                               {r.image_url && (
                                 <img src={r.image_url} alt="" style={{ width: "100%", borderRadius: 10, marginTop: 8, maxHeight: 300, objectFit: "cover" }} />
                               )}
