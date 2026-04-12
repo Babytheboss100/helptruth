@@ -1123,7 +1123,7 @@ export default function HelpTruth() {
             <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: isTablet ? 20 : 28, color: "#356DFF", padding: "8px 12px", marginBottom: 16, cursor: "pointer", textAlign: isTablet ? "center" : "left" }}
               onClick={() => { setActivePage("home"); setThreadPost(null); setViewProfile(null); setHashtagView(null); setSearchResults(null); if (isMobile) setSidebarOpen(false); }}
             >
-              {isTablet ? "H" : "HelpTruth"}
+              {isTablet ? "H" : <img src="/logo-helptruth.png" alt="HelpTruth" style={{height: 36, objectFit: "contain", mixBlendMode: "multiply"}} />}
             </div>
 
             <nav>
