@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GeirX Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#04040c;--s1:#08080f;--s2:#0d0d1a;--s3:#131325;
+  --b1:rgba(100,100,255,0.06);--b2:rgba(100,100,255,0.14);--b3:rgba(100,100,255,0.26);
+  --tx:#dcdcf0;--mu:#8888aa;--mu2:#3a3a55;
+  --ac:#5555ff;--ac2:#8888ff;--acg:rgba(85,85,255,0.1);
+  --hot:#ff4466;--gold:#ffcc33;--ok:#22ee88;--warn:#ff8833;
+  --mono:'Space Mono',monospace;--disp:'Syne',sans-serif;--r:4px;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:13px;line-height:1.6;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(var(--b1) 1px,transparent 1px),linear-gradient(90deg,var(--b1) 1px,transparent 1px);background-size:36px 36px;pointer-events:none}
+*{position:relative;z-index:1}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--mu2);border-radius:2px}
+input,textarea,select,button{font-family:var(--mono)}
+
+/* ── AUTH ── */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;overflow-y:auto}
+.auth-card{width:100%;max-width:400px;background:var(--s1);border:1px solid var(--b2);border-radius:var(--r);padding:32px;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.auth-logo{font-family:var(--disp);font-size:20px;font-weight:800;margin-bottom:24px;display:flex;align-items:center;gap:8px}
+.auth-logo .x{color:var(--ac);animation:flicker 5s infinite}
+@keyframes flicker{0%,93%,97%,100%{opacity:1}95%{opacity:.2}}
+.auth-badge{font-size:8px;font-weight:700;letter-spacing:2px;color:var(--ac);border:1px solid var(--ac);padding:1px 5px;opacity:.7}
+.auth-title{font-family:var(--disp);font-size:18px;font-weight:800;margin-bottom:4px}
+.auth-sub{font-size:11px;color:var(--mu);margin-bottom:22px;line-height:1.6}
+.trial-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(34,238,136,.08);border:1px solid rgba(34,238,136,.2);border-radius:var(--r);padding:5px 12px;font-size:11px;color:var(--ok);margin-bottom:20px}
+.auth-err{font-size:11px;color:var(--hot);margin-bottom:12px;padding:8px 10px;background:rgba(255,68,102,.07);border:1px solid rgba(255,68,102,.2);border-radius:var(--r)}
+.af{margin-bottom:12px}
+.al{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--mu);margin-bottom:4px;display:block;text-transform:uppercase}
+.ai{width:100%;background:var(--s2);border:1px solid var(--b2);color:var(--tx);padding:9px 11px;border-radius:var(--r);font-size:12px;outline:none;transition:border-color .2s}
+.ai:focus{border-color:var(--ac)}.ai::placeholder{color:var(--mu2)}
+.ab{width:100%;padding:10px;background:var(--ac);color:#fff;border:none;border-radius:var(--r);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;margin-top:6px}
+.ab:hover{background:var(--ac2)}.ab:disabled{opacity:.4;cursor:not-allowed}
+.auth-link{font-size:11px;color:var(--mu);margin-top:14px;text-align:center}
+.auth-link a{color:var(--ac2);cursor:pointer}
+.auth-divider{text-align:center;font-size:10px;color:var(--mu2);margin:14px 0;position:relative}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--b2)}
+.auth-divider::before{left:0}.auth-divider::after{right:0}
+
+/* ── ONBOARDING ── */
+.onboarding-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;overflow-y:auto}
+.onboarding-card{width:100%;max-width:520px;background:var(--s1);border:1px solid var(--b2);border-radius:var(--r);padding:36px;animation:fadeIn .3s ease}
+.ob-progress{display:flex;gap:6px;margin-bottom:32px}
+.ob-dot{height:3px;flex:1;border-radius:2px;background:var(--b2);transition:background .3s}
+.ob-dot.done{background:var(--ac)}
+.ob-step-content{min-height:300px;display:flex;flex-direction:column}
+.ob-emoji{font-size:36px;margin-bottom:14px}
+.ob-title{font-family:var(--disp);font-size:24px;font-weight:800;margin-bottom:8px;letter-spacing:-.5px}
+.ob-desc{font-size:13px;color:var(--mu);line-height:1.8;margin-bottom:24px}
+.ob-platforms{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ob-platform-btn{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--b2);border-radius:var(--r);background:transparent;color:var(--mu);cursor:pointer;transition:all .15s;font-size:12px;text-align:left}
+.ob-platform-btn:hover{background:var(--s2);color:var(--tx)}
+.ob-platform-btn.active{border-color:var(--ac);color:var(--ac2);background:var(--acg)}
+.ob-picon{font-size:18px}
+.ob-check{margin-left:auto;font-size:11px}
+.ob-foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:20px;border-top:1px solid var(--b1)}
+.ob-skip{font-size:11px;color:var(--mu);cursor:pointer;background:none;border:none}
+.ob-skip:hover{color:var(--tx)}
+.ob-next{padding:9px 24px;background:var(--ac);color:#fff;border:none;border-radius:var(--r);font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:all .15s}
+.ob-next:hover{background:var(--ac2)}
+.ob-url-row{display:flex;gap:8px}
+.ob-url-input{flex:1;background:var(--s2);border:1px solid var(--b2);color:var(--tx);padding:10px 12px;border-radius:var(--r);font-size:12px;outline:none;transition:border-color .2s}
+.ob-url-input:focus{border-color:var(--ac)}.ob-url-input::placeholder{color:var(--mu2)}
+.ob-analyze-btn{padding:10px 16px;background:var(--ac);color:#fff;border:none;border-radius:var(--r);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s}
+.ob-analyze-btn:hover{background:var(--ac2)}
+.ob-result-card{background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);padding:16px;margin-top:12px;animation:fadeIn .2s ease}
+.ob-result-name{font-family:var(--disp);font-size:16px;font-weight:700;margin-bottom:4px}
+.ob-result-desc{font-size:12px;color:var(--mu);line-height:1.6}
+.ob-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.ob-tag{font-size:10px;padding:2px 8px;border-radius:var(--r);background:var(--acg);border:1px solid var(--b2);color:var(--mu)}
+
+/* ── TRIAL BANNER ── */
+.trial-banner{background:rgba(34,238,136,.06);border-bottom:1px solid rgba(34,238,136,.15);padding:8px 20px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:11px;color:var(--ok);flex-shrink:0}
+.trial-upgrade-btn{padding:4px 12px;background:var(--ok);color:#111;border:none;border-radius:var(--r);font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:all .15s;text-transform:uppercase}
+.trial-upgrade-btn:hover{opacity:.85}
+
+/* ── TOPBAR ── */
+.topbar{height:46px;display:flex;align-items:stretch;border-bottom:1px solid var(--b2);background:var(--s1);flex-shrink:0}
+.tb-brand{display:flex;align-items:center;gap:8px;padding:0 16px;border-right:1px solid var(--b2);flex-shrink:0}
+.brand{font-family:var(--disp);font-size:18px;font-weight:800;letter-spacing:-.5px}
+.brand .x{color:var(--ac);animation:flicker 5s infinite}
+.brand-badge{font-size:8px;font-weight:700;letter-spacing:2px;color:var(--ac);border:1px solid var(--ac);padding:1px 5px;opacity:.7}
+.tb-proj{display:flex;align-items:center;gap:8px;padding:0 12px;border-right:1px solid var(--b2)}
+.tb-proj-lbl{font-size:9px;color:var(--mu);letter-spacing:1px;white-space:nowrap}
+.proj-sel{background:transparent;border:1px solid var(--b2);color:var(--tx);font-size:11px;padding:4px 8px;border-radius:var(--r);cursor:pointer;outline:none;max-width:130px}
+.proj-sel option{background:var(--s2)}
+.tb-status{display:flex;align-items:center;gap:6px;padding:0 12px;font-size:11px;color:var(--mu)}
+.led{width:5px;height:5px;border-radius:50%;background:var(--ok);box-shadow:0 0 5px var(--ok);flex-shrink:0;transition:all .3s}
+.led.err{background:var(--hot);box-shadow:0 0 5px var(--hot)}
+.led.busy{background:var(--gold);box-shadow:0 0 5px var(--gold);animation:bl .7s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.1}}
+.tb-right{margin-left:auto;display:flex;align-items:stretch;border-left:1px solid var(--b2)}
+.tb-btn{padding:0 12px;border:none;border-right:1px solid var(--b2);background:transparent;color:var(--mu);font-size:10px;letter-spacing:.6px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tb-btn:last-child{border-right:none}
+.tb-btn:hover,.tb-btn.active{color:var(--ac);background:var(--acg)}
+.tb-plan-badge{font-size:9px;padding:2px 6px;border-radius:var(--r);margin-left:5px;font-weight:700}
+.plan-free{background:rgba(136,136,170,.1);color:var(--mu)}
+.plan-starter{background:rgba(85,85,255,.12);color:var(--ac2)}
+.plan-pro{background:rgba(34,238,136,.1);color:var(--ok)}
+.plan-business{background:rgba(255,204,51,.1);color:var(--gold)}
+
+/* ── LAYOUT ── */
+.layout{display:grid;grid-template-columns:200px 1fr 300px;flex:1;overflow:hidden}
+
+/* ── LEFT ── */
+.left{background:var(--s1);border-right:1px solid var(--b2);display:flex;flex-direction:column;overflow-y:auto}
+.lsec{border-bottom:1px solid var(--b1);padding:12px 10px}
+.lsec:last-child{flex:1;border-bottom:none}
+.lhdr{font-size:9px;font-weight:700;letter-spacing:1.8px;color:var(--mu2);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.lhdr::after{content:'';flex:1;height:1px;background:var(--b2)}
+.mbtn,.tbtn,.pbtn{display:flex;align-items:center;gap:7px;width:100%;padding:7px 8px;border-radius:var(--r);border:1px solid transparent;background:transparent;color:var(--mu);font-size:11px;cursor:pointer;transition:all .12s;text-align:left;margin-bottom:1px}
+.mbtn:hover,.tbtn:hover,.pbtn:hover{color:var(--tx);background:var(--s2);border-color:var(--b2)}
+.mbtn.active,.tbtn.active,.pbtn.active{color:var(--ac2);background:var(--acg);border-color:var(--ac)}
+.mnum{font-size:9px;color:var(--mu2);width:14px;flex-shrink:0}
+.tdot{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0}
+.pbox{width:12px;height:12px;border:1px solid var(--b3);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;transition:all .12s;color:transparent}
+.pbtn.active .pbox{background:var(--ac);border-color:var(--ac);color:#fff}
+.ctx{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);color:var(--tx);padding:8px 10px;font-size:11px;resize:none;outline:none;line-height:1.6;transition:border-color .2s}
+.ctx:focus{border-color:var(--ac)}.ctx::placeholder{color:var(--mu2)}
+.save-ctx-btn{width:100%;margin-top:7px;padding:5px;background:transparent;border:1px solid var(--b2);color:var(--mu);border-radius:var(--r);font-size:9px;cursor:pointer;letter-spacing:.8px;text-transform:uppercase;transition:all .12s}
+.save-ctx-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+/* ── CENTER ── */
+.center{display:flex;flex-direction:column;overflow:hidden}
+.search-bar{display:flex;align-items:center;gap:8px;padding:7px 13px;border-bottom:1px solid var(--b1);background:var(--s1);flex-shrink:0}
+.search-in{flex:1;background:var(--s2);border:1px solid var(--b1);color:var(--tx);padding:5px 9px;border-radius:var(--r);font-size:11px;outline:none;transition:border-color .2s}
+.search-in:focus{border-color:var(--b2)}.search-in::placeholder{color:var(--mu2)}
+.usage-pill{font-size:10px;color:var(--mu2);white-space:nowrap;flex-shrink:0;padding:3px 8px;border:1px solid var(--b1);border-radius:var(--r)}
+.usage-pill.warn{color:var(--warn);border-color:rgba(255,136,51,.2)}
+.usage-pill.danger{color:var(--hot);border-color:rgba(255,68,102,.2)}
+.iz{padding:12px 14px;border-bottom:1px solid var(--b2);background:var(--s1);flex-shrink:0}
+.iz-lbl{font-size:9px;font-weight:700;letter-spacing:1.8px;color:var(--mu2);margin-bottom:6px}
+.main-in{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);color:var(--tx);padding:10px 12px;font-size:12px;resize:none;outline:none;line-height:1.6;transition:border-color .2s}
+.main-in:focus{border-color:var(--ac);box-shadow:0 0 0 2px var(--acg)}.main-in::placeholder{color:var(--mu2)}
+.iz-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:8px}
+.iz-info{font-size:10px;color:var(--mu2);flex-shrink:0}
+.iz-actions{display:flex;gap:6px;align-items:center}
+.run-btn{display:flex;align-items:center;gap:6px;padding:8px 18px;border-radius:var(--r);background:var(--ac);color:#fff;border:none;font-size:11px;font-weight:700;letter-spacing:.8px;cursor:pointer;transition:all .15s;text-transform:uppercase}
+.run-btn:hover:not(:disabled){background:var(--ac2);box-shadow:0 0 14px var(--acg)}
+.run-btn:disabled{opacity:.3;cursor:not-allowed}
+.img-btn{display:flex;align-items:center;gap:5px;padding:7px 11px;border-radius:var(--r);background:transparent;color:var(--mu);border:1px solid var(--b2);font-size:10px;cursor:pointer;transition:all .12s;letter-spacing:.4px;text-transform:uppercase}
+.img-btn:hover{color:var(--ac2);border-color:var(--ac);background:var(--acg)}
+.spin{width:11px;height:11px;border:1.5px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .5s linear infinite;display:inline-block}
+.spin-sm{width:10px;height:10px;border:1.5px solid var(--acg);border-top-color:var(--ac);border-radius:50%;animation:sp .5s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+.out-zone{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:9px}
+
+/* ── EMPTY ── */
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;gap:10px}
+.empty-ascii{font-size:11px;color:var(--mu2);line-height:1.4;letter-spacing:1.5px}
+.empty-title{font-family:var(--disp);font-size:18px;font-weight:800;color:var(--mu)}
+.empty-title span{color:var(--ac)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:2px}
+.chip{padding:4px 10px;border:1px solid var(--b2);border-radius:var(--r);font-size:10px;color:var(--mu);cursor:pointer;background:transparent;transition:all .12s}
+.chip:hover{color:var(--ac2);border-color:var(--ac);background:var(--acg)}
+
+/* ── CARDS ── */
+.rcard{background:var(--s1);border:1px solid var(--b2);border-radius:var(--r);overflow:hidden;animation:cin .2s ease}
+@keyframes cin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.rcard-hdr{display:flex;align-items:center;gap:7px;padding:7px 11px;background:var(--s2);border-bottom:1px solid var(--b1)}
+.rcard-plat{font-family:var(--disp);font-size:11px;font-weight:700;flex:1;letter-spacing:.4px}
+.rcard-chars{font-size:9px;color:var(--mu)}
+.rcard-acts{display:flex;gap:4px}
+.rcard-btn{font-size:9px;padding:3px 8px;border-radius:var(--r);border:1px solid var(--b2);background:transparent;color:var(--mu);cursor:pointer;transition:all .12s}
+.rcard-btn:hover{border-color:var(--b3);color:var(--tx)}
+.rcard-btn.ok{border-color:var(--ok);color:var(--ok)}
+.rcard-btn.q-ok{border-color:var(--ac);color:var(--ac)}
+.rcard-body{padding:11px 13px;font-size:12px;color:var(--tx);line-height:1.8;white-space:pre-wrap;word-break:break-word}
+.thinking{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--b2);border-radius:var(--r);background:var(--s1);font-size:11px;color:var(--mu)}
+.ldots{display:flex;gap:3px}.ldot{width:4px;height:4px;border-radius:50%;background:var(--ac);animation:ld 1.1s infinite}
+.ldot:nth-child(2){animation-delay:.18s}.ldot:nth-child(3){animation-delay:.36s}
+@keyframes ld{0%,80%,100%{opacity:.1}40%{opacity:1}}
+.sbar{height:26px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-top:1px solid var(--b1);background:var(--s1);font-size:10px;color:var(--mu2);flex-shrink:0}
+
+/* ── RIGHT ── */
+.right{border-left:1px solid var(--b2);background:var(--s1);display:flex;flex-direction:column;overflow:hidden}
+.rtabs{display:flex;border-bottom:1px solid var(--b2);flex-shrink:0}
+.rtab{flex:1;padding:10px 0;text-align:center;font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.rtab:hover{color:var(--tx)}.rtab.active{color:var(--ac);border-bottom-color:var(--ac)}
+.rpanel{flex:1;overflow-y:auto}
+
+/* ── QUEUE ── */
+.q-empty{padding:26px 14px;text-align:center;color:var(--mu2);font-size:11px;line-height:1.8}
+.q-bulk-bar{display:flex;align-items:center;gap:5px;padding:6px 8px;border-bottom:1px solid var(--b1);background:var(--s2)}
+.q-bulk-info{font-size:10px;color:var(--mu);flex:1}
+.q-bulk-btn{font-size:9px;padding:3px 8px;border-radius:var(--r);border:1px solid var(--b2);background:transparent;color:var(--mu);cursor:pointer;transition:all .12s}
+.q-bulk-btn:hover{color:var(--tx)}.q-bulk-btn.ok{color:var(--ok);border-color:rgba(34,238,136,.3)}.q-bulk-btn.danger{color:var(--hot);border-color:rgba(255,68,102,.2)}
+.qi{margin:6px 6px 0;border:1px solid var(--b2);border-radius:var(--r);overflow:hidden;animation:cin .2s ease}
+.qi.approved{border-color:rgba(34,238,136,.2)}.qi.sel{border-color:var(--ac)}
+.qi-hdr{display:flex;align-items:center;gap:5px;padding:6px 8px;background:var(--s2);border-bottom:1px solid var(--b1)}
+.qi-cb{width:12px;height:12px;accent-color:var(--ac);cursor:pointer;flex-shrink:0}
+.qi-plat{font-size:10px;font-family:var(--disp);font-weight:700;flex:1}
+.qi-proj{font-size:9px;color:var(--mu);max-width:55px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qi-status{font-size:9px;padding:1px 6px;border-radius:var(--r);flex-shrink:0}
+.st-draft{color:var(--mu);border:1px solid var(--b2)}
+.st-approved{color:var(--ok);border:1px solid rgba(34,238,136,.25);background:rgba(34,238,136,.05)}
+.st-published{color:var(--ac2);border:1px solid rgba(85,85,255,.2)}
+.st-failed{color:var(--hot);border:1px solid rgba(255,68,102,.2);background:rgba(255,68,102,.05)}
+.qi-body{padding:7px 9px;font-size:11px;color:var(--tx);line-height:1.7;max-height:80px;overflow:hidden;white-space:pre-wrap}
+.qi-edit{width:100%;background:var(--s1);border:none;border-top:1px solid var(--b1);color:var(--tx);padding:7px 9px;font-size:11px;resize:vertical;outline:none;min-height:70px;line-height:1.7}
+.qi-foot{display:flex;gap:3px;padding:5px 8px;border-top:1px solid var(--b1);flex-wrap:wrap}
+.qi-btn{font-size:9px;padding:3px 7px;border-radius:var(--r);border:1px solid var(--b2);background:transparent;color:var(--mu);cursor:pointer;transition:all .12s}
+.qi-btn:hover{color:var(--tx);border-color:var(--b3)}
+.qi-btn.approve{border-color:rgba(34,238,136,.3);color:var(--ok)}
+.qi-btn.publish{border-color:var(--b3);color:var(--ac2)}
+.qi-btn.del{color:var(--hot);border-color:rgba(255,68,102,.2)}
+.q-footer{padding:7px 6px;border-top:1px solid var(--b1);display:flex;gap:4px;flex-shrink:0;flex-wrap:wrap}
+.q-act{flex:1;padding:7px;border-radius:var(--r);font-size:9px;font-weight:700;letter-spacing:.4px;cursor:pointer;border:1px solid var(--b2);background:transparent;color:var(--mu);transition:all .15s;text-transform:uppercase;min-width:50px}
+.q-act:hover{color:var(--tx);border-color:var(--b3)}
+.q-act.primary{background:var(--ac);color:#fff;border-color:var(--ac)}
+.q-act.primary:hover{background:var(--ac2)}
+
+/* ── IMAGE PANEL ── */
+.img-panel{padding:10px}
+.img-panel-title{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--mu2);margin-bottom:8px;text-transform:uppercase}
+.img-ta{width:100%;background:var(--s2);border:1px solid var(--b2);color:var(--tx);padding:8px 10px;border-radius:var(--r);font-size:11px;resize:none;outline:none;line-height:1.6;margin-bottom:8px;transition:border-color .2s}
+.img-ta:focus{border-color:var(--ac)}.img-ta::placeholder{color:var(--mu2)}
+.img-btn-row{display:flex;gap:5px;margin-bottom:8px}
+.img-action{flex:1;padding:7px;border-radius:var(--r);font-size:9px;font-weight:700;cursor:pointer;border:1px solid var(--b2);background:transparent;color:var(--mu);transition:all .15s;text-transform:uppercase}
+.img-action:hover{color:var(--tx);border-color:var(--b3)}
+.img-action.primary{background:var(--ac);color:#fff;border-color:var(--ac)}
+.img-action.primary:hover{background:var(--ac2)}
+.img-result{width:100%;border-radius:var(--r);border:1px solid var(--b2);margin-bottom:8px;display:block}
+.img-loading{text-align:center;padding:24px;font-size:11px;color:var(--mu)}
+.img-note{font-size:10px;color:var(--mu2);line-height:1.6;padding:8px;background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);margin-top:8px}
+
+/* ── HISTORY ── */
+.hist-search{margin:7px;display:flex}
+.hist-search-in{flex:1;background:var(--s2);border:1px solid var(--b1);color:var(--tx);padding:5px 9px;border-radius:var(--r);font-size:11px;outline:none}
+.hist-search-in::placeholder{color:var(--mu2)}
+.hist-list{padding:0 6px 8px}
+.hist-item{padding:8px 9px;border:1px solid var(--b1);border-radius:var(--r);cursor:pointer;margin-bottom:4px;transition:all .12s}
+.hist-item:hover{border-color:var(--b2);background:var(--s2)}
+.hist-proj{font-size:9px;letter-spacing:.8px;margin-bottom:2px}
+.hist-topic{font-size:11px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.hist-meta{font-size:9px;color:var(--mu2)}
+
+/* ── CONNECTIONS ── */
+.conn-list{padding:8px}
+.conn-item{display:flex;align-items:center;gap:9px;padding:9px;border:1px solid var(--b1);border-radius:var(--r);margin-bottom:4px;background:var(--s2)}
+.conn-icon{font-size:17px;flex-shrink:0}
+.conn-info{flex:1;min-width:0}
+.conn-name{font-size:12px;font-weight:700}
+.conn-user{font-size:10px;color:var(--mu)}
+.conn-exp{font-size:9px;margin-top:1px}
+.exp-ok{color:var(--ok)}.exp-warn{color:var(--warn)}.exp-err{color:var(--hot)}
+.conn-btn{font-size:9px;padding:4px 9px;border-radius:var(--r);border:1px solid var(--b2);background:transparent;color:var(--mu);cursor:pointer;transition:all .12s;white-space:nowrap}
+.conn-btn:hover{color:var(--tx);border-color:var(--b3)}
+.conn-btn.connected{border-color:rgba(34,238,136,.3);color:var(--ok)}
+.conn-btn.connected:hover{color:var(--hot);border-color:rgba(255,68,102,.2)}
+
+/* ── CALENDAR ── */
+.cal-wrap{padding:10px}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-nav-btn{background:transparent;border:1px solid var(--b2);color:var(--mu);padding:4px 9px;border-radius:var(--r);cursor:pointer;font-size:11px;transition:all .12s}
+.cal-nav-btn:hover{border-color:var(--b3);color:var(--tx)}
+.cal-month{font-family:var(--disp);font-size:13px;font-weight:700}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-day-name{font-size:9px;color:var(--mu2);text-align:center;padding:3px 0;letter-spacing:.5px}
+.cal-day{min-height:48px;border:1px solid var(--b1);border-radius:var(--r);padding:3px;cursor:pointer;transition:border-color .12s;background:var(--s2)}
+.cal-day:hover{border-color:var(--b2)}.cal-day.today{border-color:var(--ac);background:var(--acg)}.cal-day.other-month{opacity:.25}
+.cal-day-num{font-size:10px;color:var(--mu);margin-bottom:2px}
+.cal-day.today .cal-day-num{color:var(--ac);font-weight:700}
+.cal-dot{width:100%;margin-bottom:2px;padding:1px 3px;border-radius:2px;font-size:8px;color:#fff;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+/* ── STATS ── */
+.stats-wrap{padding:14px;overflow-y:auto}
+.stats-title{font-family:var(--disp);font-size:14px;font-weight:800;margin-bottom:12px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px}
+.stat-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:11px}
+.stat-lbl{font-size:9px;color:var(--mu);letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px}
+.stat-val{font-family:var(--disp);font-size:20px;font-weight:800;letter-spacing:-1px}
+.stat-val.ok{color:var(--ok)}.stat-val.ac{color:var(--ac2)}.stat-val.hot{color:var(--hot)}
+.stat-sub{font-size:9px;color:var(--mu);margin-top:2px}
+.plat-bar{margin-bottom:14px}
+.plat-title{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--mu2);margin-bottom:8px;text-transform:uppercase}
+.plat-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.plat-name{font-size:10px;color:var(--mu);width:65px;flex-shrink:0}
+.plat-track{flex:1;height:5px;background:var(--s2);border-radius:3px;overflow:hidden;border:1px solid var(--b1)}
+.plat-fill{height:100%;border-radius:3px;background:var(--ac);transition:width .6s ease}
+.plat-count{font-size:10px;color:var(--mu);width:20px;text-align:right}
+.recent-post{padding:8px 10px;border:1px solid var(--b1);border-radius:var(--r);margin-bottom:4px;font-size:11px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recent-meta{font-size:9px;color:var(--mu2);margin-top:2px}
+
+/* ── SETTINGS ── */
+.settings-wrap{padding:14px;overflow-y:auto}
+.settings-title{font-family:var(--disp);font-size:14px;font-weight:800;margin-bottom:14px}
+.settings-section{margin-bottom:18px}
+.settings-section-title{font-size:9px;font-weight:700;letter-spacing:1.8px;color:var(--mu2);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--b1);text-transform:uppercase}
+.settings-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:14px;margin-bottom:7px}
+.settings-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sf{margin-bottom:10px}.sf:last-child{margin-bottom:0}
+.sl{font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--mu);margin-bottom:4px;display:block;text-transform:uppercase}
+.si{width:100%;background:var(--s1);border:1px solid var(--b2);color:var(--tx);padding:8px 10px;border-radius:var(--r);font-size:11px;outline:none;transition:border-color .2s}
+.si:focus{border-color:var(--ac)}.si::placeholder{color:var(--mu2)}.si:disabled{opacity:.4;cursor:not-allowed}
+.ss{width:100%;background:var(--s1);border:1px solid var(--b2);color:var(--tx);padding:8px 10px;border-radius:var(--r);font-size:11px;outline:none;cursor:pointer}
+.save-btn-sm{padding:7px 14px;border-radius:var(--r);background:var(--ac);color:#fff;border:none;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;transition:all .15s}
+.save-btn-sm:hover{background:var(--ac2)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--b1)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-label{font-size:11px;color:var(--tx)}
+.toggle-sub{font-size:10px;color:var(--mu);margin-top:1px}
+.toggle{position:relative;width:30px;height:17px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--mu2);border-radius:9px;cursor:pointer;transition:.3s}
+.toggle-slider::before{content:'';position:absolute;width:11px;height:11px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked+.toggle-slider{background:var(--ac)}
+.toggle input:checked+.toggle-slider::before{transform:translateX(13px)}
+.proj-card-s{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--b1);border-radius:var(--r);margin-bottom:4px;background:var(--s1)}
+.proj-dot-s{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.proj-name-s{font-size:11px;font-weight:600;flex:1}
+.proj-btn-s{font-size:9px;padding:3px 7px;border-radius:var(--r);border:1px solid var(--b2);background:transparent;color:var(--mu);cursor:pointer;transition:all .12s}
+.proj-btn-s:hover{color:var(--tx);border-color:var(--b3)}
+.proj-btn-s.danger:hover{color:var(--hot);border-color:rgba(255,68,102,.2)}
+
+/* ── BILLING ── */
+.billing-card{background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);padding:16px;margin-bottom:8px}
+.billing-plan-name{font-family:var(--disp);font-size:18px;font-weight:800;margin-bottom:4px;text-transform:capitalize}
+.billing-plan-status{font-size:11px;color:var(--mu);margin-bottom:14px}
+.billing-btn{padding:8px 16px;border-radius:var(--r);font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;transition:all .15s;border:1px solid var(--b2);background:transparent;color:var(--mu);margin-right:8px}
+.billing-btn:hover{color:var(--tx);border-color:var(--b3)}
+.billing-btn.primary{background:var(--ac);color:#fff;border-color:var(--ac)}
+.billing-btn.primary:hover{background:var(--ac2)}
+.billing-btn.danger{color:var(--hot);border-color:rgba(255,68,102,.2)}
+.billing-btn.danger:hover{background:rgba(255,68,102,.08)}
+
+/* ── PLAN UPGRADE BANNER ── */
+.upgrade-banner{margin:8px 8px 0;padding:12px;border:1px solid rgba(85,85,255,.3);border-radius:var(--r);background:var(--acg);font-size:11px;color:var(--ac2);line-height:1.6}
+.upgrade-banner strong{color:var(--tx)}
+.upgrade-btn{margin-top:8px;width:100%;padding:8px;background:var(--ac);color:#fff;border:none;border-radius:var(--r);font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;transition:all .15s}
+.upgrade-btn:hover{background:var(--ac2)}
+
+/* ── MODALS ── */
+.modal-bg{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.modal{background:var(--s2);border:1px solid var(--b3);border-radius:var(--r);padding:22px;width:380px;max-width:95vw;animation:fadeIn .2s ease;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:var(--disp);font-size:15px;font-weight:800;margin-bottom:4px}
+.modal p{font-size:11px;color:var(--mu);margin-bottom:16px;line-height:1.6}
+.mf{margin-bottom:11px}
+.ml{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--mu);margin-bottom:4px;display:block;text-transform:uppercase}
+.mi{width:100%;background:var(--s1);border:1px solid var(--b2);color:var(--tx);padding:8px 10px;border-radius:var(--r);font-size:12px;outline:none;transition:border-color .2s}
+.mi:focus{border-color:var(--ac)}.mi::placeholder{color:var(--mu2)}
+.mta{width:100%;background:var(--s1);border:1px solid var(--b2);color:var(--tx);padding:8px 10px;border-radius:var(--r);font-size:11px;outline:none;resize:none;line-height:1.6;transition:border-color .2s}
+.mta:focus{border-color:var(--ac)}.mta::placeholder{color:var(--mu2)}
+.color-row{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+.color-opt{width:19px;height:19px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s;flex-shrink:0}
+.color-opt.active{border-color:white}
+.modal-foot{display:flex;gap:7px;margin-top:16px}
+.modal-btn{flex:1;padding:8px;border-radius:var(--r);font-size:10px;font-weight:700;letter-spacing:.8px;cursor:pointer;border:1px solid var(--b2);background:transparent;color:var(--mu);transition:all .15s;text-transform:uppercase}
+.modal-btn:hover{color:var(--tx);border-color:var(--b3)}
+.modal-btn.primary{background:var(--ac);color:#fff;border-color:var(--ac)}
+.modal-btn.primary:hover{background:var(--ac2)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:14px;right:14px;z-index:999;padding:9px 14px;border-radius:var(--r);font-size:11px;animation:cin .2s ease;border:1px solid;pointer-events:none;max-width:300px}
+.toast.err{background:rgba(255,68,102,.1);border-color:rgba(255,68,102,.3);color:var(--hot)}
+.toast.ok{background:rgba(34,238,136,.07);border-color:rgba(34,238,136,.2);color:var(--ok)}
+.toast.info{background:var(--acg);border-color:var(--b3);color:var(--ac2)}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  .layout{grid-template-columns:1fr}
+  .left,.right{display:none}
+  .left.mob-open,.right.mob-open{display:flex;position:fixed;inset:0;z-index:50;width:85vw;max-width:280px;border-right:1px solid var(--b2)}
+  .left.mob-open{right:auto}.right.mob-open{left:auto;right:0;border-left:1px solid var(--b2);border-right:none}
+  .mob-overlay{display:none;position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.5)}
+  .mob-overlay.open{display:block}
+  .tb-proj-lbl{display:none}
+  nav.topbar .tb-status{display:none}
+  .mob-menu-btn{display:flex;align-items:center;padding:0 12px;border:none;border-right:1px solid var(--b2);background:transparent;color:var(--mu);cursor:pointer;font-size:16px}
+  .mob-right-btn{display:flex;align-items:center;padding:0 12px;border:none;border-left:1px solid var(--b2);background:transparent;color:var(--mu);cursor:pointer;font-size:16px}
+  .search-bar .usage-pill{display:none}
+  .cal-wrap{overflow-x:auto}
+  .settings-row{grid-template-columns:1fr}
+}
+@media(min-width:769px){
+  .mob-menu-btn,.mob-right-btn{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="authWrap" class="auth-wrap" style="display:none">
+  <div class="auth-card">
+    <div class="auth-logo">Geir<span class="x">X</span><span class="auth-badge">PRO</span></div>
+    <div id="authTitle" class="auth-title">Logg inn</div>
+    <div id="authSub" class="auth-sub">Fortsett til agenten din</div>
+    <div id="authErr" class="auth-err" style="display:none"></div>
+    <div class="af" id="nameField" style="display:none"><label class="al">NAVN</label><input class="ai" id="authName" placeholder="Heljar Vindvik"></div>
+    <div class="af"><label class="al">E-POST</label><input class="ai" id="authEmail" type="email" placeholder="du@bedrift.no"></div>
+    <div class="af"><label class="al">PASSORD</label><input class="ai" id="authPass" type="password" placeholder="••••••••"></div>
+    <div id="trialInfo" class="trial-tag" style="display:none">✦ 14 dager gratis · ingen kredittkort</div>
+    <button class="ab" id="authBtn" onclick="doAuth()">LOGG INN →</button>
+    <div class="auth-link" id="authToggle">Ingen konto? <a onclick="toggleAuth()">Registrer deg gratis</a></div>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="obWrap" class="onboarding-wrap" style="display:none">
+  <div class="onboarding-card">
+    <div class="ob-progress">
+      <div class="ob-dot done" id="ob-dot-0"></div>
+      <div class="ob-dot" id="ob-dot-1"></div>
+      <div class="ob-dot" id="ob-dot-2"></div>
+      <div class="ob-dot" id="ob-dot-3"></div>
+    </div>
+    <div class="ob-step-content" id="obContent"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;flex-direction:column;height:100%;flex:1">
+
+  <!-- TRIAL BANNER -->
+  <div class="trial-banner" id="trialBanner" style="display:none">
+    <span id="trialBannerText">14 dager gratis igjen</span>
+    <button class="trial-upgrade-btn" onclick="goToBilling()">OPPGRADER NÅ</button>
+  </div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="mob-menu-btn" onclick="openMobLeft()">☰</button>
+    <div class="tb-brand">
+      <div class="brand">Geir<span class="x">X</span></div>
+      <div class="brand-badge">PRO</div>
+    </div>
+    <div class="tb-proj">
+      <span class="tb-proj-lbl">PROSJEKT</span>
+      <select class="proj-sel" id="projSel" onchange="switchProject(this.value)"></select>
+    </div>
+    <div class="tb-status">
+      <div class="led" id="led"></div>
+      <span id="ledTxt">KLAR</span>
+    </div>
+    <div class="tb-right">
+      <button class="tb-btn active" id="tbv-generate" onclick="showView('generate')">GENERER</button>
+      <button class="tb-btn" id="tbv-calendar" onclick="showView('calendar')">KALENDER</button>
+      <button class="tb-btn" id="tbv-stats" onclick="showView('stats');loadStats()">STATISTIKK</button>
+      <button class="tb-btn" id="tbv-agent" onclick="showView('agent');loadAgentView()">🤖 AGENT</button>
+      <button class="tb-btn" id="tbv-settings" onclick="showView('settings')">INNSTILLINGER</button>
+      <button class="tb-btn" onclick="logout()">↩</button>
+    </div>
+    <button class="mob-right-btn" onclick="openMobRight()">≡</button>
+  </div>
+
+  <!-- GENERATE VIEW -->
+  <div id="view-generate" class="layout" style="flex:1;overflow:hidden">
+    <div class="left" id="leftPanel">
+      <div class="lsec">
+        <div class="lhdr">MODUS</div>
+        <button class="mbtn active" onclick="setMode('post',this)"><span class="mnum">01</span>GENERER POSTER</button>
+        <button class="mbtn" onclick="setMode('analyze',this)"><span class="mnum">02</span>ANALYSER TEKST</button>
+        <button class="mbtn" onclick="setMode('reply',this)"><span class="mnum">03</span>SKRIV SVAR</button>
+        <button class="mbtn" onclick="setMode('idea',this)"><span class="mnum">04</span>IDÉSTORM</button>
+        <button class="mbtn" onclick="setMode('email',this)"><span class="mnum">05</span>SKRIV E-POST</button>
+        <button class="mbtn" onclick="setMode('tiktok',this)"><span class="mnum">06</span>TIKTOK-MANUS</button>
+        <button class="mbtn" onclick="setMode('translate',this)"><span class="mnum">07</span>OVERSETT</button>
+      </div>
+      <div class="lsec">
+        <div class="lhdr">TONE</div>
+        <button class="tbtn active" onclick="setTone('profesjonell',this)"><span class="tdot"></span>PROFESJONELL</button>
+        <button class="tbtn" onclick="setTone('uformell',this)"><span class="tdot"></span>UFORMELL</button>
+        <button class="tbtn" onclick="setTone('teknisk',this)"><span class="tdot"></span>TEKNISK</button>
+        <button class="tbtn" onclick="setTone('engasjerende',this)"><span class="tdot"></span>ENGASJERENDE</button>
+        <button class="tbtn" onclick="setTone('humoristisk',this)"><span class="tdot"></span>HUMORISTISK</button>
+        <button class="tbtn" onclick="setTone('autoritativ',this)"><span class="tdot"></span>AUTORITATIV</button>
+      </div>
+      <div class="lsec" id="platSec">
+        <div class="lhdr">PLATTFORM</div>
+        <button class="pbtn active" onclick="toggleP(this,'LinkedIn')"><span class="pbox">✓</span>LINKEDIN</button>
+        <button class="pbtn" onclick="toggleP(this,'Instagram')"><span class="pbox"></span>INSTAGRAM</button>
+        <button class="pbtn" onclick="toggleP(this,'Twitter/X')"><span class="pbox"></span>TWITTER/X</button>
+        <button class="pbtn" onclick="toggleP(this,'Facebook')"><span class="pbox"></span>FACEBOOK</button>
+      </div>
+      <div class="lsec" style="flex:1">
+        <div class="lhdr">KONTEKST</div>
+        <textarea class="ctx" id="ctxIn" rows="7" placeholder="Lastes automatisk per prosjekt..."></textarea>
+        <button class="save-ctx-btn" onclick="saveCtx()">LAGRE KONTEKST</button>
+      </div>
+    </div>
+
+    <div class="center">
+      <div class="search-bar">
+        <input class="search-in" placeholder="Søk i historikk..." oninput="filterHistory(this.value)">
+        <span class="usage-pill" id="usagePill"></span>
+      </div>
+      <div class="iz">
+        <div class="iz-lbl">// INPUT</div>
+        <textarea class="main-in" id="mainIn" rows="3" placeholder="Skriv tema eller lim inn tekst her..." oninput="onInput()"></textarea>
+        <div class="iz-foot">
+          <span class="iz-info" id="izInfo">0 TEGN · CMD+ENTER</span>
+          <div class="iz-actions">
+            <button class="img-btn" id="imgBtn" onclick="showRtab('image')" style="display:none">🖼 BILDE</button>
+            <button class="run-btn" id="runBtn" onclick="run()"><span id="runLbl">EXECUTE</span><span style="font-size:12px">▶</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="out-zone" id="outZone">
+        <div class="empty" id="emptyEl">
+          <div class="empty-ascii">┌───────────────────────┐<br>│  G E I R X   S A A S  │<br>│         v 4 . 0       │<br>└───────────────────────┘</div>
+          <div class="empty-title">Klar til <span>handling</span></div>
+          <div style="font-size:10px;color:var(--mu)">Velg prosjekt · modus · skriv tema · EXECUTE</div>
+          <div class="chips" id="exChips"></div>
+        </div>
+      </div>
+      <div class="sbar"><span id="stokens">— TOKENS</span><span id="smodel">SONNET 4.5</span></div>
+    </div>
+
+    <div class="right" id="rightPanel">
+      <div class="rtabs">
+        <button class="rtab active" id="rt-queue" onclick="showRtab('queue')">KØ</button>
+        <button class="rtab" id="rt-image" onclick="showRtab('image')">BILDE</button>
+        <button class="rtab" id="rt-history" onclick="showRtab('history')">LOGG</button>
+        <button class="rtab" id="rt-channels" onclick="showRtab('channels');loadConnections()">KANALER</button>
+      </div>
+      <div class="rpanel" id="rpanel">
+        <div id="rtab-queue">
+          <div id="qBulkBar" class="q-bulk-bar" style="display:none">
+            <span class="q-bulk-info" id="qBulkInfo">0 valgt</span>
+            <button class="q-bulk-btn ok" onclick="bulkApprove()">GODKJENN</button>
+            <button class="q-bulk-btn danger" onclick="bulkDelete()">SLETT</button>
+          </div>
+          <div id="qList"><div class="q-empty">// Innholdskø tom<br>Trykk "+ KØ" på<br>genererte kort.</div></div>
+          <div class="q-footer" id="qFooter" style="display:none">
+            <button class="q-act" onclick="exportQueue()">EKSPORTER</button>
+            <button class="q-act" onclick="approveAll()">GODKJENN ALLE</button>
+            <button class="q-act primary" onclick="publishApproved()">PUBLISER</button>
+          </div>
+        </div>
+        <div id="rtab-image" style="display:none">
+          <div class="img-panel">
+            <div class="img-panel-title">BILDEGENERERING</div>
+            <textarea class="img-ta" id="imgPrompt" rows="3" placeholder="Beskriv bildet... eller bruk AUTO-PROMPT"></textarea>
+            <div class="img-btn-row">
+              <button class="img-action" onclick="autoPrompt()">AUTO-PROMPT</button>
+              <button class="img-action primary" id="imgGenBtn" onclick="generateImage()">GENERER</button>
+            </div>
+            <div id="imgLoading" class="img-loading" style="display:none"><span class="spin-sm"></span><br>Genererer...</div>
+            <img id="imgResult" class="img-result" style="display:none">
+            <div id="imgActions" style="display:none">
+              <div class="img-btn-row">
+                <button class="img-action" onclick="downloadImg()">LAST NED</button>
+                <button class="img-action" onclick="copyImgUrl()">KOPIER URL</button>
+                <button class="img-action primary" onclick="attachToQueue()">LEGG PÅ POST</button>
+              </div>
+            </div>
+            <div class="img-note">Legg til <code style="color:var(--ac)">STABILITY_API_KEY</code> i .env for AI-bilder. Uten nøkkel brukes Unsplash automatisk.</div>
+          </div>
+        </div>
+        <div id="rtab-history" style="display:none">
+          <div class="hist-search"><input class="hist-search-in" placeholder="Søk i logg..." oninput="filterHistory(this.value)"></div>
+          <div class="hist-list" id="histList"></div>
+        </div>
+        <div id="rtab-channels" style="display:none">
+          <div class="conn-list" id="connList"><div class="q-empty">Laster...</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDAR VIEW -->
+  <div id="view-calendar" style="display:none;flex:1;overflow-y:auto">
+    <div style="padding:16px;max-width:860px;margin:0 auto">
+      <div class="cal-wrap">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="calPrev()">← FORRIGE</button>
+          <div class="cal-month" id="calMonth"></div>
+          <button class="cal-nav-btn" onclick="calNext()">NESTE →</button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS VIEW -->
+  <div id="view-stats" style="display:none;flex:1;overflow-y:auto">
+    <div class="stats-wrap" style="max-width:600px;margin:0 auto">
+      <div class="stats-title">STATISTIKK</div>
+      <div class="stats-grid" id="statsGrid"><div style="color:var(--mu);font-size:11px;grid-column:1/-1;text-align:center;padding:20px">Laster...</div></div>
+      <div class="plat-bar"><div class="plat-title">PUBLISERT PER PLATTFORM</div><div id="platBar"></div></div>
+      <div class="plat-title">SISTE PUBLISERTE</div>
+      <div id="recentPosts"></div>
+    </div>
+  </div>
+
+
+  <!-- AGENT VIEW -->
+  <div id="view-agent" style="display:none;flex:1;overflow-y:auto">
+    <div style="padding:20px;max-width:800px;margin:0 auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div>
+          <div style="font-family:var(--disp);font-size:15px;font-weight:800;margin-bottom:3px">🤖 AI-AGENTER</div>
+          <div style="font-size:11px;color:var(--mu)">Agenter lager og poster innhold automatisk på dine vegne</div>
+        </div>
+        <button onclick="openNewAgent()" style="padding:8px 16px;background:var(--ac);color:#fff;border:none;border-radius:var(--r);font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.5px">+ NY AGENT</button>
+      </div>
+
+      <div id="agentList">
+        <div style="text-align:center;padding:40px;color:var(--mu2);font-size:11px">Laster agenter...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS VIEW -->
+  <div id="view-settings" style="display:none;flex:1;overflow-y:auto">
+    <div class="settings-wrap" style="max-width:560px;margin:0 auto">
+      <div class="settings-title">INNSTILLINGER</div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">ABONNEMENT</div>
+        <div class="billing-card" id="billingCard">
+          <div class="billing-plan-name" id="billingPlanName">Laster...</div>
+          <div class="billing-plan-status" id="billingPlanStatus"></div>
+          <button class="billing-btn primary" onclick="goToBilling()">OPPGRADER</button>
+          <button class="billing-btn" onclick="managePortal()">FAKTURERING</button>
+          <button class="billing-btn danger" id="cancelBtn" onclick="cancelPlan()" style="display:none">AVSLUTT</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">PROFIL</div>
+        <div class="settings-card">
+          <div class="settings-row">
+            <div class="sf"><label class="sl">NAVN</label><input class="si" id="settName" placeholder="Ditt navn"></div>
+            <div class="sf"><label class="sl">E-POST</label><input class="si" id="settEmail" disabled></div>
+          </div>
+          <button class="save-btn-sm" onclick="saveProfile()">LAGRE PROFIL</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">PASSORD</div>
+        <div class="settings-card">
+          <div class="settings-row">
+            <div class="sf"><label class="sl">NÅVÆRENDE</label><input class="si" type="password" id="curPass" placeholder="••••••••"></div>
+            <div class="sf"><label class="sl">NYTT</label><input class="si" type="password" id="newPass" placeholder="Min 8 tegn"></div>
+          </div>
+          <button class="save-btn-sm" onclick="changePassword()">ENDRE PASSORD</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">AI-MODELL</div>
+        <div class="settings-card">
+          <div class="sf">
+            <select class="ss" id="modelSel" onchange="saveModel()">
+              <option value="claude-sonnet-4-20250514">Claude Sonnet 4.5 — rask og god</option>
+              <option value="claude-opus-4-20250514">Claude Opus 4.5 — kraftigst</option>
+              <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 — billigst</option>
+              <option disabled>──────────────</option>
+              <option value="gpt-4o">GPT-4o — OpenAI flagship</option>
+              <option value="gpt-4o-mini">GPT-4o Mini — rask og billig</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">E-POSTVARSLER</div>
+        <div class="settings-card">
+          <div class="toggle-row"><div><div class="toggle-label">Poster venter</div><div class="toggle-sub">Daglig digest ved 3+ utkast</div></div><label class="toggle"><input type="checkbox" id="notifyPending" onchange="saveNotify()"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><div class="toggle-label">Post publisert</div><div class="toggle-sub">Varsling etter publisering</div></div><label class="toggle"><input type="checkbox" id="notifyPublished" onchange="saveNotify()"><span class="toggle-slider"></span></label></div>
+          <div class="toggle-row"><div><div class="toggle-label">Ukesrapport</div><div class="toggle-sub">Statistikk hver mandag</div></div><label class="toggle"><input type="checkbox" id="notifyWeekly" onchange="saveNotify()"><span class="toggle-slider"></span></label></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">PROSJEKTER</div>
+        <div id="settingsProjList"></div>
+        <button style="width:100%;margin-top:5px;padding:8px;border:1px dashed var(--b2);border-radius:var(--r);background:transparent;color:var(--mu);font-size:10px;cursor:pointer;letter-spacing:.4px;text-transform:uppercase;transition:all .15s" onclick="openAddProj()" onmouseover="this.style.borderColor='var(--ac)';this.style.color='var(--ac)'" onmouseout="this.style.borderColor='var(--b2)';this.style.color='var(--mu)'">+ LEGG TIL PROSJEKT</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+<!-- AGENT MODAL -->
+<div class="modal-bg" id="agentModal" style="display:none" onclick="if(event.target===this)closeModal('agentModal')">
+  <div class="modal" style="max-width:480px;width:95vw" id="agentModalContent"></div>
+</div>
+<!-- Mobile overlay -->
+<div class="mob-overlay" id="mobOverlay" onclick="closeMobPanels()"></div>
+
+<!-- SCHEDULE MODAL -->
+<div class="modal-bg" id="schedModal" style="display:none" onclick="if(event.target===this)closeModal('schedModal')">
+  <div class="modal"><h3>PLANLEGG POST</h3><p>Velg dato og tid for automatisk publisering</p>
+    <div class="mf"><label class="ml">DATO OG TID</label><input class="mi" type="datetime-local" id="schedTime"></div>
+    <div class="modal-foot"><button class="modal-btn" onclick="closeModal('schedModal')">AVBRYT</button><button class="modal-btn primary" onclick="confirmSchedule()">PLANLEGG</button></div>
+  </div>
+</div>
+
+<!-- ADD PROJECT MODAL -->
+<div class="modal-bg" id="addProjModal" style="display:none" onclick="if(event.target===this)closeModal('addProjModal')">
+  <div class="modal"><h3>NYTT PROSJEKT</h3><p>Legg til et nytt merke eller prosjekt</p>
+    <div class="mf"><label class="ml">NAVN</label><input class="mi" id="mpName" placeholder="F.eks: Emporio Brasil"></div>
+    <div class="mf"><label class="ml">NETTSIDE</label><input class="mi" id="mpUrl" placeholder="https://..."></div>
+    <div class="mf"><label class="ml">FARGE</label><div class="color-row" id="mpColors"></div></div>
+    <div class="mf"><label class="ml">KONTEKST</label><textarea class="mta" id="mpCtx" rows="3" placeholder="Beskriv prosjektet og målgruppen..."></textarea></div>
+    <div class="modal-foot"><button class="modal-btn" onclick="closeModal('addProjModal')">AVBRYT</button><button class="modal-btn primary" onclick="addProject()">OPPRETT</button></div>
+  </div>
+</div>
+
+<!-- EDIT PROJECT MODAL -->
+<div class="modal-bg" id="editProjModal" style="display:none" onclick="if(event.target===this)closeModal('editProjModal')">
+  <div class="modal"><h3>REDIGER PROSJEKT</h3><p>Oppdater prosjektinformasjon</p>
+    <input type="hidden" id="editProjId">
+    <div class="mf"><label class="ml">NAVN</label><input class="mi" id="editProjName"></div>
+    <div class="mf"><label class="ml">KONTEKST</label><textarea class="mta" id="editProjCtx" rows="4"></textarea></div>
+    <div class="modal-foot"><button class="modal-btn" onclick="closeModal('editProjModal')">AVBRYT</button><button class="modal-btn primary" onclick="saveEditProject()">LAGRE</button></div>
+  </div>
+</div>
+
+<script>
+// Set BACKEND_URL before deploying: replace the localhost URL below
+// with your Render backend URL e.g. https://geirx-backend.onrender.com
+const API = (window.BACKEND_URL || 'http://localhost:3001') + '/api'
+const COLORS = ['#5555ff','#22ee88','#ffcc33','#ff4466','#ff8833','#aa44ff','#00ccff','#ff66aa','#ff99cc']
+const PICONS = {LinkedIn:'💼',Instagram:'📸','Twitter/X':'🐦',Facebook:'📘'}
+const MNAMES = {analyze:'ANALYSE',reply:'SVAR',idea:'IDÉER',email:'E-POST',tiktok:'TIKTOK-MANUS',translate:'OVERSETTELSE'}
+const PLACEHOLDERS = {post:'Hva skal innholdet handle om?',analyze:'Lim inn teksten du vil analysere...',reply:'Lim inn kommentaren du vil svare på...',idea:'Beskriv tema eller bransje...',email:'Hva skal e-posten handle om?',tiktok:'Hva skal TikTok-manuset handle om?',translate:'Lim inn tekst (norsk↔engelsk)...'}
+const EXAMPLES = {startfunder:['StartFunder passerer 100 investorer','Crowdlending vs aksjer','Finanstilsynet-lisens forklart'],helpfunder:['HelpFunder lanserer i EU','Crowdfunding for sosiale formål'],norsecoin:['NorseCoin presale starter','Staking-belønninger forklart'],default:['Vår nyeste lansering','Ukens oppdatering','Tips til investorer 2026']}
+
+let token=localStorage.getItem('gx4_token')||'', user=null, projects=[], activeProjectId=null
+let mode='post', tone='profesjonell', platforms=['LinkedIn']
+let queue=[], localHistory=JSON.parse(localStorage.getItem('gx4_hist')||'[]')
+let totalTokens=0, busy=false, schedPostId=null, selectedColor=COLORS[0]
+let calYear=new Date().getFullYear(), calMonth_=new Date().getMonth()
+let selQIds=new Set(), curImgUrl=null, lastPostContent='', lastPostId=null
+let obStep=0, obData={}
+
+// ── AUTH ────────────────────────────────────────────────
+let isLogin=true
+function toggleAuth(){
+  isLogin=!isLogin
+  document.getElementById('authTitle').textContent=isLogin?'Logg inn':'Opprett konto'
+  document.getElementById('authSub').textContent=isLogin?'Fortsett til agenten din':'14 dager gratis · ingen kredittkort'
+  document.getElementById('authBtn').textContent=isLogin?'LOGG INN →':'REGISTRER →'
+  document.getElementById('nameField').style.display=isLogin?'none':''
+  document.getElementById('trialInfo').style.display=isLogin?'none':''
+  document.getElementById('authToggle').innerHTML=isLogin?'Ingen konto? <a onclick="toggleAuth()">Registrer deg gratis</a>':'Har konto? <a onclick="toggleAuth()">Logg inn</a>'
+  document.getElementById('authErr').style.display='none'
+}
+
+async function doAuth(){
+  const email=document.getElementById('authEmail').value.trim()
+  const pass=document.getElementById('authPass').value
+  const name=document.getElementById('authName').value.trim()
+  const errEl=document.getElementById('authErr'); errEl.style.display='none'
+  const btn=document.getElementById('authBtn'); btn.textContent='...'; btn.disabled=true
+  try {
+    const r=await req(isLogin?'/auth/login':'/auth/register',{method:'POST',body:JSON.stringify(isLogin?{email,password:pass}:{name,email,password:pass})},false)
+    token=r.token; user=r.user; localStorage.setItem('gx4_token',token)
+    if (!isLogin && !user.onboarding_done) { startOnboarding() }
+    else { await initApp() }
+  } catch(e){ errEl.textContent=e.message; errEl.style.display='' }
+  finally{ btn.textContent=isLogin?'LOGG INN →':'REGISTRER →'; btn.disabled=false }
+}
+
+document.addEventListener('keydown',e=>{ if(document.getElementById('authWrap').style.display!=='none'&&e.key==='Enter') doAuth() })
+
+function logout(){ token=''; user=null; localStorage.removeItem('gx4_token'); showScreen('auth') }
+
+async function tryAutoLogin(){
+  if(!token){ showScreen('auth'); return }
+  try { user=await req('/auth/me'); if(!user.onboarding_done){ startOnboarding() } else { await initApp() } }
+  catch { token=''; localStorage.removeItem('gx4_token'); showScreen('auth') }
+}
+
+function showScreen(s){
+  document.getElementById('authWrap').style.display=s==='auth'?'flex':'none'
+  document.getElementById('obWrap').style.display=s==='onboarding'?'flex':'none'
+  document.getElementById('app').style.display=s==='app'?'flex':'none'
+  document.body.style.overflow=s==='app'?'hidden':''
+}
+
+// ── ONBOARDING ─────────────────────────────────────────
+function startOnboarding(){ obStep=0; obData={}; showScreen('onboarding'); renderObStep() }
+
+function renderObStep(){
+  for(let i=0;i<4;i++) document.getElementById('ob-dot-'+i).className='ob-dot'+(i<=obStep?' done':'')
+  const c=document.getElementById('obContent')
+  if(obStep===0){
+    c.innerHTML=`<div class="ob-emoji">👋</div><div class="ob-title">Velkommen til GeirX!</div><div class="ob-desc">Vi setter opp kontoen din på 2 minutter. Vi trenger litt info om deg og bedriften din.</div><div class="ob-foot"><button class="ob-skip" onclick="skipOnboarding()">Hopp over</button><button class="ob-next" onclick="obNext()">Kom i gang →</button></div>`
+  } else if(obStep===1){
+    c.innerHTML=`<div class="ob-emoji">🔗</div><div class="ob-title">Hva er nettsiden din?</div><div class="ob-desc">Vi analyserer bedriften automatisk og lager en innholdsprofil.</div><div class="ob-url-row"><input class="ob-url-input" id="obUrl" placeholder="https://dinbedrift.no" value="${obData.url||''}"><button class="ob-analyze-btn" id="obAnalyzeBtn" onclick="obAnalyze()">ANALYSER</button></div><div id="obResult"></div><div class="ob-foot"><button class="ob-skip" onclick="obNext()">Hopp over</button><button class="ob-next" id="obNextBtn" onclick="obNext()">Neste →</button></div>`
+  } else if(obStep===2){
+    c.innerHTML=`<div class="ob-emoji">📱</div><div class="ob-title">Hvilke plattformer bruker du?</div><div class="ob-desc">Du kan endre dette senere.</div><div class="ob-platforms">${[['LinkedIn','💼'],['Instagram','📸'],['Twitter/X','🐦'],['Facebook','📘']].map(([p,i])=>`<button class="ob-platform-btn ${(obData.platforms||[]).includes(p)?'active':''}" onclick="toggleObPlatform(this,'${p}')"><span class="ob-picon">${i}</span>${p}${(obData.platforms||[]).includes(p)?'<span class="ob-check">✓</span>':''}</button>`).join('')}</div><div class="ob-foot"><button class="ob-skip" onclick="obNext()">Hopp over</button><button class="ob-next" onclick="obNext()">Neste →</button></div>`
+  } else if(obStep===3){
+    c.innerHTML=`<div class="ob-emoji">🚀</div><div class="ob-title">Alt er klart!</div><div class="ob-desc">Du har ${(user?.trial_days_left||14)} dager gratis tilgang til alle Pro-funksjoner. Ingen kredittkort trengs.</div><div class="ob-foot"><span></span><button class="ob-next" onclick="finishOnboarding()">Til dashboardet →</button></div>`
+  }
+}
+
+async function obAnalyze(){
+  const url=document.getElementById('obUrl').value.trim()
+  if(!url){ return }
+  obData.url=url
+  const btn=document.getElementById('obAnalyzeBtn'); btn.textContent='...'; btn.disabled=true
+  document.getElementById('obResult').innerHTML='<div style="font-size:11px;color:var(--mu);margin-top:8px">Analyserer...</div>'
+  try {
+    const r=await req('/generate',{method:'POST',body:JSON.stringify({input:`Analyser ${url} og beskriv kort hva bedriften gjør og hvilken tone de bruker`,mode:'analyze',platforms:['LinkedIn'],save:false})})
+    obData.analysis=r.text
+    document.getElementById('obResult').innerHTML=`<div class="ob-result-card"><div class="ob-result-name">${url.replace(/https?:\/\//,'')}</div><div class="ob-result-desc">${r.text.slice(0,200)}...</div></div>`
+  } catch { document.getElementById('obResult').innerHTML='' }
+  btn.textContent='ANALYSER'; btn.disabled=false
+}
+
+function toggleObPlatform(el,p){
+  if(!obData.platforms) obData.platforms=[]
+  if(obData.platforms.includes(p)) obData.platforms=obData.platforms.filter(x=>x!==p)
+  else obData.platforms.push(p)
+  renderObStep()
+}
+
+function obNext(){ obStep=Math.min(3,obStep+1); renderObStep() }
+
+async function finishOnboarding(){
+  await req('/auth/me',{method:'PATCH',body:JSON.stringify({onboarding_done:true})}).catch(()=>{})
+  if(user) user.onboarding_done=true
+  await initApp()
+}
+
+function skipOnboarding(){ finishOnboarding() }
+
+// ── API ─────────────────────────────────────────────────
+async function req(path,opts={},withAuth=true){
+  const headers={'Content-Type':'application/json',...(withAuth&&token?{Authorization:`Bearer ${token}`}:{})}
+  const r=await fetch(API+path,{...opts,headers:{...headers,...(opts.headers||{})}})
+  const data=await r.json()
+  if(!r.ok) throw new Error(data.error||'Feil')
+  return data
+}
+
+// ── INIT ────────────────────────────────────────────────
+async function initApp(){
+  showScreen('app')
+  await loadProjects()
+  renderHistory()
+  buildColorRow()
+  setLed('ok','KLAR')
+  loadUserSettings()
+  checkTrialBanner()
+  loadUsage()
+  const m=localStorage.getItem('gx4_model'); if(m){const sel=document.getElementById('modelSel');if(sel)sel.value=m}
+}
+
+function loadUserSettings(){
+  if(!user) return
+  const n=document.getElementById('settName'); if(n) n.value=user.name||''
+  const e=document.getElementById('settEmail'); if(e) e.value=user.email||''
+  const np=document.getElementById('notifyPending'); if(np) np.checked=user.notify_pending!==false
+  const npu=document.getElementById('notifyPublished'); if(npu) npu.checked=user.notify_published!==false
+  const nw=document.getElementById('notifyWeekly'); if(nw) nw.checked=user.notify_weekly!==false
+  updateBillingCard()
+}
+
+function checkTrialBanner(){
+  if(!user) return
+  const banner=document.getElementById('trialBanner')
+  if(user.plan==='free'&&user.trial_days_left>0){
+    banner.style.display='flex'
+    document.getElementById('trialBannerText').textContent=`🎁 ${user.trial_days_left} dager gratis igjen`
+  } else if(user.plan==='free'&&!user.is_trialing){
+    banner.style.display='flex'
+    document.getElementById('trialBannerText').textContent='Gratis-periode utløpt — oppgrader for ubegrenset tilgang'
+  } else { banner.style.display='none' }
+}
+
+async function loadUsage(){
+  try {
+    const r=await req('/stats')
+    const month=r.this_month||{}
+    const planLimits={free:10,starter:50,pro:200,business:999}
+    const limit=planLimits[user?.plan||'free']||10
+    const used=month.posts_generated||0
+    const pct=Math.round(used/limit*100)
+    const pill=document.getElementById('usagePill')
+    if(pill){
+      pill.textContent=`${used}/${limit} POSTER`
+      pill.className='usage-pill'+(pct>=90?' danger':pct>=70?' warn':'')
+    }
+  } catch {}
+}
+
+// ── PROJECTS ────────────────────────────────────────────
+async function loadProjects(){
+  const r=await req('/projects'); projects=r.projects||[]
+  if(!activeProjectId&&projects.length) activeProjectId=projects[0].id
+  buildProjSel(); loadProjectCtx(); updateExamples(); renderSettingsProjects()
+}
+function buildProjSel(){
+  const sel=document.getElementById('projSel')
+  sel.innerHTML=projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')
+  if(activeProjectId) sel.value=activeProjectId
+}
+function switchProject(id){ saveCtxSilent(); activeProjectId=id; loadProjectCtx(); updateExamples() }
+function loadProjectCtx(){ const p=projects.find(x=>x.id===activeProjectId); const el=document.getElementById('ctxIn'); if(el&&p) el.value=p.context||'' }
+async function saveCtx(){ const ctx=document.getElementById('ctxIn').value; await req(`/projects/${activeProjectId}`,{method:'PATCH',body:JSON.stringify({context:ctx})}); const p=projects.find(x=>x.id===activeProjectId); if(p) p.context=ctx; toast('Kontekst lagret','ok') }
+async function saveCtxSilent(){ try{ const ctx=document.getElementById('ctxIn')?.value; if(!ctx||!activeProjectId) return; await req(`/projects/${activeProjectId}`,{method:'PATCH',body:JSON.stringify({context:ctx})}); const p=projects.find(x=>x.id===activeProjectId); if(p) p.context=ctx }catch{} }
+function getActiveProject(){ return projects.find(x=>x.id===activeProjectId)||projects[0] }
+function updateExamples(){ const p=getActiveProject(); const k=p?.name?.toLowerCase().replace(/\s/g,'')||'default'; const ex=EXAMPLES[k]||EXAMPLES.default; const el=document.getElementById('exChips'); if(!el) return; el.innerHTML=ex.map(e=>`<button class="chip" onclick="useEx(${JSON.stringify(e)})">${e}</button>`).join('') }
+
+// ── CONTROLS ────────────────────────────────────────────
+function setMode(m,btn){ mode=m; document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('mainIn').placeholder=PLACEHOLDERS[m]; document.getElementById('platSec').style.display=m==='post'||m==='tiktok'?'':'none'; document.getElementById('imgBtn').style.display=m==='post'?'':'none' }
+function setTone(t,btn){ tone=t; document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active') }
+function toggleP(el,name){ const on=el.classList.contains('active'); if(on&&platforms.length===1) return; el.classList.toggle('active'); const box=el.querySelector('.pbox'); box.textContent=el.classList.contains('active')?'✓':''; box.style.color=el.classList.contains('active')?'#fff':'transparent'; platforms=el.classList.contains('active')?[...platforms,name]:platforms.filter(p=>p!==name) }
+function onInput(){ const n=document.getElementById('mainIn').value.length; document.getElementById('izInfo').textContent=`${n} TEGN · CMD+ENTER` }
+function useEx(t){ document.getElementById('mainIn').value=t; onInput(); document.getElementById('mainIn').focus() }
+function setLed(type,txt){ document.getElementById('led').className='led'+(type==='err'?' err':type==='busy'?' busy':''); document.getElementById('ledTxt').textContent=txt }
+
+// ── VIEWS ────────────────────────────────────────────────
+function showView(v){
+  ;['generate','calendar','stats','settings','agent'].forEach(x=>{ const el=document.getElementById('view-'+x); if(!el) return; el.style.display=x===v?(x==='generate'?'grid':'block'):'none'; const tb=document.getElementById('tbv-'+x); if(tb) tb.classList.toggle('active',x===v) })
+  if(v==='calendar') renderCalendar()
+  if(v==='settings') loadSettingsData()
+}
+function showRtab(t){
+  ;['queue','image','history','channels'].forEach(x=>{ const el=document.getElementById('rtab-'+x); if(el) el.style.display=x===t?'':'none'; const tb=document.getElementById('rt-'+x); if(tb) tb.classList.toggle('active',x===t) })
+}
+function openMobLeft(){ document.getElementById('leftPanel').classList.add('mob-open'); document.getElementById('mobOverlay').classList.add('open') }
+function openMobRight(){ document.getElementById('rightPanel').classList.add('mob-open'); document.getElementById('mobOverlay').classList.add('open') }
+function closeMobPanels(){ document.getElementById('leftPanel').classList.remove('mob-open'); document.getElementById('rightPanel').classList.remove('mob-open'); document.getElementById('mobOverlay').classList.remove('open') }
+
+// ── RUN ─────────────────────────────────────────────────
+async function run(){
+  const input=document.getElementById('mainIn').value.trim()
+  const ctx=document.getElementById('ctxIn').value.trim()
+  if(!input){ toast('Skriv noe først!','err'); return }
+  if(busy) return
+  busy=true; const btn=document.getElementById('runBtn'); btn.disabled=true
+  document.getElementById('runLbl').innerHTML='<span class="spin"></span>'
+  setLed('busy','PROSESSERER...')
+  const out=document.getElementById('outZone'); document.getElementById('emptyEl')?.remove()
+  const proj=getActiveProject(); const model=document.getElementById('modelSel')?.value||'claude-sonnet-4-20250514'
+  out.innerHTML=`<div class="thinking"><div class="ldots"><div class="ldot"></div><div class="ldot"></div><div class="ldot"></div></div>// ${proj?.name?.toUpperCase()||'AGENT'} · GENERERER...</div>`
+  try {
+    const data=await req('/generate',{method:'POST',body:JSON.stringify({input,context:ctx,mode,tone,platforms,project_id:activeProjectId,model,save:mode==='post'})})
+    const toks=data.tokens||0; totalTokens+=toks
+    document.getElementById('stokens').textContent=`${totalTokens.toLocaleString('no')} TOKENS · ${toks} SISTE`
+    let html=''
+    if(mode==='post'&&data.posts?.length){ html=data.posts.map(p=>mkCard(p.platform,p.content,p.id)).join(''); lastPostContent=data.posts[0]?.content||input; lastPostId=data.posts[0]?.id||null }
+    else{ html=mkCard('—',data.text,null,`▶ ${MNAMES[mode]||'RESULTAT'}`); lastPostContent=data.text }
+    out.innerHTML=html; addHist(input,html); setLed('ok',`FERDIG · ${toks} TOKENS`)
+    await saveCtxSilent(); loadUsage()
+    if(data.upgrade){ toast(data.error+' — Oppgrader plan','err'); setTimeout(()=>{ showView('settings'); goToBilling() },2000) }
+  } catch(e){
+    if(e.message.includes('Plan-grense')){ out.innerHTML=`<div style="padding:14px;border:1px solid var(--b2);border-radius:var(--r);font-size:12px;color:var(--warn)">${e.message}<br><br><button class="upgrade-btn" onclick="showView('settings');goToBilling()">OPPGRADER PLAN →</button></div>` }
+    else{ out.innerHTML=`<div class="rcard"><div class="rcard-body" style="color:var(--hot)">// FEIL: ${esc(e.message)}</div></div>` }
+    setLed('err','FEIL')
+  } finally{ busy=false; btn.disabled=false; document.getElementById('runLbl').textContent='EXECUTE' }
+}
+
+function mkCard(platform,content,postId,customTitle){
+  const id='c'+Math.random().toString(36).slice(2)
+  const icon=PICONS[platform]||'▶'; const title=customTitle||`${icon} ${platform.toUpperCase()}`
+  const sc=JSON.stringify(content),si=JSON.stringify(postId||''),sp=JSON.stringify(platform)
+  return `<div class="rcard"><div class="rcard-hdr"><div class="rcard-plat">${title}</div><span class="rcard-chars">${content.length} TEGN</span><div class="rcard-acts"><button class="rcard-btn" id="cp${id}" onclick="cpText('cp${id}',${sc})">KOPIER</button>${postId?`<button class="rcard-btn" id="q${id}" onclick="addToQueue('q${id}',${sp},${sc},${si})">+ KØ</button>`:''}</div></div><div class="rcard-body">${esc(content)}</div></div>`
+}
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--tx)">$1</strong>') }
+function cpText(id,text){ navigator.clipboard.writeText(text).then(()=>{ const b=document.getElementById(id); if(!b) return; b.textContent='OK ✓'; b.classList.add('ok'); setTimeout(()=>{b.textContent='KOPIER';b.classList.remove('ok')},2000) }) }
+
+// ── QUEUE ────────────────────────────────────────────────
+function addToQueue(btnId,platform,content,postId){ const proj=getActiveProject(); const item={id:postId||('l_'+Date.now()),platform,content,status:'draft',project:proj?.name||'',projectColor:proj?.color||'#5555ff',postId}; queue.push(item); renderQueue(); showRtab('queue'); const b=document.getElementById(btnId); if(b){b.textContent='I KØ';b.classList.add('q-ok')}; toast(`Lagt til (${queue.length})`,'info') }
+function renderQueue(){
+  const list=document.getElementById('qList'),footer=document.getElementById('qFooter'),bulk=document.getElementById('qBulkBar')
+  footer.style.display=queue.length?'':'none'; bulk.style.display=selQIds.size?'':'none'
+  if(!queue.length){list.innerHTML='<div class="q-empty">// Innholdskø tom<br>Trykk "+ KØ" for å legge til.</div>';return}
+  document.getElementById('qBulkInfo').textContent=`${selQIds.size} valgt`
+  const stMap={draft:'UTKAST',approved:'GODKJENT',published:'PUBLISERT',failed:'FEILET'}
+  list.innerHTML=queue.map(q=>`<div class="qi ${q.status}${selQIds.has(q.id)?' sel':''}" id="qi_${q.id}"><div class="qi-hdr"><input type="checkbox" class="qi-cb" ${selQIds.has(q.id)?'checked':''} onchange="toggleSel('${q.id}',this.checked)"><span style="width:6px;height:6px;border-radius:50%;background:${q.projectColor};display:inline-block;flex-shrink:0"></span><span class="qi-plat">${PICONS[q.platform]||'▶'} ${q.platform}</span><span class="qi-proj">${q.project}</span><span class="qi-status st-${q.status}">${stMap[q.status]||q.status}</span></div><div class="qi-body" id="qib_${q.id}">${esc(q.content)}</div><div class="qi-foot"><button class="qi-btn" onclick="cpText('qcp_${q.id}',${JSON.stringify(q.content)})" id="qcp_${q.id}">KOPIER</button><button class="qi-btn" onclick="editQI('${q.id}')">REDIGER</button>${q.status==='draft'?`<button class="qi-btn approve" onclick="approveItem('${q.id}')">GODKJENN</button>`:''  }${q.status==='approved'&&q.postId?`<button class="qi-btn publish" onclick="publishItem('${q.id}')">PUBLISER</button>`:''}${q.status==='approved'?`<button class="qi-btn" onclick="openSchedule('${q.id}')">PLANLEGG</button>`:''}<button class="qi-btn del" onclick="removeQueue('${q.id}')">SLETT</button></div></div>`).join('')
+}
+function toggleSel(id,checked){ if(checked) selQIds.add(id); else selQIds.delete(id); renderQueue() }
+function bulkApprove(){ queue.forEach(q=>{if(selQIds.has(q.id)) q.status='approved'}); selQIds.clear(); renderQueue(); toast('Godkjent!','ok') }
+function bulkDelete(){ queue=queue.filter(q=>!selQIds.has(q.id)); selQIds.clear(); renderQueue() }
+function editQI(id){ const item=queue.find(q=>q.id===id); if(!item) return; const body=document.getElementById('qib_'+id); body.outerHTML=`<textarea class="qi-edit" id="qie_${id}">${item.content}</textarea>`; setTimeout(()=>{ const ta=document.getElementById('qie_'+id); if(!ta) return; ta.focus(); ta.addEventListener('blur',()=>{ item.content=ta.value; renderQueue() }) },50) }
+function approveItem(id){ const i=queue.find(q=>q.id===id); if(i){i.status='approved';renderQueue()} }
+function approveAll(){ queue.forEach(q=>{if(q.status==='draft')q.status='approved'}); renderQueue(); toast('Alle godkjent!','ok') }
+function removeQueue(id){ queue=queue.filter(q=>q.id!==id); selQIds.delete(id); renderQueue() }
+async function publishItem(id){ const item=queue.find(q=>q.id===id); if(!item?.postId){toast('Ingen post-ID','err');return}; setLed('busy','PUBLISERER...'); try{ await req(`/publish/${item.postId}`,{method:'POST'}); item.status='published'; renderQueue(); toast(`Publisert til ${item.platform}!`,'ok'); setLed('ok','PUBLISERT') }catch(e){ item.status='failed'; renderQueue(); toast('Feil: '+e.message,'err'); setLed('err','FEIL') } }
+async function publishApproved(){ const approved=queue.filter(q=>q.status==='approved'&&q.postId); if(!approved.length){toast('Ingen godkjente med ID','err');return}; for(const item of approved) await publishItem(item.id) }
+function exportQueue(){ const txt=queue.map(q=>`=== ${q.project} · ${q.platform} · ${q.status.toUpperCase()} ===\n${q.content}`).join('\n\n---\n\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'})); a.download=`geirx_${new Date().toISOString().slice(0,10)}.txt`; a.click(); toast(`Eksporterte ${queue.length}`,'ok') }
+
+// ── IMAGE GEN ────────────────────────────────────────────
+async function autoPrompt(){ if(!lastPostContent){toast('Generer en post først','err');return}; const btn=document.querySelector('.img-action'); if(btn){btn.textContent='...';btn.disabled=true}; try{ const d=await req('/images/prompt',{method:'POST',body:JSON.stringify({post_content:lastPostContent,platform:platforms[0],project_id:activeProjectId})}); document.getElementById('imgPrompt').value=d.prompt; toast('Auto-prompt klar','ok') }catch(e){toast(e.message,'err')}; if(btn){btn.textContent='AUTO-PROMPT';btn.disabled=false} }
+async function generateImage(){ const prompt=document.getElementById('imgPrompt').value.trim(); if(!prompt){toast('Skriv en beskrivelse','err');return}; const res=document.getElementById('imgResult'),loading=document.getElementById('imgLoading'),actions=document.getElementById('imgActions'),btn=document.getElementById('imgGenBtn'); res.style.display='none'; actions.style.display='none'; loading.style.display='block'; btn.textContent='...'; btn.disabled=true; try{ const d=await req('/images/generate',{method:'POST',body:JSON.stringify({prompt,post_id:lastPostId})}); curImgUrl=d.url; res.src=d.url; res.style.display='block'; actions.style.display='block'; toast(d.source==='unsplash'?'Unsplash-bilde hentet':'Bilde generert!','ok') }catch(e){toast(e.message,'err')}; loading.style.display='none'; btn.textContent='GENERER'; btn.disabled=false }
+function downloadImg(){ if(!curImgUrl) return; const a=document.createElement('a'); a.href=curImgUrl; a.download='geirx-bilde.png'; a.click() }
+function copyImgUrl(){ if(!curImgUrl) return; navigator.clipboard.writeText(curImgUrl).then(()=>toast('URL kopiert','ok')) }
+function attachToQueue(){ if(!curImgUrl||!queue.length){toast('Legg til en post i køen først','err');return}; const last=queue[queue.length-1]; last.imageUrl=curImgUrl; renderQueue(); toast('Bilde lagt på siste post','ok') }
+
+// ── HISTORY ─────────────────────────────────────────────
+function addHist(topic,html){ const proj=getActiveProject(); localHistory.unshift({topic:topic.slice(0,80),mode,tone,project:proj?.name||'',projectColor:proj?.color||'#5555ff',time:new Date().toLocaleTimeString('no-NO',{hour:'2-digit',minute:'2-digit'}),html}); if(localHistory.length>80) localHistory.pop(); localStorage.setItem('gx4_hist',JSON.stringify(localHistory)); renderHistory() }
+function renderHistory(){ renderHistoryItems(localHistory) }
+function renderHistoryItems(items){ const list=document.getElementById('histList'); if(!list) return; if(!items.length){list.innerHTML='<div class="q-empty" style="padding:20px">// Ingen historikk</div>';return}; list.innerHTML=items.map((h,i)=>`<div class="hist-item" onclick="loadHist(${localHistory.indexOf(h)})"><div class="hist-proj" style="color:${h.projectColor||'var(--ac)'}">◆ ${h.project||'—'}</div><div class="hist-topic">${esc(h.topic)}</div><div class="hist-meta">${h.mode} · ${h.tone} · ${h.time}</div></div>`).join('') }
+function filterHistory(q){ if(!q.trim()){renderHistory();return}; const f=localHistory.filter(h=>h.topic.toLowerCase().includes(q.toLowerCase())||(h.project||'').toLowerCase().includes(q.toLowerCase())); renderHistoryItems(f) }
+function loadHist(i){ const h=localHistory[i]; if(!h) return; document.getElementById('mainIn').value=h.topic; onInput(); const out=document.getElementById('outZone'); document.getElementById('emptyEl')?.remove(); out.innerHTML=h.html; showView('generate') }
+
+// ── CONNECTIONS ─────────────────────────────────────────
+async function loadConnections(){ const list=document.getElementById('connList'); if(!list) return; try{ const r=await req('/oauth'); const conns=r.connections||[]; const isConn=p=>conns.some(c=>c.platform===p); const getConn=p=>conns.find(c=>c.platform===p); const exp=conn=>{ if(!conn?.expires_at) return ''; const days=Math.round((new Date(conn.expires_at)-Date.now())/86400000); if(days<0) return `<div class="conn-exp exp-err">Token utløpt</div>`; if(days<7) return `<div class="conn-exp exp-warn">Utløper om ${days} dager</div>`; return `<div class="conn-exp exp-ok">Utløper om ${days} dager</div>` }; list.innerHTML=[{id:'linkedin',name:'LinkedIn',icon:'💼'},{id:'instagram',name:'Instagram',icon:'📸'},{id:'twitter',name:'Twitter/X',icon:'🐦'},{id:'facebook',name:'Facebook',icon:'📘'}].map(p=>{ const on=isConn(p.id),conn=getConn(p.id); return `<div class="conn-item"><div class="conn-icon">${p.icon}</div><div class="conn-info"><div class="conn-name">${p.name}</div><div class="conn-user">${on?'✓ @'+conn.platform_username:'Ikke tilkoblet'}</div>${on?exp(conn):''}</div>${on?`<button class="conn-btn connected" onclick="disconnect('${p.id}')">FRA</button>`:`<button class="conn-btn" onclick="connectP('${p.id}')">KOBLE</button>`}</div>` }).join('') }catch(e){list.innerHTML=`<div class="q-empty">Feil: ${e.message}</div>`} }
+async function connectP(p){ try{ const r=await req(`/oauth/${p}`); window.location.href=r.url }catch(e){toast(e.message,'err')} }
+async function disconnect(p){ if(!confirm(`Koble fra ${p}?`)) return; await req(`/oauth/${p}`,{method:'DELETE'}); loadConnections(); toast('Frakoblet','ok') }
+
+// ── CALENDAR ────────────────────────────────────────────
+function renderCalendar(){ const MONTHS=['Januar','Februar','Mars','April','Mai','Juni','Juli','August','September','Oktober','November','Desember'],DAYS=['MA','TI','ON','TO','FR','LØ','SØ']; document.getElementById('calMonth').textContent=`${MONTHS[calMonth_]} ${calYear}`; const first=new Date(calYear,calMonth_,1); let sd=first.getDay()-1; if(sd<0) sd=6; const dim=new Date(calYear,calMonth_+1,0).getDate(),dip=new Date(calYear,calMonth_,0).getDate(),today=new Date(); const grid=document.getElementById('calGrid'); grid.innerHTML=DAYS.map(d=>`<div class="cal-day-name">${d}</div>`).join(''); for(let i=sd-1;i>=0;i--) grid.innerHTML+=`<div class="cal-day other-month"><div class="cal-day-num">${dip-i}</div></div>`; for(let d=1;d<=dim;d++){ const it=d===today.getDate()&&calMonth_===today.getMonth()&&calYear===today.getFullYear(); grid.innerHTML+=`<div class="cal-day ${it?'today':''}" id="cal_${d}"><div class="cal-day-num">${d}</div></div>` }; loadCalPosts() }
+async function loadCalPosts(){ try{ const from=new Date(calYear,calMonth_,1).toISOString(),to=new Date(calYear,calMonth_+1,0,23,59).toISOString(); const r=await req(`/posts?from=${from}&to=${to}&limit=200`); (r.posts||[]).forEach(p=>{ if(!p.scheduled_at) return; const d=new Date(p.scheduled_at).getDate(); const el=document.getElementById('cal_'+d); if(!el) return; const proj=projects.find(x=>x.id===p.project_id); const dot=document.createElement('div'); dot.className='cal-dot'; dot.style.background=proj?.color||'#5555ff'; dot.title=p.content.slice(0,60); dot.textContent=(PICONS[p.platform]||'▶')+' '+p.platform; el.appendChild(dot) }) }catch{} }
+function calPrev(){ calMonth_--; if(calMonth_<0){calMonth_=11;calYear--}; renderCalendar() }
+function calNext(){ calMonth_++; if(calMonth_>11){calMonth_=0;calYear++}; renderCalendar() }
+
+// ── STATS ────────────────────────────────────────────────
+async function loadStats(){ try{ const s=await req('/stats'); document.getElementById('statsGrid').innerHTML=[{lbl:'Generert',val:s.total,sub:'poster totalt',cls:''},{lbl:'Publisert',val:s.published,sub:'på sosiale medier',cls:'ok'},{lbl:'Klar',val:s.approved,sub:'godkjente poster',cls:'ac'},{lbl:'Feilet',val:s.failed||0,sub:'ikke publisert',cls:'hot'},{lbl:'Denne uken',val:s.this_week,sub:'nye poster',cls:''},{lbl:'Tokens',val:(s.tokens||0).toLocaleString('no'),sub:`${s.generation_calls||0} genereringer`,cls:''},].map(x=>`<div class="stat-card"><div class="stat-lbl">${x.lbl}</div><div class="stat-val ${x.cls}">${x.val||0}</div><div class="stat-sub">${x.sub}</div></div>`).join(''); const maxP=Math.max(1,...(s.by_platform||[]).map(x=>+x.count)); document.getElementById('platBar').innerHTML=(s.by_platform||[]).map(x=>`<div class="plat-row"><div class="plat-name">${PICONS[x.platform]||'▶'} ${x.platform}</div><div class="plat-track"><div class="plat-fill" style="width:${Math.round(+x.count/maxP*100)}%"></div></div><div class="plat-count">${x.count}</div></div>`).join(''); document.getElementById('recentPosts').innerHTML=(s.recent||[]).map(p=>`<div class="recent-post">${PICONS[p.platform]||'▶'} ${p.content.slice(0,80)}...<div class="recent-meta">${p.platform} · ${new Date(p.published_at).toLocaleDateString('no-NO')}</div></div>`).join('') }catch(e){document.getElementById('statsGrid').innerHTML=`<div style="color:var(--hot);grid-column:1/-1;text-align:center;padding:14px">${e.message}</div>`} }
+
+// ── SETTINGS ────────────────────────────────────────────
+async function loadSettingsData(){ try{ const u=await req('/auth/me'); user=u; loadUserSettings() }catch{}; renderSettingsProjects() }
+function updateBillingCard(){
+  if(!user) return
+  const n=document.getElementById('billingPlanName'); const s=document.getElementById('billingPlanStatus'); const c=document.getElementById('cancelBtn')
+  if(n) n.textContent=user.plan==='free'?'Gratis':(user.plan||'Gratis')
+  const planColors={free:'color:var(--mu)',starter:'color:var(--ac2)',pro:'color:var(--ok)',business:'color:var(--gold)'}
+  if(n) n.style.cssText=planColors[user.plan]||''
+  if(s){
+    if(user.is_trialing) s.textContent=`Prøveperiode — ${user.trial_days_left} dager igjen`
+    else if(user.plan_status==='cancelling') s.textContent='Avsluttes ved periodeslutt'
+    else if(user.plan!=='free') s.textContent='Aktivt abonnement'
+    else s.textContent='Gratis plan (10 poster/mnd)'
+  }
+  if(c) c.style.display=user.plan!=='free'&&user.plan_status!=='cancelling'?'':'none'
+}
+async function saveProfile(){ const name=document.getElementById('settName').value.trim(); await req('/auth/me',{method:'PATCH',body:JSON.stringify({name})}); if(user) user.name=name; toast('Profil lagret','ok') }
+async function changePassword(){ const current=document.getElementById('curPass').value,newPassword=document.getElementById('newPass').value; if(!current||!newPassword){toast('Fyll inn begge feltene','err');return}; if(newPassword.length<8){toast('Min 8 tegn','err');return}; try{ await req('/auth/change-password',{method:'POST',body:JSON.stringify({current,newPassword})}); document.getElementById('curPass').value=''; document.getElementById('newPass').value=''; toast('Passord endret!','ok') }catch(e){toast(e.message,'err')} }
+async function saveNotify(){ const np=document.getElementById('notifyPending')?.checked,npu=document.getElementById('notifyPublished')?.checked,nw=document.getElementById('notifyWeekly')?.checked; await req('/auth/me',{method:'PATCH',body:JSON.stringify({notify_pending:np,notify_published:npu,notify_weekly:nw})}) }
+function saveModel(){ const v=document.getElementById('modelSel').value; localStorage.setItem('gx4_model',v); const l=v==='gpt-4o'?'GPT-4O':v==='gpt-4o-mini'?'GPT-4O MINI':v.includes('opus')?'OPUS 4.5':v.includes('haiku')?'HAIKU 4.5':'SONNET 4.5'; document.getElementById('smodel').textContent=l; toast(`Modell: ${l}`,'info') }
+function renderSettingsProjects(){ const list=document.getElementById('settingsProjList'); if(!list) return; list.innerHTML=projects.map(p=>`<div class="proj-card-s"><div class="proj-dot-s" style="background:${p.color}"></div><div class="proj-name-s">${p.name}</div><button class="proj-btn-s" onclick="openEditProj('${p.id}')">REDIGER</button><button class="proj-btn-s danger" onclick="deleteProject('${p.id}','${p.name}')">SLETT</button></div>`).join('') }
+
+// ── BILLING ──────────────────────────────────────────────
+async function goToBilling(){ const plan=user?.plan==='free'?'pro':null; if(plan){ try{ const r=await req('/billing/checkout',{method:'POST',body:JSON.stringify({plan})}); window.location.href=r.url }catch(e){toast(e.message,'err')} } }
+async function managePortal(){ try{ const r=await req('/billing/portal',{method:'POST'}); window.location.href=r.url }catch(e){toast(e.message,'err')} }
+async function cancelPlan(){ if(!confirm('Er du sikker? Abonnementet avsluttes ved periodeslutt.')) return; try{ await req('/billing/cancel',{method:'POST'}); if(user) user.plan_status='cancelling'; updateBillingCard(); toast('Abonnement avsluttet ved periodeslutt','ok') }catch(e){toast(e.message,'err')} }
+
+// ── PROJECTS MODALS ──────────────────────────────────────
+function openAddProj(){ document.getElementById('mpName').value=''; document.getElementById('mpUrl').value=''; document.getElementById('mpCtx').value=''; document.getElementById('addProjModal').style.display='flex' }
+function openEditProj(id){ const p=projects.find(x=>x.id===id); if(!p) return; document.getElementById('editProjId').value=id; document.getElementById('editProjName').value=p.name; document.getElementById('editProjCtx').value=p.context||''; document.getElementById('editProjModal').style.display='flex' }
+async function saveEditProject(){ const id=document.getElementById('editProjId').value; const name=document.getElementById('editProjName').value.trim(); const context=document.getElementById('editProjCtx').value; if(!name){toast('Skriv inn navn','err');return}; await req(`/projects/${id}`,{method:'PATCH',body:JSON.stringify({name,context})}); const p=projects.find(x=>x.id===id); if(p){p.name=name;p.context=context}; buildProjSel(); renderSettingsProjects(); closeModal('editProjModal'); toast('Oppdatert','ok') }
+async function deleteProject(id,name){ if(!confirm(`Slett "${name}"?`)) return; try{ await req(`/projects/${id}`,{method:'DELETE'}); projects=projects.filter(p=>p.id!==id); if(activeProjectId===id) activeProjectId=projects[0]?.id||null; buildProjSel(); renderSettingsProjects(); loadProjectCtx(); toast(`${name} slettet`,'ok') }catch(e){toast(e.message,'err')} }
+async function addProject(){ const name=document.getElementById('mpName').value.trim(); const context=document.getElementById('mpCtx').value.trim(); const website_url=document.getElementById('mpUrl').value.trim(); if(!name){toast('Skriv inn navn','err');return}; try{ const r=await req('/projects',{method:'POST',body:JSON.stringify({name,color:selectedColor,context,website_url:website_url||null})}); projects.push(r.project); buildProjSel(); renderSettingsProjects(); closeModal('addProjModal'); toast(`${name} opprettet!`,'ok') }catch(e){toast(e.message,'err')} }
+function buildColorRow(){ const row=document.getElementById('mpColors'); if(!row) return; row.innerHTML=COLORS.map((c,i)=>`<div class="color-opt ${i===0?'active':''}" style="background:${c}" onclick="pickColor('${c}',this)"></div>`).join('') }
+function pickColor(c,el){ selectedColor=c; document.querySelectorAll('.color-opt').forEach(e=>e.classList.remove('active')); el.classList.add('active') }
+
+// ── SCHEDULE ─────────────────────────────────────────────
+function openSchedule(id){ schedPostId=id; const dt=new Date(); dt.setHours(dt.getHours()+24); document.getElementById('schedTime').value=dt.toISOString().slice(0,16); document.getElementById('schedModal').style.display='flex' }
+async function confirmSchedule(){ const t=document.getElementById('schedTime').value; const item=queue.find(q=>q.id===schedPostId); if(item?.postId){ await req(`/posts/${item.postId}`,{method:'PATCH',body:JSON.stringify({scheduled_at:new Date(t).toISOString(),status:'approved'})}); toast(`Planlagt: ${new Date(t).toLocaleString('no-NO')}`,'ok') }else toast('Lokal post — lagres ikke','info'); closeModal('schedModal') }
+
+// ── UTILS ────────────────────────────────────────────────
+function closeModal(id){ document.getElementById(id).style.display='none' }
+function toast(msg,type){ const t=document.createElement('div'); t.className=`toast ${type}`; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3000) }
+
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='Enter') run()
+  if(e.key==='Escape'){
+    ;['schedModal','addProjModal','editProjModal'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none' })
+    closeMobPanels()
+  }
+})
+
+
+// ── AGENT VIEW ──────────────────────────────────────────────────────────────
+let agentEditId = null
+
+async function loadAgentView() {
+  const list = document.getElementById('agentList')
+  if (!list) return
+  list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--mu2);font-size:11px">Laster...</div>'
+  try {
+    const r = await req('/agent')
+    if (!r.agents.length) {
+      list.innerHTML = `<div style="text-align:center;padding:48px 24px;border:1px dashed var(--b2);border-radius:var(--r)">
+        <div style="font-size:28px;margin-bottom:12px">🤖</div>
+        <div style="font-family:var(--disp);font-size:14px;font-weight:700;margin-bottom:6px">Ingen agenter ennå</div>
+        <div style="font-size:11px;color:var(--mu);margin-bottom:16px;line-height:1.7">En agent kjører automatisk og legger poster i køen din for godkjenning.</div>
+        <button onclick="openNewAgent()" style="padding:9px 20px;background:var(--ac);color:#fff;border:none;border-radius:var(--r);font-size:11px;font-weight:700;cursor:pointer">+ OPPRETT FØRSTE AGENT</button>
+      </div>`
+      return
+    }
+    list.innerHTML = r.agents.map(renderAgentCard).join('')
+  } catch(e) {
+    list.innerHTML = `<div style="color:var(--hot);font-size:11px;padding:16px">${e.message}</div>`
+  }
+}
+
+function renderAgentCard(a) {
+  const freqMap = { daily:'Daglig', '3x_week':'3x per uke', weekly:'Ukentlig', custom:'Egendefinert' }
+  const modeMap = { semi_auto:'Semi-auto (godkjenn før posting)', full_auto:'Fullt autopilot' }
+  const lastRun = a.last_run_at ? new Date(a.last_run_at).toLocaleString('no-NO',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : 'Aldri kjørt'
+  const enabledColor = a.enabled ? 'var(--ok)' : 'var(--mu)'
+  const enabledLabel = a.enabled ? '● AKTIV' : '○ INAKTIV'
+  return `<div style="background:var(--s1);border:1px solid var(--b2);border-radius:var(--r);margin-bottom:10px;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--s2);border-bottom:1px solid var(--b1)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:8px;height:8px;border-radius:50%;background:${a.project_color}"></div>
+        <div style="font-family:var(--disp);font-size:13px;font-weight:700">${a.project_name}</div>
+        <div style="font-size:9px;color:${enabledColor};letter-spacing:.8px">${enabledLabel}</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button onclick="triggerAgentRun('${a.id}','${a.project_name}',this)" style="padding:4px 10px;border-radius:var(--r);border:1px solid var(--b2);background:transparent;color:var(--mu);font-size:9px;cursor:pointer" title="Kjør nå">▶ KJØR NÅ</button>
+        <button onclick="openEditAgent('${a.id}')" style="padding:4px 10px;border-radius:var(--r);border:1px solid var(--b2);background:transparent;color:var(--mu);font-size:9px;cursor:pointer">REDIGER</button>
+        <button onclick="toggleAgent('${a.id}',${!a.enabled})" style="padding:4px 10px;border-radius:var(--r);border:1px solid ${a.enabled?'rgba(255,68,102,.2)':'rgba(34,238,136,.25)'};background:transparent;color:${a.enabled?'var(--hot)':'var(--ok)'};font-size:9px;cursor:pointer">${a.enabled?'DEAKTIVER':'AKTIVER'}</button>
+        <button onclick="deleteAgent('${a.id}','${a.project_name}')" style="padding:4px 10px;border-radius:var(--r);border:1px solid rgba(255,68,102,.2);background:transparent;color:var(--hot);font-size:9px;cursor:pointer">SLETT</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-bottom:1px solid var(--b1)">
+      ${agentStat('FREKVENS', freqMap[a.frequency]||a.frequency)}
+      ${agentStat('MODUS', a.mode==='semi_auto'?'Godkjenn først':'Autopilot')}
+      ${agentStat('PLATTFORMER', (a.platforms||[]).join(', '))}
+      ${agentStat('KJØRETID', 'Kl. '+String(a.run_hour).padStart(2,'0')+':00')}
+    </div>
+    <div style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:10px;color:var(--mu2)">
+        Sist kjørt: <span style="color:var(--mu)">${lastRun}</span>
+        · Totalt kjørt: <span style="color:var(--mu)">${a.run_count||0} ganger</span>
+        ${a.source_url?'· Kilde: <span style="color:var(--ac2)">'+(a.source_url.replace(/https?:\/\//,'').slice(0,30))+'</span>':''}
+      </div>
+      <div id="agent-status-${a.id}" style="font-size:10px;color:var(--mu2)"></div>
+    </div>
+  </div>`
+}
+
+function agentStat(label, value) {
+  return `<div style="padding:8px 12px;border-right:1px solid var(--b1)">
+    <div style="font-size:9px;color:var(--mu2);letter-spacing:.8px;margin-bottom:2px">${label}</div>
+    <div style="font-size:11px;color:var(--tx)">${value||'—'}</div>
+  </div>`
+}
+
+async function triggerAgentRun(id, projectName, btn) {
+  const statusEl = document.getElementById('agent-status-'+id)
+  const orig = btn.textContent
+  btn.textContent = '⏳ KJØRER...'; btn.disabled = true
+  if (statusEl) statusEl.innerHTML = '<span style="color:var(--gold)">⏳ Genererer innhold...</span>'
+  try {
+    const r = await req('/agent/'+id+'/run', {method:'POST'})
+    if (statusEl) statusEl.innerHTML = '<span style="color:var(--ok)">✓ '+r.message+'</span>'
+    toast(r.message, 'ok')
+    // Reload queue if in generate view
+    if (document.getElementById('view-generate').style.display !== 'none') {
+      toast('Sjekk innholdskøen — nye poster venter!', 'info')
+    }
+    setTimeout(() => loadAgentView(), 1500)
+  } catch(e) {
+    if (statusEl) statusEl.innerHTML = '<span style="color:var(--hot)">✗ '+e.message+'</span>'
+    toast('Feil: '+e.message, 'err')
+  } finally {
+    btn.textContent = orig; btn.disabled = false
+  }
+}
+
+async function toggleAgent(id, enable) {
+  await req('/agent/'+id, {method:'PATCH', body:JSON.stringify({enabled:enable})})
+  toast(enable?'Agent aktivert':'Agent deaktivert', 'ok')
+  loadAgentView()
+}
+
+async function deleteAgent(id, name) {
+  if (!confirm('Slett agent for '+name+'?')) return
+  await req('/agent/'+id, {method:'DELETE'})
+  toast(name+' agent slettet', 'ok')
+  loadAgentView()
+}
+
+// ── AGENT MODAL ──────────────────────────────────────────
+function openNewAgent() {
+  agentEditId = null
+  document.getElementById('agentModalTitle').textContent = 'NY AGENT'
+  document.getElementById('agentProjectSel').innerHTML = projects.map(p =>
+    '<option value="'+p.id+'">'+p.name+'</option>'
+  ).join('')
+  resetAgentForm()
+  document.getElementById('agentModal').style.display = 'flex'
+}
+
+async function openEditAgent(id) {
+  agentEditId = id
+  document.getElementById('agentModalTitle').textContent = 'REDIGER AGENT'
+  try {
+    const r = await req('/agent/'+id)
+    const a = r.agent
+    document.getElementById('agentProjectSel').innerHTML = projects.map(p =>
+      '<option value="'+p.id+'"'+(p.id===a.project_id?' selected':'')+'>'+p.name+'</option>'
+    ).join('')
+    document.getElementById('agentProjectSel').disabled = true
+    document.getElementById('agentFreq').value = a.frequency || 'daily'
+    document.getElementById('agentHour').value = a.run_hour ?? 9
+    document.getElementById('agentMode').value = a.mode || 'semi_auto'
+    document.getElementById('agentTone').value = a.tone || 'profesjonell'
+    document.getElementById('agentPostCount').value = a.post_count || 1
+    document.getElementById('agentSourceUrl').value = a.source_url || ''
+    document.getElementById('agentSourceRss').value = a.source_rss || ''
+    document.getElementById('agentTopics').value = (a.topics||[]).join('\n')
+    // Platforms
+    document.querySelectorAll('.agent-plat-cb').forEach(cb => {
+      cb.checked = (a.platforms||[]).includes(cb.value)
+    })
+    document.getElementById('agentModal').style.display = 'flex'
+  } catch(e) { toast(e.message,'err') }
+}
+
+function resetAgentForm() {
+  document.getElementById('agentProjectSel').disabled = false
+  document.getElementById('agentFreq').value = 'daily'
+  document.getElementById('agentHour').value = '9'
+  document.getElementById('agentMode').value = 'semi_auto'
+  document.getElementById('agentTone').value = 'profesjonell'
+  document.getElementById('agentPostCount').value = '1'
+  document.getElementById('agentSourceUrl').value = ''
+  document.getElementById('agentSourceRss').value = ''
+  document.getElementById('agentTopics').value = ''
+  document.querySelectorAll('.agent-plat-cb').forEach(cb => {
+    cb.checked = cb.value === 'LinkedIn'
+  })
+}
+
+async function saveAgent() {
+  const platforms = [...document.querySelectorAll('.agent-plat-cb:checked')].map(cb => cb.value)
+  if (!platforms.length) { toast('Velg minst én plattform','err'); return }
+  const topicsRaw = document.getElementById('agentTopics').value
+  const topics = topicsRaw.split('\\n').map(t=>t.trim()).filter(Boolean)
+  const payload = {
+    project_id: document.getElementById('agentProjectSel').value,
+    platforms,
+    frequency: document.getElementById('agentFreq').value,
+    run_hour: parseInt(document.getElementById('agentHour').value),
+    mode: document.getElementById('agentMode').value,
+    tone: document.getElementById('agentTone').value,
+    post_count: parseInt(document.getElementById('agentPostCount').value),
+    source_url: document.getElementById('agentSourceUrl').value.trim() || null,
+    source_rss: document.getElementById('agentSourceRss').value.trim() || null,
+    topics,
+    enabled: true
+  }
+  try {
+    if (agentEditId) {
+      delete payload.project_id
+      await req('/agent/'+agentEditId, {method:'PATCH', body:JSON.stringify(payload)})
+      toast('Agent oppdatert!', 'ok')
+    } else {
+      await req('/agent', {method:'POST', body:JSON.stringify(payload)})
+      toast('Agent opprettet og aktivert!', 'ok')
+    }
+    closeModal('agentModal')
+    loadAgentView()
+  } catch(e) { toast(e.message,'err') }
+}
+
+
+// ── AGENT VIEW ────────────────────────────────────────────
+
+let agents = []
+let editingAgentId = null
+
+async function loadAgentView() {
+  try {
+    const r = await req('/agent')
+    agents = r.agents || []
+    renderAgentList()
+  } catch(e) { toast(e.message, 'err') }
+}
+
+function renderAgentList() {
+  const el = document.getElementById('agentList')
+  if (!el) return
+
+  if (!agents.length) {
+    el.innerHTML = `
+      <div style="text-align:center;padding:48px 24px;border:1px dashed var(--b2);border-radius:var(--r)">
+        <div style="font-size:28px;margin-bottom:12px">🤖</div>
+        <div style="font-family:var(--disp);font-size:15px;font-weight:700;margin-bottom:6px">Ingen agenter ennå</div>
+        <div style="font-size:11px;color:var(--mu);margin-bottom:20px;line-height:1.7">
+          En AI-agent lager innhold automatisk for prosjektene dine<br>
+          og legger det i godkjenningskøen — du bestemmer hva som postes.
+        </div>
+        <button onclick="openNewAgent()" style="padding:10px 24px;background:var(--ac);color:#fff;border:none;border-radius:var(--r);font-size:11px;font-weight:700;cursor:pointer">OPPRETT FØRSTE AGENT →</button>
+      </div>`
+    return
+  }
+
+  const freqLabel = { daily:'Daglig', '3x_week':'3x per uke', weekly:'Ukentlig', custom:'Egendefinert' }
+  const modeLabel = { semi_auto:'Semi-auto (godkjenn)', full_auto:'Fullt autopilot' }
+  const modeColor = { semi_auto:'var(--ok)', full_auto:'var(--gold)' }
+
+  el.innerHTML = agents.map(a => `
+    <div style="background:var(--s1);border:1px solid ${a.enabled ? 'rgba(34,238,136,.25)' : 'var(--b2)'};border-radius:var(--r);margin-bottom:10px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--s2);border-bottom:1px solid var(--b1)">
+        <div style="width:8px;height:8px;border-radius:50%;background:${a.project_color};flex-shrink:0"></div>
+        <div style="flex:1">
+          <div style="font-family:var(--disp);font-size:13px;font-weight:700">${a.project_name}</div>
+          <div style="font-size:10px;color:var(--mu);margin-top:2px">${(a.platforms||[]).join(' · ')} · ${freqLabel[a.frequency]||a.frequency} kl.${String(a.run_hour).padStart(2,'0')}:00</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:9px;padding:2px 8px;border-radius:999px;background:${a.enabled ? 'rgba(34,238,136,.1)' : 'rgba(255,255,255,.04)'};color:${a.enabled ? 'var(--ok)' : 'var(--mu)'};border:1px solid ${a.enabled ? 'rgba(34,238,136,.2)' : 'var(--b2)'}">${a.enabled ? '● AKTIV' : '○ INAKTIV'}</span>
+          <span style="font-size:9px;padding:2px 8px;border-radius:999px;color:${modeColor[a.mode]};background:rgba(255,255,255,.04);border:1px solid var(--b2)">${modeLabel[a.mode]||a.mode}</span>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--b1)">
+        <div style="padding:10px 14px;border-right:1px solid var(--b1)">
+          <div style="font-size:9px;color:var(--mu2);margin-bottom:3px;letter-spacing:.5px">KJØRINGER</div>
+          <div style="font-size:16px;font-weight:700;font-family:var(--disp)">${a.run_count||0}</div>
+        </div>
+        <div style="padding:10px 14px;border-right:1px solid var(--b1)">
+          <div style="font-size:9px;color:var(--mu2);margin-bottom:3px;letter-spacing:.5px">POSTER/KJØRING</div>
+          <div style="font-size:16px;font-weight:700;font-family:var(--disp)">${a.post_count||1}</div>
+        </div>
+        <div style="padding:10px 14px;border-right:1px solid var(--b1)">
+          <div style="font-size:9px;color:var(--mu2);margin-bottom:3px;letter-spacing:.5px">SIST KJØRT</div>
+          <div style="font-size:11px;color:var(--mu)">${a.last_run_at ? new Date(a.last_run_at).toLocaleDateString('no-NO',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—'}</div>
+        </div>
+        <div style="padding:10px 14px">
+          <div style="font-size:9px;color:var(--mu2);margin-bottom:3px;letter-spacing:.5px">KILDE</div>
+          <div style="font-size:10px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.source_url ? a.source_url.replace(/https?:\/\//,'').slice(0,20)+'...' : a.topics?.length ? a.topics.length+' temaer' : '—'}</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:6px;padding:10px 14px">
+        <button onclick="toggleAgent('${a.id}',${!a.enabled})" style="padding:6px 14px;border-radius:var(--r);border:1px solid ${a.enabled ? 'rgba(255,68,102,.2)' : 'rgba(34,238,136,.3)'};background:transparent;color:${a.enabled ? 'var(--hot)' : 'var(--ok)'};font-size:10px;cursor:pointer;font-family:var(--mono);font-weight:700">${a.enabled ? 'DEAKTIVER' : 'AKTIVER'}</button>
+        <button onclick="runAgentNow('${a.id}','${a.project_name}')" style="padding:6px 14px;border-radius:var(--r);border:1px solid var(--b3);background:var(--acg);color:var(--ac2);font-size:10px;cursor:pointer;font-family:var(--mono);font-weight:700">▶ KJØR NÅ</button>
+        <button onclick="editAgent('${a.id}')" style="padding:6px 14px;border-radius:var(--r);border:1px solid var(--b2);background:transparent;color:var(--mu);font-size:10px;cursor:pointer;font-family:var(--mono)">REDIGER</button>
+        <button onclick="viewAgentHistory('${a.id}','${a.project_name}')" style="padding:6px 14px;border-radius:var(--r);border:1px solid var(--b2);background:transparent;color:var(--mu);font-size:10px;cursor:pointer;font-family:var(--mono)">HISTORIKK</button>
+        <button onclick="deleteAgent('${a.id}','${a.project_name}')" style="padding:6px 14px;border-radius:var(--r);border:1px solid rgba(255,68,102,.15);background:transparent;color:var(--hot);font-size:10px;cursor:pointer;font-family:var(--mono);margin-left:auto">SLETT</button>
+      </div>
+    </div>`).join('')
+}
+
+function openNewAgent() {
+  editingAgentId = null
+  // Pre-select first project without an agent
+  const usedProjectIds = agents.map(a => a.project_id)
+  const freeProject = projects.find(p => !usedProjectIds.includes(p.id))
+  renderAgentModal(freeProject ? { project_id: freeProject.id } : {})
+  document.getElementById('agentModal').style.display = 'flex'
+}
+
+function editAgent(id) {
+  editingAgentId = id
+  const a = agents.find(x => x.id === id)
+  if (!a) return
+  renderAgentModal(a)
+  document.getElementById('agentModal').style.display = 'flex'
+}
+
+function renderAgentModal(a) {
+  const modal = document.getElementById('agentModalContent')
+  const isEdit = !!editingAgentId
+  const usedProjectIds = isEdit ? [] : agents.map(x => x.project_id)
+  const availableProjects = isEdit ? projects : projects.filter(p => !usedProjectIds.includes(p.id))
+
+  if (!availableProjects.length && !isEdit) {
+    toast('Alle prosjekter har allerede en agent', 'info')
+    return
+  }
+
+  const pOpts = availableProjects.map(p =>
+    `<option value="${p.id}" ${a.project_id===p.id?'selected':''}>${p.name}</option>`
+  ).join('')
+
+  const platChecked = pl => (a.platforms||['LinkedIn']).includes(pl)
+
+  modal.innerHTML = `
+    <h3>${isEdit ? 'REDIGER AGENT' : 'NY AI-AGENT'}</h3>
+    <p style="font-size:11px;color:var(--mu);margin-bottom:16px;line-height:1.6">
+      Agenten kjører automatisk og legger innhold i godkjenningskøen din.
+    </p>
+
+    <div class="mf">
+      <label class="ml">PROSJEKT</label>
+      <select class="mi" id="ag-project" style="cursor:pointer" ${isEdit?'disabled':''}>
+        ${pOpts}
+      </select>
+    </div>
+
+    <div class="mf">
+      <label class="ml">PLATTFORMER</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+        ${[['LinkedIn','💼'],['Instagram','📸'],['Twitter/X','🐦'],['Facebook','📘']].map(([p,i]) =>
+          `<label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mu);cursor:pointer">
+            <input type="checkbox" id="ag-plat-${p.replace('/','_')}" ${platChecked(p)?'checked':''} style="accent-color:var(--ac)">
+            ${i} ${p}
+          </label>`
+        ).join('')}
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="mf">
+        <label class="ml">FREKVENS</label>
+        <select class="mi" id="ag-freq" style="cursor:pointer">
+          <option value="daily" ${(a.frequency||'daily')==='daily'?'selected':''}>Daglig</option>
+          <option value="3x_week" ${a.frequency==='3x_week'?'selected':''}>3x per uke (man/ons/fre)</option>
+          <option value="weekly" ${a.frequency==='weekly'?'selected':''}>Ukentlig (mandag)</option>
+        </select>
+      </div>
+      <div class="mf">
+        <label class="ml">TIDSPUNKT (time)</label>
+        <select class="mi" id="ag-hour" style="cursor:pointer">
+          ${[7,8,9,10,11,12,13,14,15,16,17,18,19,20].map(h =>
+            `<option value="${h}" ${(a.run_hour||9)===h?'selected':''}>${String(h).padStart(2,'0')}:00</option>`
+          ).join('')}
+        </select>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="mf">
+        <label class="ml">MODUS</label>
+        <select class="mi" id="ag-mode" style="cursor:pointer">
+          <option value="semi_auto" ${(a.mode||'semi_auto')==='semi_auto'?'selected':''}>Semi-auto — jeg godkjenner</option>
+          <option value="full_auto" ${a.mode==='full_auto'?'selected':''}>Fullt autopilot</option>
+        </select>
+      </div>
+      <div class="mf">
+        <label class="ml">POSTER PER KJØRING</label>
+        <select class="mi" id="ag-count" style="cursor:pointer">
+          ${[1,2,3].map(n => `<option value="${n}" ${(a.post_count||1)===n?'selected':''}>${n} post${n>1?'er':''}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+
+    <div class="mf">
+      <label class="ml">TONE</label>
+      <select class="mi" id="ag-tone" style="cursor:pointer">
+        ${['profesjonell','uformell','engasjerende','teknisk','autoritativ'].map(t =>
+          `<option value="${t}" ${(a.tone||'profesjonell')===t?'selected':''}>${t.charAt(0).toUpperCase()+t.slice(1)}</option>`
+        ).join('')}
+      </select>
+    </div>
+
+    <div class="mf">
+      <label class="ml">KILDE — NETTSIDE (valgfritt)</label>
+      <input class="mi" id="ag-url" placeholder="https://dinbedrift.no" value="${a.source_url||''}">
+      <div style="font-size:9px;color:var(--mu2);margin-top:3px">Agenten analyserer nettsiden for aktuelt innhold</div>
+    </div>
+
+    <div class="mf">
+      <label class="ml">KILDE — RSS-FEED (valgfritt)</label>
+      <input class="mi" id="ag-rss" placeholder="https://example.com/feed.xml" value="${a.source_rss||''}">
+      <div style="font-size:9px;color:var(--mu2);margin-top:3px">Henter siste nyheter fra bransjen</div>
+    </div>
+
+    <div class="mf">
+      <label class="ml">FASTE TEMAER (ett per linje, valgfritt)</label>
+      <textarea class="mi" id="ag-topics" rows="3" style="resize:none;line-height:1.6" placeholder="Investering i Norge
+Startups og vekst
+Fintech trender">${(a.topics||[]).join('\n')}</textarea>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button onclick="closeModal('agentModal')" style="flex:1;padding:9px;border-radius:var(--r);border:1px solid var(--b2);background:transparent;color:var(--mu);font-size:10px;font-weight:700;cursor:pointer;text-transform:uppercase">AVBRYT</button>
+      <button onclick="saveAgent()" style="flex:2;padding:9px;background:var(--ac);color:#fff;border:none;border-radius:var(--r);font-size:10px;font-weight:700;cursor:pointer;text-transform:uppercase">${isEdit ? 'LAGRE ENDRINGER' : 'OPPRETT AGENT'}</button>
+    </div>
+  `
+}
+
+async function saveAgent() {
+  const platforms = ['LinkedIn','Instagram','Twitter/X','Facebook']
+    .filter(p => document.getElementById('ag-plat-'+p.replace('/','_'))?.checked)
+
+  if (!platforms.length) { toast('Velg minst én plattform', 'err'); return }
+
+  const topicsRaw = document.getElementById('ag-topics')?.value || ''
+  const topics = topicsRaw.split('\n').map(t => t.trim()).filter(Boolean)
+
+  const body = {
+    project_id:  document.getElementById('ag-project')?.value,
+    platforms,
+    frequency:   document.getElementById('ag-freq')?.value,
+    run_hour:    parseInt(document.getElementById('ag-hour')?.value),
+    mode:        document.getElementById('ag-mode')?.value,
+    post_count:  parseInt(document.getElementById('ag-count')?.value),
+    tone:        document.getElementById('ag-tone')?.value,
+    source_url:  document.getElementById('ag-url')?.value.trim() || null,
+    source_rss:  document.getElementById('ag-rss')?.value.trim() || null,
+    topics
+  }
+
+  try {
+    let saved
+    if (editingAgentId) {
+      saved = await req('/agent/' + editingAgentId, { method: 'PATCH', body: JSON.stringify(body) })
+      agents = agents.map(a => a.id === editingAgentId ? { ...a, ...saved.agent } : a)
+      toast('Agent oppdatert', 'ok')
+    } else {
+      saved = await req('/agent', { method: 'POST', body: JSON.stringify(body) })
+      await loadAgentView()
+      toast('Agent opprettet! Aktiver den når du er klar.', 'ok')
+    }
+    closeModal('agentModal')
+    renderAgentList()
+  } catch(e) { toast(e.message, 'err') }
+}
+
+async function toggleAgent(id, enabled) {
+  try {
+    await req('/agent/' + id, { method: 'PATCH', body: JSON.stringify({ enabled }) })
+    agents = agents.map(a => a.id === id ? { ...a, enabled } : a)
+    renderAgentList()
+    toast(enabled ? 'Agent aktivert ✓' : 'Agent deaktivert', enabled ? 'ok' : 'info')
+  } catch(e) { toast(e.message, 'err') }
+}
+
+async function runAgentNow(id, name) {
+  toast('Kjører agent for ' + name + '...', 'info')
+  setLed('busy', 'AGENT KJØRER...')
+  try {
+    const r = await req('/agent/' + id + '/run', { method: 'POST' })
+    toast(r.message, 'ok')
+    setLed('ok', 'FERDIG')
+    await loadAgentView()
+    // Switch to queue so user sees the new posts
+    showView('generate')
+    showRtab('queue')
+    toast('Sjekk innholdskøen — nye poster venter!', 'info')
+  } catch(e) {
+    toast('Feil: ' + e.message, 'err')
+    setLed('err', 'FEIL')
+  }
+}
+
+async function viewAgentHistory(id, name) {
+  try {
+    const r = await req('/agent/' + id + '/history')
+    const runs = r.runs || []
+    const el = document.getElementById('agentList')
+
+    const statusColor = { completed: 'var(--ok)', failed: 'var(--hot)', running: 'var(--gold)' }
+    const statusIcon  = { completed: '✓', failed: '✗', running: '...' }
+
+    el.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <button onclick="renderAgentList()" style="padding:6px 12px;border-radius:var(--r);border:1px solid var(--b2);background:transparent;color:var(--mu);font-size:10px;cursor:pointer">← TILBAKE</button>
+        <div style="font-family:var(--disp);font-size:13px;font-weight:700">Historikk — ${name}</div>
+      </div>
+      ${!runs.length
+        ? '<div style="text-align:center;padding:32px;color:var(--mu2);font-size:11px">Ingen kjøringer ennå</div>'
+        : runs.map(run => `
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--b1);border-radius:var(--r);background:var(--s2);margin-bottom:5px">
+            <span style="font-size:12px;color:${statusColor[run.status]||'var(--mu)'}">${statusIcon[run.status]||'?'}</span>
+            <div style="flex:1">
+              <div style="font-size:11px;color:var(--tx)">${run.message || run.status}</div>
+              <div style="font-size:9px;color:var(--mu2);margin-top:2px">${new Date(run.started_at).toLocaleString('no-NO')} · ${run.duration_seconds ? run.duration_seconds+'s' : '—'}</div>
+              ${run.error ? `<div style="font-size:9px;color:var(--hot);margin-top:2px">${run.error}</div>` : ''}
+            </div>
+            <span style="font-size:11px;font-weight:700;color:${run.posts_created>0?'var(--ok)':'var(--mu2)'}">${run.posts_created||0} poster</span>
+          </div>`
+        ).join('')}
+    `
+  } catch(e) { toast(e.message, 'err') }
+}
+
+async function deleteAgent(id, name) {
+  if (!confirm(`Slett agenten for ${name}?`)) return
+  await req('/agent/' + id, { method: 'DELETE' })
+  agents = agents.filter(a => a.id !== id)
+  renderAgentList()
+  toast(`Agent for ${name} slettet`, 'ok')
+}
+
+// ── START ─────────────────────────────────────────────────
+const urlParams=new URLSearchParams(window.location.search)
+if(urlParams.get('upgraded')){ setTimeout(()=>toast('Plan oppgradert!','ok'),500) }
+tryAutoLogin()
+</script>
+
+<!-- AGENT MODAL -->
+<div class="modal-bg" id="agentModal" style="display:none" onclick="if(event.target===this)closeModal('agentModal')">
+  <div class="modal" style="width:480px;max-height:88vh;overflow-y:auto">
+    <h3 id="agentModalTitle">NY AGENT</h3>
+    <p>Agenten kjører automatisk og legger innhold i godkjenningskøen</p>
+
+    <div class="mf">
+      <label class="ml">PROSJEKT</label>
+      <select class="mi" id="agentProjectSel" style="cursor:pointer"></select>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="mf">
+        <label class="ml">FREKVENS</label>
+        <select class="mi" id="agentFreq" style="cursor:pointer">
+          <option value="daily">Daglig</option>
+          <option value="3x_week">3x per uke (man/ons/fre)</option>
+          <option value="weekly">Ukentlig (mandag)</option>
+        </select>
+      </div>
+      <div class="mf">
+        <label class="ml">KJØRETIDSPUNKT</label>
+        <select class="mi" id="agentHour" style="cursor:pointer">
+          <option value="7">Kl. 07:00</option>
+          <option value="8">Kl. 08:00</option>
+          <option value="9" selected>Kl. 09:00</option>
+          <option value="10">Kl. 10:00</option>
+          <option value="12">Kl. 12:00</option>
+          <option value="14">Kl. 14:00</option>
+          <option value="16">Kl. 16:00</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="mf">
+        <label class="ml">MODUS</label>
+        <select class="mi" id="agentMode" style="cursor:pointer">
+          <option value="semi_auto">Semi-auto (jeg godkjenner)</option>
+          <option value="full_auto">Fullt autopilot</option>
+        </select>
+      </div>
+      <div class="mf">
+        <label class="ml">POSTER PER KJØRING</label>
+        <select class="mi" id="agentPostCount" style="cursor:pointer">
+          <option value="1">1 post per plattform</option>
+          <option value="2">2 poster per plattform</option>
+          <option value="3">3 poster per plattform</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mf">
+      <label class="ml">TONE</label>
+      <select class="mi" id="agentTone" style="cursor:pointer">
+        <option value="profesjonell">Profesjonell</option>
+        <option value="uformell">Uformell</option>
+        <option value="engasjerende">Engasjerende</option>
+        <option value="autoritativ">Autoritativ</option>
+        <option value="humoristisk">Humoristisk</option>
+      </select>
+    </div>
+
+    <div class="mf">
+      <label class="ml">PLATTFORMER</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px">
+        <label style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--mu);cursor:pointer;padding:6px 8px;border:1px solid var(--b2);border-radius:var(--r)">
+          <input type="checkbox" class="agent-plat-cb" value="LinkedIn" checked style="accent-color:var(--ac)"> 💼 LinkedIn
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--mu);cursor:pointer;padding:6px 8px;border:1px solid var(--b2);border-radius:var(--r)">
+          <input type="checkbox" class="agent-plat-cb" value="Instagram" style="accent-color:var(--ac)"> 📸 Instagram
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--mu);cursor:pointer;padding:6px 8px;border:1px solid var(--b2);border-radius:var(--r)">
+          <input type="checkbox" class="agent-plat-cb" value="Twitter/X" style="accent-color:var(--ac)"> 🐦 Twitter/X
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--mu);cursor:pointer;padding:6px 8px;border:1px solid var(--b2);border-radius:var(--r)">
+          <input type="checkbox" class="agent-plat-cb" value="Facebook" style="accent-color:var(--ac)"> 📘 Facebook
+        </label>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid var(--b1);margin:14px 0 12px;padding-top:12px">
+      <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--mu2);margin-bottom:10px">INNHOLDSKILDER (valgfritt)</div>
+      <div class="mf">
+        <label class="ml">NETTSIDE Å ANALYSERE</label>
+        <input class="mi" id="agentSourceUrl" placeholder="https://startfunder.no — agenten henter aktuelt innhold">
+      </div>
+      <div class="mf">
+        <label class="ml">RSS-FEED</label>
+        <input class="mi" id="agentSourceRss" placeholder="https://e24.no/feed/ — henter nyheter fra bransjen">
+      </div>
+      <div class="mf">
+        <label class="ml">FORHÅNDSDEFINERTE TEMAER (ett per linje)</label>
+        <textarea class="mi" id="agentTopics" rows="3" style="resize:none;line-height:1.6" placeholder="Investeringstips 2026&#10;Crowdlending vs aksjer&#10;Finanstilsynet-nyheter"></textarea>
+      </div>
+    </div>
+
+    <div style="background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:10px 12px;font-size:10px;color:var(--mu);line-height:1.7;margin-bottom:14px">
+      💡 <strong style="color:var(--tx)">Slik fungerer det:</strong> Agenten kjører automatisk på valgt tidspunkt, analyserer kildene dine, og bruker Claude til å lage plattform-tilpasset innhold. Postene legges i godkjenningskøen — du godkjenner med ett klikk.
+    </div>
+
+    <div class="modal-foot">
+      <button class="modal-btn" onclick="closeModal('agentModal')">AVBRYT</button>
+      <button class="modal-btn primary" onclick="saveAgent()">LAGRE AGENT</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
