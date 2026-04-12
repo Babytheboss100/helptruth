@@ -615,5 +615,9 @@ function setLang(lang) {
 }
 </script>
 
+<!-- Page view tracking -->
+<img src="https://helptruth-backend.onrender.com/api/t?p=/&r=" style="position:absolute;width:1px;height:1px;opacity:0" alt="">
+<script>document.querySelector('img[src*="/api/t"]').src="https://helptruth-backend.onrender.com/api/t?p="+encodeURIComponent(location.pathname)+"&r="+encodeURIComponent(document.referrer)</script>
+
 </body>
 </html>

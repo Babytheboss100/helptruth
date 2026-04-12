@@ -68,7 +68,8 @@ td{padding:10px 8px;border-bottom:1px solid #F1F5F9}
     <span class="refresh" id="lastRefresh"></span>
   </div>
 
-  <div class="cards">
+  <div class="cards" style="grid-template-columns:repeat(5,1fr)">
+    <div class="card blue"><div class="label">Sidevisninger i dag</div><div class="num" id="viewsToday">-</div><div class="sub"><span id="viewsWeek">-</span> denne uken / <span id="uniqueWeek">-</span> unike</div></div>
     <div class="card"><div class="label">Totalt brukere</div><div class="num" id="totalUsers">-</div></div>
     <div class="card blue"><div class="label">Innlogginger i dag</div><div class="num" id="loginsToday">-</div><div class="sub"><span id="loginsWeek">-</span> denne uken / <span id="loginsMonth">-</span> denne mnd</div></div>
     <div class="card red"><div class="label">Mislykkede i dag</div><div class="num" id="failsToday">-</div></div>
@@ -118,6 +119,15 @@ async function fetchStats() {
     const d = await res.json();
 
     document.getElementById('totalUsers').textContent = d.totalUsers;
+
+    // Fetch page views
+    try {
+      var vr = await fetch(API.replace('/api','') + '/api/views');
+      var vd = await vr.json();
+      document.getElementById('viewsToday').textContent = vd.today || 0;
+      document.getElementById('viewsWeek').textContent = vd.week || 0;
+      document.getElementById('uniqueWeek').textContent = vd.unique_week || 0;
+    } catch(e) {}
     document.getElementById('loginsToday').textContent = d.loginsToday;
     document.getElementById('loginsWeek').textContent = d.loginsWeek;
     document.getElementById('loginsMonth').textContent = d.loginsMonth;

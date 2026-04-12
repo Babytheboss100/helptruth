@@ -70,6 +70,31 @@ app.use("/api/notifications", require("./routes/notifications"));
 app.use("/api/search",        require("./routes/search"));
 app.use("/api/admin",         require("./routes/admin"));
 
+// Sidevisning-tracking (1x1 pixel)
+const pool = require("./db/pool");
+app.get("/api/t", (req, res) => {
+  const ip = (req.headers["x-forwarded-for"] || req.socket.remoteAddress || "").split(",")[0].trim();
+  const ua = req.headers["user-agent"] || "";
+  const page = req.query.p || "/";
+  const referrer = req.query.r || "";
+  pool.query("INSERT INTO page_views (page, ip, user_agent, referrer) VALUES ($1, $2, $3, $4)", [page, ip, ua, referrer])
+    .catch(err => console.error("PV error:", err.message));
+  res.set("Cache-Control", "no-cache, no-store");
+  res.set("Content-Type", "image/gif");
+  res.send(Buffer.from("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7", "base64"));
+});
+
+// Sidevisning-stats
+app.get("/api/views", (req, res) => {
+  pool.query(`
+    SELECT
+      (SELECT COUNT(*) FROM page_views) as total,
+      (SELECT COUNT(*) FROM page_views WHERE created_at > NOW() - INTERVAL '1 day') as today,
+      (SELECT COUNT(*) FROM page_views WHERE created_at > NOW() - INTERVAL '7 days') as week,
+      (SELECT COUNT(DISTINCT ip) FROM page_views WHERE created_at > NOW() - INTERVAL '7 days') as unique_week
+  `).then(r => res.json(r.rows[0])).catch(() => res.json({}));
+});
+
 // Helsesjekk
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "HelpTruth API v2", timestamp: new Date().toISOString() });
