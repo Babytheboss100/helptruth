@@ -552,33 +552,33 @@ function setLang(lang) {
   document.querySelectorAll('.lang-option').forEach(el => { if(el.getAttribute('onclick') === "setLang('" + lang + "')") el.classList.add('active'); });
   document.getElementById('langDropdown').classList.remove('open');
 
-  // Apply translations
-  document.getElementById('t-nav-login').textContent = t.nav_login;
-  document.getElementById('t-nav-join').textContent = t.nav_join;
-  document.getElementById('t-hero-h1-1').textContent = t.hero_h1_1;
-  document.getElementById('t-hero-h1-2').textContent = t.hero_h1_2;
-  document.getElementById('t-hero-sub').textContent = t.hero_sub;
-  document.getElementById('t-btn-register').textContent = t.btn_register;
-  document.getElementById('t-btn-login').textContent = t.btn_login;
-  document.getElementById('t-stat1-num').textContent = t.stat1_num;
-  document.getElementById('t-stat1-lbl').textContent = t.stat1_lbl;
-  document.getElementById('t-stat2-num').textContent = t.stat2_num;
-  document.getElementById('t-stat2-lbl').textContent = t.stat2_lbl;
-  document.getElementById('t-stat3-num').textContent = t.stat3_num;
-  document.getElementById('t-stat3-lbl').textContent = t.stat3_lbl;
-  document.getElementById('t-how-title').textContent = t.how_title;
-  document.getElementById('t-how-sub').textContent = t.how_sub;
-  document.getElementById('t-card1-title').textContent = t.card1_title;
-  document.getElementById('t-card1-text').textContent = t.card1_text;
-  document.getElementById('t-card2-title').textContent = t.card2_title;
-  document.getElementById('t-card2-text').textContent = t.card2_text;
-  document.getElementById('t-card3-title').textContent = t.card3_title;
-  document.getElementById('t-card3-text').textContent = t.card3_text;
-  document.getElementById('t-cta-title').textContent = t.cta_title;
-  document.getElementById('t-cta-sub').textContent = t.cta_sub;
-  document.getElementById('t-cta-btn1').textContent = t.cta_btn1;
-  document.getElementById('t-cta-btn2').textContent = t.cta_btn2;
-  document.getElementById('t-footer').textContent = t.footer;
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  set('t-nav-login', t.nav_login);
+  set('t-nav-join', t.nav_join);
+  set('t-hero-h1-1', t.hero_h1_1);
+  set('t-hero-h1-2', t.hero_h1_2);
+  set('t-hero-sub', t.hero_sub);
+  set('t-btn-register', t.btn_register);
+  set('t-btn-login', t.btn_login);
+  set('t-stat1-num', t.stat1_num);
+  set('t-stat1-lbl', t.stat1_lbl);
+  set('t-stat2-num', t.stat2_num);
+  set('t-stat2-lbl', t.stat2_lbl);
+  set('t-stat3-num', t.stat3_num);
+  set('t-stat3-lbl', t.stat3_lbl);
+  set('t-how-title', t.how_title);
+  set('t-how-sub', t.how_sub);
+  set('t-card1-title', t.card1_title);
+  set('t-card1-text', t.card1_text);
+  set('t-card2-title', t.card2_title);
+  set('t-card2-text', t.card2_text);
+  set('t-card3-title', t.card3_title);
+  set('t-card3-text', t.card3_text);
+  set('t-cta-title', t.cta_title);
+  set('t-cta-sub', t.cta_sub);
+  set('t-cta-btn1', t.cta_btn1);
+  set('t-cta-btn2', t.cta_btn2);
+  set('t-footer', t.footer);
 }
 </script>
 
