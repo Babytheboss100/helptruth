@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HelpTruth — Opprett konto</title>
+<title>HelpTruth — Logg inn</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -84,53 +84,40 @@ body{
 </a>
 
 <div class="card">
-  <h1>Opprett konto</h1>
+  <h1>Logg inn</h1>
   <div class="error" id="error"></div>
-  <div class="field"><input type="text" id="name" placeholder="Fullt navn" required></div>
-  <div class="field"><input type="text" id="handle" placeholder="Brukernavn (uten @)" required></div>
   <div class="field"><input type="email" id="email" placeholder="E-postadresse" required></div>
-  <div class="field"><input type="password" id="password" placeholder="Passord (min. 8 tegn)" required></div>
-  <div class="field"><input type="password" id="password2" placeholder="Bekreft passord" required></div>
-  <div class="field"><input type="text" id="invite_code" placeholder="Invitasjonskode" required></div>
-  <button class="btn-submit" id="btn" onclick="register()">Opprett bruker</button>
-  <div class="link">Har du allerede en konto? <a href="/login.html">Logg inn</a></div>
+  <div class="field"><input type="password" id="password" placeholder="Passord" required></div>
+  <button class="btn-submit" id="btn" onclick="login()">Logg inn</button>
+  <div class="link">Har du ikke konto? <a href="/register.html">Opprett bruker</a></div>
 </div>
 
 <script>
-async function register(){
+async function login(){
   var err=document.getElementById('error');
   var btn=document.getElementById('btn');
   err.style.display='none';
-
-  var pw=document.getElementById('password').value;
-  var pw2=document.getElementById('password2').value;
-  if(pw!==pw2){err.textContent='Passordene stemmer ikke overens';err.style.display='block';return}
-
-  btn.disabled=true;btn.textContent='Oppretter...';
+  btn.disabled=true;btn.textContent='Logger inn...';
   try{
-    var res=await fetch('https://helptruth-backend.onrender.com/api/auth/register',{
+    var res=await fetch('https://helptruth-backend.onrender.com/api/auth/login',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        name:document.getElementById('name').value.trim(),
-        handle:document.getElementById('handle').value.trim(),
         email:document.getElementById('email').value.trim(),
-        password:pw,
-        invite_code:document.getElementById('invite_code').value.trim()
+        password:document.getElementById('password').value
       })
     });
     var data=await res.json();
-    if(!res.ok){err.textContent=data.error||'Noe gikk galt';err.style.display='block';return}
-    if(data.token)localStorage.setItem('helptruth_token',data.token);
-    alert(data.message||'Konto opprettet!');
+    if(!res.ok){err.textContent=data.error||'Feil e-post eller passord';err.style.display='block';return}
+    localStorage.setItem('helptruth_token',data.token);
     window.location.href='https://app.helptruth.com';
   }catch(e){
     err.textContent='Nettverksfeil — prøv igjen';err.style.display='block';
   }finally{
-    btn.disabled=false;btn.textContent='Opprett bruker';
+    btn.disabled=false;btn.textContent='Logg inn';
   }
 }
-document.querySelectorAll('input').forEach(function(i){i.addEventListener('keydown',function(e){if(e.key==='Enter')register()})});
+document.querySelectorAll('input').forEach(function(i){i.addEventListener('keydown',function(e){if(e.key==='Enter')login()})});
 </script>
 </body>
 </html>
