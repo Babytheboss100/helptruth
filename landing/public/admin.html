@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HelpTruth Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#F9FBFF;color:#0F172A;min-height:100vh}
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-card{width:380px;background:#fff;border:1px solid #E2E8F0;border-radius:20px;padding:40px;box-shadow:0 12px 32px rgba(15,23,42,0.06)}
+.login-card h1{font-size:24px;margin-bottom:20px;text-align:center}
+.login-card input{width:100%;padding:12px 16px;border:1.5px solid #E2E8F0;border-radius:10px;font-size:15px;margin-bottom:12px;outline:none;font-family:inherit}
+.login-card input:focus{border-color:#356DFF}
+.login-card button{width:100%;padding:12px;border:none;border-radius:999px;background:#356DFF;color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+.login-card .err{color:#DC2626;font-size:13px;text-align:center;margin-bottom:8px;display:none}
+
+.dash{display:none;max-width:1200px;margin:0 auto;padding:32px 24px}
+.dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
+.dash-header h1{font-size:28px;font-weight:800}
+.dash-header .refresh{font-size:13px;color:#5B6B84}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.card{background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;box-shadow:0 4px 12px rgba(15,23,42,0.04)}
+.card .label{font-size:13px;color:#5B6B84;font-weight:500;margin-bottom:8px}
+.card .num{font-size:32px;font-weight:800;color:#0F172A}
+.card .sub{font-size:12px;color:#94A3B8;margin-top:4px}
+.card.blue .num{color:#356DFF}
+.card.red .num{color:#DC2626}
+.card.green .num{color:#16A34A}
+
+.chart-wrap{background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;margin-bottom:32px;box-shadow:0 4px 12px rgba(15,23,42,0.04)}
+.chart-wrap h2{font-size:18px;font-weight:700;margin-bottom:16px}
+
+.table-wrap{background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:24px;box-shadow:0 4px 12px rgba(15,23,42,0.04)}
+.table-wrap h2{font-size:18px;font-weight:700;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 8px;color:#5B6B84;font-weight:600;border-bottom:2px solid #E2E8F0}
+td{padding:10px 8px;border-bottom:1px solid #F1F5F9}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.badge.success{background:#DCFCE7;color:#16A34A}
+.badge.fail{background:#FEE2E2;color:#DC2626}
+.badge.reg{background:#DBEAFE;color:#2563EB}
+
+@media(max-width:768px){
+  .cards{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .cards{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <h1>Admin Dashboard</h1>
+    <div class="err" id="loginErr">Feil passord</div>
+    <input type="password" id="adminPw" placeholder="Admin-passord" onkeydown="if(event.key==='Enter')checkPw()">
+    <button onclick="checkPw()">Logg inn</button>
+  </div>
+</div>
+
+<div class="dash" id="dash">
+  <div class="dash-header">
+    <h1>HelpTruth Admin</h1>
+    <span class="refresh" id="lastRefresh"></span>
+  </div>
+
+  <div class="cards">
+    <div class="card"><div class="label">Totalt brukere</div><div class="num" id="totalUsers">-</div></div>
+    <div class="card blue"><div class="label">Innlogginger i dag</div><div class="num" id="loginsToday">-</div><div class="sub"><span id="loginsWeek">-</span> denne uken / <span id="loginsMonth">-</span> denne mnd</div></div>
+    <div class="card red"><div class="label">Mislykkede i dag</div><div class="num" id="failsToday">-</div></div>
+    <div class="card green"><div class="label">Registreringer i dag</div><div class="num" id="regsToday">-</div><div class="sub"><span id="regsWeek">-</span> denne uken / <span id="regsMonth">-</span> denne mnd</div></div>
+  </div>
+
+  <div class="chart-wrap">
+    <h2>Daglige registreringer (siste 30 dager)</h2>
+    <canvas id="chart" height="80"></canvas>
+  </div>
+
+  <div class="table-wrap">
+    <h2>Siste hendelser</h2>
+    <table>
+      <thead><tr><th>Hendelse</th><th>E-post</th><th>IP</th><th>Tidspunkt</th></tr></thead>
+      <tbody id="eventsBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const API = 'https://helptruth-backend.onrender.com/api';
+const ADMIN_PW = 'helptruth2026';
+let token = localStorage.getItem('helptruth_token');
+let chart = null;
+
+function checkPw() {
+  const pw = document.getElementById('adminPw').value;
+  if (pw === ADMIN_PW) {
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('dash').style.display = 'block';
+    fetchStats();
+    setInterval(fetchStats, 60000);
+  } else {
+    const e = document.getElementById('loginErr');
+    e.style.display = 'block';
+  }
+}
+
+async function fetchStats() {
+  if (!token) { alert('Logg inn i appen først for JWT-token'); return; }
+  try {
+    const res = await fetch(API + '/admin/stats', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('Auth failed');
+    const d = await res.json();
+
+    document.getElementById('totalUsers').textContent = d.totalUsers;
+    document.getElementById('loginsToday').textContent = d.loginsToday;
+    document.getElementById('loginsWeek').textContent = d.loginsWeek;
+    document.getElementById('loginsMonth').textContent = d.loginsMonth;
+    document.getElementById('failsToday').textContent = d.failsToday;
+    document.getElementById('regsToday').textContent = d.regsToday;
+    document.getElementById('regsWeek').textContent = d.regsWeek;
+    document.getElementById('regsMonth').textContent = d.regsMonth;
+    document.getElementById('lastRefresh').textContent = 'Oppdatert: ' + new Date().toLocaleTimeString('no-NO');
+
+    // Chart
+    const labels = d.dailySignups.map(r => new Date(r.day).toLocaleDateString('no-NO',{day:'numeric',month:'short'}));
+    const data = d.dailySignups.map(r => parseInt(r.count));
+    if (chart) chart.destroy();
+    chart = new Chart(document.getElementById('chart'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Registreringer',
+          data: data,
+          borderColor: '#356DFF',
+          backgroundColor: 'rgba(53,109,255,0.1)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointBackgroundColor: '#356DFF',
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1 } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // Events table
+    const tbody = document.getElementById('eventsBody');
+    tbody.innerHTML = d.recentLogins.map(function(e) {
+      const badge = e.event === 'login_success' ? '<span class="badge success">Innlogging</span>'
+        : e.event === 'login_fail' ? '<span class="badge fail">Mislykket</span>'
+        : '<span class="badge reg">Registrering</span>';
+      return '<tr><td>' + badge + '</td><td>' + (e.email||'-') + '</td><td style="font-family:monospace;font-size:12px">' + (e.ip||'-') + '</td><td>' + new Date(e.created_at).toLocaleString('no-NO') + '</td></tr>';
+    }).join('');
+  } catch(e) {
+    console.error('Fetch error:', e);
+  }
+}
+</script>
+</body>
+</html>

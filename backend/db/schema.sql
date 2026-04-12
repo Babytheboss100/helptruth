@@ -151,6 +151,18 @@ CREATE TABLE invite_codes (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- ── ANALYTICS ──────────────────────────────────────────────────────────────
+CREATE TABLE analytics (
+  id         SERIAL PRIMARY KEY,
+  event      VARCHAR(30) NOT NULL,
+  email      VARCHAR(255),
+  ip         VARCHAR(45),
+  user_agent TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_analytics_event ON analytics(event);
+CREATE INDEX idx_analytics_created ON analytics(created_at DESC);
+
 -- ── LOGIN LOGS ─────────────────────────────────────────────────────────────
 CREATE TABLE login_logs (
   id         SERIAL PRIMARY KEY,

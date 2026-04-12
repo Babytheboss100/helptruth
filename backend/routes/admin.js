@@ -7,6 +7,49 @@ const auth = require("../middleware/auth");
 
 const router = express.Router();
 
+// GET /api/admin/stats — analytics dashboard data
+router.get("/stats", auth, async (req, res) => {
+  try {
+    if (!(await requireVerified(req, res))) return;
+
+    const [
+      totalUsers,
+      loginsToday, loginsWeek, loginsMonth,
+      failsToday,
+      regsToday, regsWeek, regsMonth,
+      dailySignups,
+      recentLogins
+    ] = await Promise.all([
+      pool.query("SELECT COUNT(*) FROM users"),
+      pool.query("SELECT COUNT(*) FROM analytics WHERE event='login_success' AND created_at > NOW() - INTERVAL '1 day'"),
+      pool.query("SELECT COUNT(*) FROM analytics WHERE event='login_success' AND created_at > NOW() - INTERVAL '7 days'"),
+      pool.query("SELECT COUNT(*) FROM analytics WHERE event='login_success' AND created_at > NOW() - INTERVAL '30 days'"),
+      pool.query("SELECT COUNT(*) FROM analytics WHERE event='login_fail' AND created_at > NOW() - INTERVAL '1 day'"),
+      pool.query("SELECT COUNT(*) FROM analytics WHERE event='register' AND created_at > NOW() - INTERVAL '1 day'"),
+      pool.query("SELECT COUNT(*) FROM analytics WHERE event='register' AND created_at > NOW() - INTERVAL '7 days'"),
+      pool.query("SELECT COUNT(*) FROM analytics WHERE event='register' AND created_at > NOW() - INTERVAL '30 days'"),
+      pool.query("SELECT DATE(created_at) as day, COUNT(*) as count FROM analytics WHERE event='register' AND created_at > NOW() - INTERVAL '30 days' GROUP BY DATE(created_at) ORDER BY day"),
+      pool.query("SELECT a.event, a.email, a.ip, a.created_at FROM analytics a ORDER BY a.created_at DESC LIMIT 50"),
+    ]);
+
+    res.json({
+      totalUsers: parseInt(totalUsers.rows[0].count),
+      loginsToday: parseInt(loginsToday.rows[0].count),
+      loginsWeek: parseInt(loginsWeek.rows[0].count),
+      loginsMonth: parseInt(loginsMonth.rows[0].count),
+      failsToday: parseInt(failsToday.rows[0].count),
+      regsToday: parseInt(regsToday.rows[0].count),
+      regsWeek: parseInt(regsWeek.rows[0].count),
+      regsMonth: parseInt(regsMonth.rows[0].count),
+      dailySignups: dailySignups.rows,
+      recentLogins: recentLogins.rows,
+    });
+  } catch (err) {
+    console.error("Admin stats error:", err);
+    res.status(500).json({ error: "Serverfeil" });
+  }
+});
+
 // GET /api/admin/logs — vis alle login-logger
 router.get("/logs", auth, async (req, res) => {
   try {

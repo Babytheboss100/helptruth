@@ -11,6 +11,14 @@ const pool = require("../db/pool");
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "hemmelig-nøkkel";
 
+// Analytics helper
+function logEvent(event, email, req) {
+  const ip = (req.headers["x-forwarded-for"] || req.socket.remoteAddress || "").split(",")[0].trim();
+  const ua = req.headers["user-agent"] || "";
+  pool.query("INSERT INTO analytics (event, email, ip, user_agent) VALUES ($1, $2, $3, $4)", [event, email, ip, ua])
+    .catch(err => console.error("Analytics log error:", err.message));
+}
+
 // E-post transporter (Gmail SMTP)
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -77,6 +85,8 @@ router.post("/register", async (req, res) => {
     );
 
     const user = result.rows[0];
+
+    logEvent("register", email.toLowerCase(), req);
 
     // Oppdater invite-kode
     await pool.query(
@@ -166,6 +176,7 @@ router.post("/login", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
+      logEvent("login_fail", email.toLowerCase(), req);
       return res.status(401).json({ error: "Feil e-post eller passord" });
     }
 
@@ -173,6 +184,7 @@ router.post("/login", async (req, res) => {
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
+      logEvent("login_fail", email.toLowerCase(), req);
       return res.status(401).json({ error: "Feil e-post eller passord" });
     }
 
@@ -199,6 +211,8 @@ router.post("/login", async (req, res) => {
       "INSERT INTO login_logs (user_id, ip_address, user_agent, device) VALUES ($1, $2, $3, $4)",
       [user.id, ip, ua, device]
     ).catch(err => console.error("Login log error:", err.message));
+
+    logEvent("login_success", user.email, req);
 
     delete user.password;
     delete user.verification_token;
