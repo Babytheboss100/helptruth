@@ -5,6 +5,7 @@
 :root[data-tenant="breedz"] {
   --bg: #0a0a0f;
   --bg-elevated: #12121a;
+  --bg-subtle: #18181f;
   --surface: rgba(255, 255, 255, 0.03);
   --border: rgba(255, 255, 255, 0.08);
   --border-glow: rgba(138, 92, 255, 0.35);
@@ -23,6 +24,7 @@
 :root[data-tenant="helptruth"] {
   --bg: #F8FAFF;
   --bg-elevated: #FFFFFF;
+  --bg-subtle: #F4F7FF;
   --surface: rgba(53, 109, 255, 0.04);
   --border: #E2E8F0;
   --border-glow: rgba(53, 109, 255, 0.25);
@@ -30,9 +32,9 @@
   --text-muted: #5B6B84;
   --text-faint: #94A3B8;
   --accent: #356DFF;
-  --accent-glow: #2559E8;
+  --accent-glow: #1D4ED8;
   --gold: #356DFF;
-  --danger: #EF4444;
+  --danger: #f91880;
   --success: #22C55E;
   --font-sans: "Crimson Pro", Georgia, serif;
   --font-serif: "DM Serif Display", Georgia, serif;
@@ -41,6 +43,7 @@
 :root:not([data-tenant]) {
   --bg: #0a0a0f;
   --bg-elevated: #12121a;
+  --bg-subtle: #18181f;
   --surface: rgba(255, 255, 255, 0.03);
   --border: rgba(255, 255, 255, 0.08);
   --border-glow: rgba(138, 92, 255, 0.35);

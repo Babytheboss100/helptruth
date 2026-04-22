@@ -18,9 +18,9 @@ const helptruth = {
     textMuted: "#5B6B84",
     textFaint: "#94A3B8",
     accent: "#356DFF",
-    accentGlow: "#2559E8",
+    accentGlow: "#1D4ED8",
     gold: "#356DFF",
-    danger: "#EF4444",
+    danger: "#f91880",
     success: "#22C55E",
   },
   fonts: {

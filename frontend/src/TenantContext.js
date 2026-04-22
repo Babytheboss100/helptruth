@@ -4,6 +4,28 @@ import { TENANTS, DEFAULT_TENANT_ID } from "./config/tenants";
 
 const TenantContext = createContext(TENANTS[DEFAULT_TENANT_ID]);
 
+const FONT_LINK_ID = "tenant-google-fonts";
+
+function applyTenantFonts(tenant) {
+  if (typeof document === "undefined") return;
+  const families = tenant.fonts?.googleImports || [];
+  const existing = document.getElementById(FONT_LINK_ID);
+  if (!families.length) {
+    if (existing) existing.remove();
+    return;
+  }
+  const href = `https://fonts.googleapis.com/css2?${families.map((f) => `family=${f}`).join("&")}&display=swap`;
+  if (existing) {
+    if (existing.getAttribute("href") !== href) existing.setAttribute("href", href);
+    return;
+  }
+  const link = document.createElement("link");
+  link.id = FONT_LINK_ID;
+  link.rel = "stylesheet";
+  link.href = href;
+  document.head.appendChild(link);
+}
+
 function applyTenantToDocument(tenant) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
@@ -24,6 +46,7 @@ function applyTenantToDocument(tenant) {
     document.head.appendChild(favicon);
   }
   favicon.setAttribute("href", tenant.faviconSrc);
+  applyTenantFonts(tenant);
 }
 
 export function TenantProvider({ children }) {
