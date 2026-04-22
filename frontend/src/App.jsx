@@ -2,6 +2,7 @@
 // HelpTruth v2 — Komplett Twitter-kopi med alle features
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { Home, Compass, Bell, Mail, Bookmark, User as UserIcon, Settings } from "lucide-react";
 import { useTenant } from "./TenantContext";
 
 // ─── API-LAG ──────────────────────────────────────────────────────────────────
@@ -69,14 +70,37 @@ function disconnectSocket() {
 }
 
 // ─── KONSTANTER ───────────────────────────────────────────────────────────────
-const NAV_ITEMS = [
-  { icon: "🏠", label: "Hjem",      key: "home" },
-  { icon: "🔍", label: "Utforsk",   key: "explore" },
-  { icon: "🔔", label: "Varsler",   key: "notifications" },
-  { icon: "✉️",  label: "Meldinger", key: "messages" },
-  { icon: "🔖", label: "Bokmerker", key: "bookmarks" },
-  { icon: "👤", label: "Profil",    key: "profile" },
+const NAV_BY_TENANT = {
+  breedz: [
+    { Icon: Home,     label: "Home",          key: "home" },
+    { Icon: Compass,  label: "Explore",       key: "explore" },
+    { Icon: Bell,     label: "Notifications", key: "notifications" },
+    { Icon: Mail,     label: "Messages",      key: "messages" },
+    { Icon: Bookmark, label: "Bookmarks",     key: "bookmarks" },
+    { Icon: UserIcon, label: "Profile",       key: "profile" },
+  ],
+  helptruth: [
+    { Icon: Home,     label: "Hjem",      key: "home" },
+    { Icon: Compass,  label: "Utforsk",   key: "explore" },
+    { Icon: Bell,     label: "Varsler",   key: "notifications" },
+    { Icon: Mail,     label: "Meldinger", key: "messages" },
+    { Icon: Bookmark, label: "Bokmerker", key: "bookmarks" },
+    { Icon: UserIcon, label: "Profil",    key: "profile" },
+  ],
+};
+const MOBILE_NAV = [
+  { Icon: Home,     key: "home" },
+  { Icon: Compass,  key: "explore" },
+  { Icon: Bell,     key: "notifications" },
+  { Icon: Mail,     key: "messages" },
+  { Icon: UserIcon, key: "profile" },
 ];
+const TRENDING_TITLE = { breedz: "Trending on Breedz", helptruth: "Trending i Norge" };
+const FOLLOW_TITLE   = { breedz: "Who to follow",      helptruth: "Hvem å følge" };
+const POST_CTA       = { breedz: "Post",                helptruth: "Skriv innlegg" };
+const POST_CTA_SHORT = { breedz: "+",                   helptruth: "+" };
+const ADMIN_LABEL    = { breedz: "Admin",               helptruth: "Admin" };
+const LOGOUT_LABEL   = { breedz: "Log out",             helptruth: "Logg ut" };
 
 const TRENDING = [
   { tag: "#StartCoin",    posts: "12.4K innlegg", category: "Fintech" },
@@ -599,6 +623,8 @@ function AuthPage({ onLogin }) {
 
 export default function HelpTruth() {
   const tenant = useTenant();
+  const isBreedz = tenant.id === "breedz";
+  const navItems = NAV_BY_TENANT[tenant.id] || NAV_BY_TENANT.breedz;
   const [currentUser, setCurrentUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
 
@@ -1069,7 +1095,7 @@ export default function HelpTruth() {
 
   // ── LAYOUT ────────────────────────────────────────────────────────────────
   const S = {
-    app: { minHeight: "100vh", background: "var(--bg-subtle)", color: "var(--text)", fontFamily: "'Inter','Crimson Pro',sans-serif", display: "flex", justifyContent: "center", paddingBottom: isMobile ? 56 : 0 },
+    app: { minHeight: "100vh", background: "var(--bg-subtle)", color: "var(--text)", fontFamily: "var(--font-sans)", display: "flex", justifyContent: "center", paddingBottom: isMobile ? 56 : 0 },
     container: { width: "100%", maxWidth: 1200, display: "flex", position: "relative" },
     sidebar: isMobile
       ? { position: "fixed", top: 0, left: sidebarOpen ? 0 : -280, width: 280, height: "100vh", background: "var(--bg-elevated)", zIndex: 200, padding: "20px 12px", overflowY: "auto", transition: "left 0.25s ease", borderRight: "1px solid var(--border)", boxShadow: sidebarOpen ? "4px 0 20px rgba(0,0,0,0.5)" : "none" }
@@ -1132,14 +1158,33 @@ export default function HelpTruth() {
 
           {/* ── VENSTRE SIDEBAR ── */}
           <div style={S.sidebar}>
-            <div style={{ fontFamily: "var(--font-serif)", fontSize: isTablet ? 20 : 28, color: "var(--accent)", padding: "8px 12px", marginBottom: 16, cursor: "pointer", textAlign: isTablet ? "center" : "left" }}
+            <div style={{ padding: "8px 12px", marginBottom: 16, cursor: "pointer", textAlign: isTablet ? "center" : "left" }}
               onClick={() => { setActivePage("home"); setThreadPost(null); setViewProfile(null); setHashtagView(null); setSearchResults(null); if (isMobile) setSidebarOpen(false); }}
             >
-              {isTablet ? tenant.brandName.charAt(0) : <img src={tenant.logoSrc} alt={tenant.brandName} style={{height: 36, objectFit: "contain", mixBlendMode: "multiply"}} />}
+              {isTablet ? (
+                <span
+                  className={isBreedz ? "headline-gradient" : undefined}
+                  style={{ fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 800, color: isBreedz ? undefined : "var(--accent)" }}
+                >
+                  {tenant.brandName.charAt(0)}
+                </span>
+              ) : isBreedz ? (
+                <span
+                  className="headline-gradient"
+                  style={{ fontFamily: "var(--font-serif)", fontSize: 32, fontWeight: 800, letterSpacing: "-0.02em", display: "inline-block" }}
+                >
+                  {tenant.brandName}
+                </span>
+              ) : (
+                <img src={tenant.logoSrc} alt={tenant.brandName} style={{height: 36, objectFit: "contain", mixBlendMode: "multiply"}} />
+              )}
             </div>
 
             <nav>
-              {NAV_ITEMS.map(item => (
+              {navItems.map(item => {
+                const ItemIcon = item.Icon;
+                const active = activePage === item.key;
+                return (
                 <div key={item.key}
                   onClick={() => { setActivePage(item.key); setThreadPost(null); setViewProfile(null); setHashtagView(null); setActiveConversation(null); if (isMobile) setSidebarOpen(false); }}
                   title={isTablet ? item.label : undefined}
@@ -1147,43 +1192,44 @@ export default function HelpTruth() {
                     display: "flex", alignItems: "center", gap: isTablet ? 0 : 14,
                     padding: isTablet ? "10px 0" : "10px 12px", borderRadius: 28, cursor: "pointer", marginBottom: 4,
                     justifyContent: isTablet ? "center" : "flex-start",
-                    color: activePage === item.key ? "var(--accent)" : "var(--text-muted)",
-                    fontWeight: activePage === item.key ? 700 : 400,
-                    fontSize: 17, fontFamily: "var(--font-serif)",
-                    background: activePage === item.key ? "rgba(53,109,255,0.08)" : "transparent",
-                    transition: "background 0.15s",
+                    color: active ? "var(--accent)" : "var(--text-muted)",
+                    fontWeight: active ? 700 : 500,
+                    fontSize: 16, fontFamily: "var(--font-sans)",
+                    background: active ? "var(--surface)" : "transparent",
+                    transition: "background 0.15s, color 0.15s",
                   }}
-                  onMouseEnter={e => { if (activePage !== item.key) e.currentTarget.style.background = "rgba(53,109,255,0.06)"; }}
-                  onMouseLeave={e => { if (activePage !== item.key) e.currentTarget.style.background = "transparent"; }}
+                  onMouseEnter={e => { if (!active) e.currentTarget.style.background = "var(--surface)"; }}
+                  onMouseLeave={e => { if (!active) e.currentTarget.style.background = "transparent"; }}
                 >
-                  <span style={{ fontSize: 20, width: 24, textAlign: "center" }}>{item.icon}</span>
+                  <ItemIcon size={20} strokeWidth={active ? 2.4 : 2} />
                   {!isTablet && item.label}
                   {(navBadges[item.key] > 0) && (
-                    <span style={{ background: "var(--accent)", color: "var(--bg-subtle)", borderRadius: 10, padding: "1px 7px", fontSize: 11, fontWeight: 700, marginLeft: 4 }}>
+                    <span style={{ background: "var(--accent)", color: "#fff", borderRadius: 10, padding: "1px 7px", fontSize: 11, fontWeight: 700, marginLeft: 4 }}>
                       {navBadges[item.key]}
                     </span>
                   )}
                 </div>
-              ))}
+                );
+              })}
               {currentUser.verified && (
                 <div
                   onClick={() => { setActivePage("admin"); setThreadPost(null); setViewProfile(null); setHashtagView(null); setActiveConversation(null); if (isMobile) setSidebarOpen(false); }}
-                  title={isTablet ? "Admin" : undefined}
+                  title={isTablet ? (ADMIN_LABEL[tenant.id] || ADMIN_LABEL.breedz) : undefined}
                   style={{
                     display: "flex", alignItems: "center", gap: isTablet ? 0 : 14,
                     padding: isTablet ? "10px 0" : "10px 12px", borderRadius: 28, cursor: "pointer", marginBottom: 4,
                     justifyContent: isTablet ? "center" : "flex-start",
                     color: activePage === "admin" ? "var(--accent)" : "var(--text-muted)",
-                    fontWeight: activePage === "admin" ? 700 : 400,
-                    fontSize: 17, fontFamily: "var(--font-serif)",
-                    background: activePage === "admin" ? "rgba(53,109,255,0.08)" : "transparent",
-                    transition: "background 0.15s",
+                    fontWeight: activePage === "admin" ? 700 : 500,
+                    fontSize: 16, fontFamily: "var(--font-sans)",
+                    background: activePage === "admin" ? "var(--surface)" : "transparent",
+                    transition: "background 0.15s, color 0.15s",
                   }}
-                  onMouseEnter={e => { if (activePage !== "admin") e.currentTarget.style.background = "rgba(53,109,255,0.06)"; }}
+                  onMouseEnter={e => { if (activePage !== "admin") e.currentTarget.style.background = "var(--surface)"; }}
                   onMouseLeave={e => { if (activePage !== "admin") e.currentTarget.style.background = "transparent"; }}
                 >
-                  <span style={{ fontSize: 20, width: 24, textAlign: "center" }}>⚙️</span>
-                  {!isTablet && "Admin"}
+                  <Settings size={20} strokeWidth={activePage === "admin" ? 2.4 : 2} />
+                  {!isTablet && (ADMIN_LABEL[tenant.id] || ADMIN_LABEL.breedz)}
                 </div>
               )}
             </nav>
@@ -1192,13 +1238,18 @@ export default function HelpTruth() {
               onClick={() => { setActivePage("home"); setTimeout(() => textareaRef.current?.focus(), 100); }}
               style={{
                 width: "100%", marginTop: 16,
-                background: "var(--accent)",
+                background: "var(--primary-gradient)",
                 color: "#fff", border: "none", borderRadius: 28, padding: "14px",
                 fontWeight: 700, cursor: "pointer", fontSize: 16,
-                fontFamily: "var(--font-serif)", boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+                fontFamily: "var(--font-sans)",
+                letterSpacing: "0.02em",
+                boxShadow: "0 12px 30px -10px var(--border-glow), 0 4px 12px -4px rgba(0,0,0,0.12)",
+                transition: "transform 0.2s ease, box-shadow 0.2s ease",
               }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 18px 40px -12px var(--border-glow), 0 6px 16px -4px rgba(0,0,0,0.16)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 12px 30px -10px var(--border-glow), 0 4px 12px -4px rgba(0,0,0,0.12)"; }}
             >
-              {isTablet ? "+" : "Skriv innlegg"}
+              {isTablet ? "+" : (POST_CTA[tenant.id] || POST_CTA.breedz)}
             </button>
 
             <div style={{
@@ -1210,25 +1261,25 @@ export default function HelpTruth() {
               <>
               <ProfileImage src={currentUser.profile_image} initials={currentUser.avatar} color={currentUser.avatar_color || "var(--accent)"} size={36} />
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 700, fontSize: 13, color: "var(--text)", fontFamily: "var(--font-serif)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <div style={{ fontWeight: 700, fontSize: 13, color: "var(--text)", fontFamily: "var(--font-sans)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {currentUser.name}
                 </div>
                 <div style={{ color: "var(--text-muted)", fontSize: 11 }}>@{currentUser.handle}</div>
               </div>
               </>
               )}
-              <button onClick={handleLogout} title="Logg ut"
+              <button onClick={handleLogout} title={LOGOUT_LABEL[tenant.id] || LOGOUT_LABEL.breedz}
                 style={{
-                  background: "none", border: "1px solid var(--border)", color: "var(--text-muted)",
+                  background: "none", border: "1px solid var(--border-hard)", color: "var(--text-muted)",
                   cursor: "pointer", fontSize: 13, padding: isTablet ? "8px" : "6px 14px",
-                  borderRadius: 20, fontFamily: "var(--font-serif)",
+                  borderRadius: 20, fontFamily: "var(--font-sans)",
                   display: "flex", alignItems: "center", gap: 6,
                   transition: "all 0.2s", width: isTablet ? 40 : "auto",
                   justifyContent: "center",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--danger)"; e.currentTarget.style.color = "var(--danger)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--text-muted)"; }}
-              >{isTablet ? "🚪" : "🚪 Logg ut"}</button>
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border-hard)"; e.currentTarget.style.color = "var(--text-muted)"; }}
+              >{isTablet ? "🚪" : `🚪 ${LOGOUT_LABEL[tenant.id] || LOGOUT_LABEL.breedz}`}</button>
             </div>
           </div>
 
@@ -1262,7 +1313,7 @@ export default function HelpTruth() {
                     <textarea
                       ref={textareaRef} value={newPost}
                       onChange={e => { setNewPost(e.target.value); setCharCount(e.target.value.length); }}
-                      placeholder="Hva skjer?"
+                      placeholder={isBreedz ? "What's on your mind?" : "Hva skjer?"}
                       onKeyDown={e => { if (e.key === "Enter" && e.metaKey) handlePost(); }}
                       style={{
                         width: "100%", background: "transparent", border: "none", outline: "none",
@@ -1820,57 +1871,66 @@ export default function HelpTruth() {
             </div>
 
             {/* Trending */}
-            <div style={{ background: "var(--bg-elevated)", borderRadius: 16, border: "1px solid var(--border)", marginBottom: 16, overflow: "hidden" }}>
-              <div style={{ padding: "14px 16px", fontFamily: "var(--font-serif)", fontSize: 18, color: "var(--text)", borderBottom: "1px solid var(--border)" }}>
-                Trending i Norge
+            <div className="breedz-glass breedz-glow" style={{ marginBottom: 16, overflow: "hidden" }}>
+              <div style={{ padding: "14px 18px", fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 700, color: "var(--text)", borderBottom: "1px solid var(--border-hard)", letterSpacing: "-0.01em" }}>
+                {TRENDING_TITLE[tenant.id] || TRENDING_TITLE.breedz}
               </div>
               {TRENDING.map((t, i) => (
                 <div key={i} onClick={() => handleClickUser(null, t.tag.slice(1))}
-                  style={{ padding: "12px 16px", borderBottom: i < TRENDING.length - 1 ? "1px solid var(--border)" : "none", cursor: "pointer", transition: "background 0.15s" }}
-                  onMouseEnter={e => e.currentTarget.style.background = "rgba(59,130,246,0.04)"}
+                  style={{ padding: "12px 18px", borderBottom: i < TRENDING.length - 1 ? "1px solid var(--border-hard)" : "none", cursor: "pointer", transition: "background 0.15s", fontFamily: "var(--font-sans)" }}
+                  onMouseEnter={e => e.currentTarget.style.background = "var(--surface)"}
                   onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                 >
-                  <div style={{ color: "var(--text-muted)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.5px" }}>{t.category} · Trend</div>
+                  <div style={{ color: "var(--text-muted)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>{t.category} · Trend</div>
                   <div style={{ color: "var(--accent)", fontWeight: 700, fontSize: 15, marginTop: 2 }}>{t.tag}</div>
                   <div style={{ color: "var(--text-muted)", fontSize: 12, marginTop: 2 }}>{t.posts}</div>
                 </div>
               ))}
             </div>
 
-            {/* Hvem å følge */}
-            <div style={{ background: "var(--bg-elevated)", borderRadius: 16, border: "1px solid var(--border)", overflow: "hidden", marginBottom: 16 }}>
-              <div style={{ padding: "14px 16px", fontFamily: "var(--font-serif)", fontSize: 18, color: "var(--text)", borderBottom: "1px solid var(--border)" }}>
-                Hvem å følge
+            {/* Who to follow / Hvem å følge */}
+            <div className="breedz-glass breedz-glow" style={{ overflow: "hidden", marginBottom: 16 }}>
+              <div style={{ padding: "14px 18px", fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 700, color: "var(--text)", borderBottom: "1px solid var(--border-hard)", letterSpacing: "-0.01em" }}>
+                {FOLLOW_TITLE[tenant.id] || FOLLOW_TITLE.breedz}
               </div>
               {[
                 { name: "HentePenger", handle: "hentepenger", avatar: "HP", color: "var(--accent)" },
                 { name: "StartFunder", handle: "startfunder", avatar: "SF", color: "#0e4f8a" },
                 { name: "Blockchain NO", handle: "blockchainnorge", avatar: "BN", color: "#7b2d8b" },
-              ].map((u, i) => (
-                <div key={i} style={{ padding: "12px 16px", borderBottom: i < 2 ? "1px solid var(--border)" : "none", display: "flex", alignItems: "center", gap: 10 }}>
+              ].map((u, i) => {
+                const isFollowing = !!following[`@${u.handle}`];
+                return (
+                <div key={i} style={{ padding: "12px 18px", borderBottom: i < 2 ? "1px solid var(--border-hard)" : "none", display: "flex", alignItems: "center", gap: 10 }}>
                   <ProfileImage initials={u.avatar} color={u.color} size={36} onClick={() => handleClickUser(u.handle)} />
                   <div style={{ flex: 1, minWidth: 0, cursor: "pointer" }} onClick={() => handleClickUser(u.handle)}>
-                    <div style={{ fontWeight: 700, fontSize: 14, color: "var(--text)", fontFamily: "var(--font-serif)" }}>{u.name}</div>
-                    <div style={{ color: "var(--text-muted)", fontSize: 12 }}>@{u.handle}</div>
+                    <div style={{ fontWeight: 700, fontSize: 14, color: "var(--text)", fontFamily: "var(--font-sans)" }}>{u.name}</div>
+                    <div style={{ color: "var(--text-muted)", fontSize: 12, fontFamily: "var(--font-sans)" }}>@{u.handle}</div>
                   </div>
                   <button onClick={() => handleFollow(u.handle)}
                     style={{
-                      background: following[`@${u.handle}`] ? "transparent" : "var(--text)",
-                      color: following[`@${u.handle}`] ? "var(--text)" : "var(--bg-subtle)",
-                      border: following[`@${u.handle}`] ? "1px solid var(--text-muted)" : "none",
-                      borderRadius: 20, padding: "5px 14px",
-                      fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "var(--font-serif)",
+                      background: isFollowing ? "transparent" : "var(--primary-gradient)",
+                      color: isFollowing ? "var(--text)" : "#fff",
+                      border: isFollowing ? "1px solid var(--border-hard)" : "none",
+                      borderRadius: 20, padding: "6px 16px",
+                      fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "var(--font-sans)",
+                      boxShadow: isFollowing ? "none" : "0 4px 12px -4px var(--border-glow)",
+                      transition: "transform 0.15s ease",
                     }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; }}
                   >
-                    {following[`@${u.handle}`] ? "Følger" : "Følg"}
+                    {isFollowing
+                      ? (isBreedz ? "Following" : "Følger")
+                      : (isBreedz ? "Follow" : "Følg")}
                   </button>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
-            <div style={{ color: "var(--border)", fontSize: 11, lineHeight: 2 }}>
-              Personvern · Vilkår · Cookies<br />
-              © 2026 {tenant.brandName} AS
+            <div style={{ color: "var(--text-faint)", fontSize: 11, lineHeight: 2, fontFamily: "var(--font-sans)", padding: "0 4px" }}>
+              {isBreedz ? "Privacy · Terms · Cookies" : "Personvern · Vilkår · Cookies"}<br />
+              © 2026 {tenant.brandName}{isBreedz ? "" : " AS"}
             </div>
           </aside>
 
@@ -1884,29 +1944,27 @@ export default function HelpTruth() {
             display: "flex", justifyContent: "space-around", alignItems: "center",
             height: 56, padding: "0 8px",
           }}>
-            {[
-              { icon: "🏠", key: "home" },
-              { icon: "🔍", key: "explore" },
-              { icon: "🔔", key: "notifications" },
-              { icon: "✉️", key: "messages" },
-              { icon: "👤", key: "profile" },
-            ].map(item => (
+            {MOBILE_NAV.map(item => {
+              const ItemIcon = item.Icon;
+              const active = activePage === item.key;
+              return (
               <button key={item.key}
                 onClick={() => { setActivePage(item.key); setThreadPost(null); setViewProfile(null); setHashtagView(null); setActiveConversation(null); }}
                 style={{
-                  background: "none", border: "none", fontSize: 22, cursor: "pointer", padding: "8px 12px",
-                  color: activePage === item.key ? "var(--accent)" : "var(--text-muted)",
-                  position: "relative",
+                  background: "none", border: "none", cursor: "pointer", padding: "8px 12px",
+                  color: active ? "var(--accent)" : "var(--text-muted)",
+                  position: "relative", display: "flex", alignItems: "center", justifyContent: "center",
                 }}
               >
-                {item.icon}
+                <ItemIcon size={22} strokeWidth={active ? 2.4 : 2} />
                 {navBadges[item.key] > 0 && (
                   <span style={{ position: "absolute", top: 2, right: 4, background: "var(--accent)", color: "#fff", borderRadius: 10, padding: "0 5px", fontSize: 10, fontWeight: 700 }}>
                     {navBadges[item.key]}
                   </span>
                 )}
               </button>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
