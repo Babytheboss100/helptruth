@@ -513,74 +513,83 @@ function AuthPage({ onLogin }) {
     />
   );
 
+  const isBreedz = tenant.id === "breedz";
+  const headline = isBreedz ? {
+    lead: "Where ",
+    gradient: "investors talk.",
+  } : {
+    lead: "Si det som er ",
+    gradient: "sant.",
+  };
+  const subtext = isBreedz
+    ? "Twitter-style platform for European investors, founders, and builders."
+    : "Norsk mikroblogg — rett på sak, uten filter.";
+  const joinCta = isBreedz ? "Join the feed" : "Registrer deg";
+  const signInCta = isBreedz ? "Sign in" : "Logg inn";
+  const emailLabel = isBreedz ? "Email address" : "E-postadresse";
+  const passwordLabel = isBreedz ? "Password" : "Passord";
+  const nameLabel = isBreedz ? "Full name" : "Fullt navn";
+  const handleLabel = isBreedz ? "Username (no @)" : "Brukernavn (uten @)";
+  const inviteLabel = isBreedz ? "Invitation code" : "Invitasjonskode";
+  const switchToRegister = isBreedz ? "No account yet? " : "Har du ikke konto? ";
+  const switchToLogin = isBreedz ? "Already on BREEDZ? " : "Har du allerede konto? ";
+
   return (
     <div style={{
-      minHeight: "100vh", background: "var(--bg-subtle)",
+      minHeight: "100vh",
+      background: "var(--page-gradient, var(--bg-subtle))",
+      backgroundAttachment: "fixed",
       display: "flex", alignItems: "center", justifyContent: "center",
       fontFamily: "var(--font-sans)",
+      padding: "40px 20px",
     }}>
-      <style>{`* { box-sizing: border-box; margin: 0; padding: 0; } @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }`}</style>
+      <style>{`* { box-sizing: border-box; } @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }`}</style>
 
-      <div style={{
-        width: "100%", maxWidth: 420, padding: 40,
-        background: "var(--bg-elevated)", border: "1px solid var(--border)",
-        borderRadius: 20, boxShadow: "0 20px 60px rgba(15,23,42,0.08)",
-      }}>
-        <div style={{
-          textAlign: "center", marginBottom: 32,
-          fontFamily: "var(--font-serif)",
-          fontSize: 36, color: "var(--accent)",
-          textShadow: "0 0 20px rgba(53,109,255,0.20)",
-        }}>
-          {tenant.brandName}
-        </div>
-
-        <h2 style={{
-          fontFamily: "var(--font-serif)", fontSize: 22,
-          color: "var(--text)", marginBottom: 24, textAlign: "center",
-        }}>
-          {mode === "login" ? "Logg inn på kontoen din" : "Opprett en ny konto"}
-        </h2>
-
-        {mode === "register" && inp("name", "Fullt navn")}
-        {mode === "register" && inp("handle", "Brukernavn (uten @)")}
-        {mode === "register" && inp("invite_code", "Invitasjonskode")}
-        {inp("email", "E-postadresse", "email")}
-        {inp("password", "Passord", "password")}
-
-        {error && (
-          <div style={{
-            background: "color-mix(in srgb, var(--danger) 9%, transparent)", border: "1px solid var(--danger)",
-            borderRadius: 8, padding: "10px 14px", marginBottom: 16,
-            color: "var(--danger)", fontSize: 14,
+      <div style={{ width: "100%", maxWidth: 460, display: "flex", flexDirection: "column", gap: 28 }}>
+        <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+          <img src={tenant.logoSrc} alt={tenant.brandName} style={{ height: 44, objectFit: "contain" }} />
+          <h1 className="font-serif" style={{
+            fontSize: "clamp(36px, 6vw, 52px)", lineHeight: 1.05, letterSpacing: "-0.015em",
+            color: "var(--text)", fontWeight: 600, margin: 0,
           }}>
-            {error}
-          </div>
-        )}
-
-        <button onClick={handleSubmit} disabled={loading}
-          style={{
-            width: "100%", background: "var(--accent)",
-            color: "#fff", border: "none", borderRadius: 24,
-            padding: "14px", fontWeight: 700, fontSize: 16,
-            fontFamily: "var(--font-serif)",
-            cursor: loading ? "wait" : "pointer",
-            opacity: loading ? 0.7 : 1,
-            boxShadow: "0 4px 16px rgba(0,0,0,0.15)", transition: "all 0.2s",
-          }}
-        >
-          {loading ? "Laster..." : mode === "login" ? "Logg inn" : "Registrer deg"}
-        </button>
-
-        <div style={{ textAlign: "center", marginTop: 20, color: "var(--text-muted)", fontSize: 14 }}>
-          {mode === "login" ? "Har du ikke konto? " : "Har du allerede konto? "}
-          <span onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }}
-            style={{ color: "var(--accent)", cursor: "pointer", fontWeight: 700 }}
-          >
-            {mode === "login" ? "Registrer deg" : "Logg inn"}
-          </span>
+            {headline.lead}<span className="headline-gradient">{headline.gradient}</span>
+          </h1>
+          <p style={{ fontSize: 16, lineHeight: 1.55, color: "var(--text-muted)", margin: 0, maxWidth: 420 }}>
+            {subtext}
+          </p>
         </div>
 
+        <div className="glass-card glow-border" style={{ padding: 32 }}>
+          {mode === "register" && inp("name", nameLabel)}
+          {mode === "register" && inp("handle", handleLabel)}
+          {mode === "register" && inp("invite_code", inviteLabel)}
+          {inp("email", emailLabel, "email")}
+          {inp("password", passwordLabel, "password")}
+
+          {error && (
+            <div style={{
+              background: "color-mix(in srgb, var(--danger) 9%, transparent)",
+              border: "1px solid var(--danger)",
+              borderRadius: 8, padding: "10px 14px", marginBottom: 16,
+              color: "var(--danger)", fontSize: 14,
+            }}>
+              {error}
+            </div>
+          )}
+
+          <button className="btn-primary" onClick={handleSubmit} disabled={loading} style={{ width: "100%", marginTop: 4 }}>
+            {loading ? "…" : mode === "login" ? signInCta : `${joinCta} →`}
+          </button>
+
+          <div style={{ textAlign: "center", marginTop: 20, color: "var(--text-muted)", fontSize: 14 }}>
+            {mode === "login" ? switchToRegister : switchToLogin}
+            <span onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }}
+              style={{ color: "var(--accent)", cursor: "pointer", fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 3 }}
+            >
+              {mode === "login" ? joinCta : signInCta}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
