@@ -2,6 +2,7 @@
 // HelpTruth v2 — Komplett Twitter-kopi med alle features
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useTenant } from "./TenantContext";
 
 // ─── API-LAG ──────────────────────────────────────────────────────────────────
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:4000/api";
@@ -469,6 +470,7 @@ function PostCard({ post, onLike, onRepost, onBookmark, onDelete, onReply, onVot
 // ─── LOGIN / REGISTER SIDE ────────────────────────────────────────────────────
 
 function AuthPage({ onLogin }) {
+  const tenant = useTenant();
   const [mode, setMode]         = useState("login");
   const [form, setForm]         = useState({ name: "", handle: "", email: "", password: "", invite_code: "" });
   const [loading, setLoading]   = useState(false);
@@ -530,7 +532,7 @@ function AuthPage({ onLogin }) {
           fontSize: 36, color: "#356DFF",
           textShadow: "0 0 20px rgba(53,109,255,0.20)",
         }}>
-          HelpTruth
+          {tenant.brandName}
         </div>
 
         <h2 style={{
@@ -587,6 +589,7 @@ function AuthPage({ onLogin }) {
 // ─── HOVED-APP ────────────────────────────────────────────────────────────────
 
 export default function HelpTruth() {
+  const tenant = useTenant();
   const [currentUser, setCurrentUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
 
@@ -1112,7 +1115,7 @@ export default function HelpTruth() {
         {isMobile && (
           <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: "#ffffff", backdropFilter: "blur(12px)", borderBottom: "1px solid #E2E8F0", display: "flex", alignItems: "center", padding: "12px 16px", gap: 12 }}>
             <button onClick={() => setSidebarOpen(true)} style={{ background: "none", border: "none", color: "#0F172A", fontSize: 22, cursor: "pointer", padding: 4 }}>☰</button>
-            <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#356DFF" }}>HelpTruth</span>
+            <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#356DFF" }}>{tenant.brandName}</span>
           </div>
         )}
 
@@ -1123,7 +1126,7 @@ export default function HelpTruth() {
             <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: isTablet ? 20 : 28, color: "#356DFF", padding: "8px 12px", marginBottom: 16, cursor: "pointer", textAlign: isTablet ? "center" : "left" }}
               onClick={() => { setActivePage("home"); setThreadPost(null); setViewProfile(null); setHashtagView(null); setSearchResults(null); if (isMobile) setSidebarOpen(false); }}
             >
-              {isTablet ? "H" : <img src="/logo-helptruth.png" alt="HelpTruth" style={{height: 36, objectFit: "contain", mixBlendMode: "multiply"}} />}
+              {isTablet ? tenant.brandName.charAt(0) : <img src={tenant.logoSrc} alt={tenant.brandName} style={{height: 36, objectFit: "contain", mixBlendMode: "multiply"}} />}
             </div>
 
             <nav>
@@ -1802,7 +1805,7 @@ export default function HelpTruth() {
               <span style={{ color: "#5B6B84" }}>🔍</span>
               <input value={searchQuery}
                 onChange={e => handleSearch(e.target.value)}
-                placeholder="Søk på HelpTruth"
+                placeholder={`Søk på ${tenant.brandName}`}
                 style={{ background: "none", border: "none", outline: "none", color: "#0F172A", flex: 1, fontSize: 14, fontFamily: "'Crimson Pro', serif" }}
               />
             </div>
@@ -1858,7 +1861,7 @@ export default function HelpTruth() {
 
             <div style={{ color: "#E2E8F0", fontSize: 11, lineHeight: 2 }}>
               Personvern · Vilkår · Cookies<br />
-              © 2026 HelpTruth AS
+              © 2026 {tenant.brandName} AS
             </div>
           </aside>
 

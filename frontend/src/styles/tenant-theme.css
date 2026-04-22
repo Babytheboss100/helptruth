@@ -21,19 +21,19 @@
 }
 
 :root[data-tenant="helptruth"] {
-  --bg: #050e05;
-  --bg-elevated: #0a150a;
-  --surface: rgba(74, 222, 128, 0.03);
-  --border: #1e2a1e;
-  --border-glow: rgba(74, 222, 128, 0.28);
-  --text: #e8f5e8;
-  --text-muted: #4a7a4a;
-  --text-faint: rgba(232, 245, 232, 0.35);
-  --accent: #4ade80;
-  --accent-glow: #6ee89a;
-  --gold: #4ade80;
-  --danger: #ef4444;
-  --success: #4ade80;
+  --bg: #F8FAFF;
+  --bg-elevated: #FFFFFF;
+  --surface: rgba(53, 109, 255, 0.04);
+  --border: #E2E8F0;
+  --border-glow: rgba(53, 109, 255, 0.25);
+  --text: #0F172A;
+  --text-muted: #5B6B84;
+  --text-faint: #94A3B8;
+  --accent: #356DFF;
+  --accent-glow: #2559E8;
+  --gold: #356DFF;
+  --danger: #EF4444;
+  --success: #22C55E;
   --font-sans: "Crimson Pro", Georgia, serif;
   --font-serif: "DM Serif Display", Georgia, serif;
 }
