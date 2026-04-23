@@ -1,7 +1,12 @@
 // api.js
 // Broen mellom React-frontend og Node.js-backend
 
-const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:4000/api";
+const BASE_URL =
+  process.env.REACT_APP_API_URL ||
+  (typeof window !== "undefined" &&
+   (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? "http://localhost:4000/api"
+    : "https://helptruth-backend.onrender.com/api");
 
 function getToken() {
   return localStorage.getItem("helptruth_token");

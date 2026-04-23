@@ -6,7 +6,14 @@ import { Home, Compass, Bell, Mail, Bookmark, User as UserIcon, Settings } from 
 import { useTenant } from "./TenantContext";
 
 // ─── API-LAG ──────────────────────────────────────────────────────────────────
-const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:4000/api";
+// Prioritet: REACT_APP_API_URL (build-time Vercel env) > localhost i dev > prod-backend.
+// Ingen localhost-fallback i prod-bygg.
+const BASE_URL =
+  process.env.REACT_APP_API_URL ||
+  (typeof window !== "undefined" &&
+   (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? "http://localhost:4000/api"
+    : "https://helptruth-backend.onrender.com/api");
 
 function getToken() { return localStorage.getItem("helptruth_token"); }
 function saveToken(t) { localStorage.setItem("helptruth_token", t); }
