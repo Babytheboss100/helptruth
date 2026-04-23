@@ -17,7 +17,22 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const GOOGLE_CALLBACK_URL =
   process.env.GOOGLE_CALLBACK_URL ||
   "http://localhost:4000/api/auth/google/callback";
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+
+// Tenant → frontend-URL-oppslag.
+// Prioritet: FRONTEND_URL_<TENANT> env-var > FRONTEND_URL env-var > innebygd default.
+// Prod-defaults er trygge; localhost brukes bare hvis env-varen er eksplisitt satt.
+const TENANT_FRONTEND_DEFAULTS = {
+  breedz: "https://social.breedz.eu",
+  helptruth: "https://app.helptruth.com",
+};
+
+function frontendUrlFor(tenant) {
+  const key = (tenant || "breedz").toLowerCase();
+  const envSpecific = process.env[`FRONTEND_URL_${key.toUpperCase()}`];
+  if (envSpecific) return envSpecific;
+  if (process.env.FRONTEND_URL) return process.env.FRONTEND_URL;
+  return TENANT_FRONTEND_DEFAULTS[key] || TENANT_FRONTEND_DEFAULTS.breedz;
+}
 
 function oauth() {
   if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
@@ -26,9 +41,9 @@ function oauth() {
   return new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL);
 }
 
-function redirectToFrontend(res, params) {
+function redirectToFrontend(res, tenant, params) {
   const qs = new URLSearchParams(params);
-  res.redirect(`${FRONTEND_URL}/?${qs}`);
+  res.redirect(`${frontendUrlFor(tenant)}/?${qs}`);
 }
 
 // ── GET /api/auth/google ─────────────────────────────────────────────────
@@ -90,11 +105,11 @@ router.get("/google/callback", async (req, res) => {
       success: false,
       failure_reason: `oauth_error:${oauthError}`,
     });
-    return redirectToFrontend(res, { google_error: "oauth_denied" });
+    return redirectToFrontend(res, null, { google_error: "oauth_denied" });
   }
 
   if (!code || !state) {
-    return redirectToFrontend(res, { google_error: "missing_params" });
+    return redirectToFrontend(res, null, { google_error: "missing_params" });
   }
 
   // Verify state
@@ -109,7 +124,7 @@ router.get("/google/callback", async (req, res) => {
       success: false,
       failure_reason: "invalid_state",
     });
-    return redirectToFrontend(res, { google_error: "invalid_state" });
+    return redirectToFrontend(res, null, { google_error: "invalid_state" });
   }
 
   const { tenant, mode, invite_code, redirect: redirectTarget, utm } = statePayload;
@@ -134,7 +149,7 @@ router.get("/google/callback", async (req, res) => {
       failure_reason: "token_exchange_failed",
       tenant_id: tenant,
     });
-    return redirectToFrontend(res, { google_error: "token_exchange_failed" });
+    return redirectToFrontend(res, tenant, { google_error: "token_exchange_failed" });
   }
 
   const { sub: googleSub, email, name, picture, email_verified } = profile;
@@ -149,7 +164,7 @@ router.get("/google/callback", async (req, res) => {
       email,
       google_profile: profile,
     });
-    return redirectToFrontend(res, { google_error: "email_not_verified" });
+    return redirectToFrontend(res, tenant, { google_error: "email_not_verified" });
   }
 
   const normalizedEmail = email.toLowerCase();
@@ -198,7 +213,7 @@ router.get("/google/callback", async (req, res) => {
           google_profile: profile,
           utm,
         });
-        return redirectToFrontend(res, {
+        return redirectToFrontend(res, tenant, {
           google_error: "need_invite",
           google_email: normalizedEmail,
           google_name: name || "",
@@ -225,7 +240,7 @@ router.get("/google/callback", async (req, res) => {
           google_profile: profile,
           utm,
         });
-        return redirectToFrontend(res, { google_error: "invalid_invite" });
+        return redirectToFrontend(res, tenant, { google_error: "invalid_invite" });
       }
       const invite = inviteResult.rows[0];
 
@@ -318,7 +333,7 @@ router.get("/google/callback", async (req, res) => {
   const redirectParams = { token, provider: "google" };
   if (linkedExisting) redirectParams.linked = "1";
   if (redirectTarget) redirectParams.redirect = redirectTarget;
-  redirectToFrontend(res, redirectParams);
+  redirectToFrontend(res, tenant, redirectParams);
 });
 
 module.exports = router;
