@@ -65,12 +65,18 @@ router.get("/logs", auth, async (req, res) => {
         u.name,
         u.handle,
         l.ip_address,
-        l.device,
+        CASE
+          WHEN l.user_agent ILIKE '%tablet%' OR l.user_agent ILIKE '%ipad%' THEN 'Tablet'
+          WHEN l.user_agent ILIKE '%mobile%' OR (l.user_agent ILIKE '%iphone%') THEN 'Mobile'
+          ELSE 'Desktop'
+        END AS device,
         l.user_agent,
         l.country,
+        l.provider,
         l.created_at
-      FROM login_logs l
+      FROM login_events l
       JOIN users u ON u.id = l.user_id
+      WHERE l.success = TRUE AND l.event_type = 'login_success'
       ORDER BY l.created_at DESC
       LIMIT 200
     `);

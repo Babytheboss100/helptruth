@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS likes CASCADE;
 DROP TABLE IF EXISTS reposts CASCADE;
 DROP TABLE IF EXISTS replies CASCADE;
 DROP TABLE IF EXISTS posts CASCADE;
+DROP TABLE IF EXISTS login_events CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 -- ── USERS ──────────────────────────────────────────────────────────────────
@@ -22,14 +23,18 @@ CREATE TABLE users (
   name        VARCHAR(50)  NOT NULL,
   handle      VARCHAR(50)  UNIQUE NOT NULL,
   email       VARCHAR(255) UNIQUE NOT NULL,
-  password    VARCHAR(255) NOT NULL,
+  password    VARCHAR(255),                       -- nullable for OAuth-only users
   bio         TEXT         DEFAULT '',
   avatar      VARCHAR(5)   NOT NULL,
   avatar_color VARCHAR(10) DEFAULT '#1a6b4a',
   profile_image TEXT       DEFAULT NULL,          -- Cloudinary URL
+  avatar_url  TEXT         DEFAULT NULL,          -- Google profile picture URL
   verified    BOOLEAN      DEFAULT FALSE,
   email_verified BOOLEAN  DEFAULT FALSE,
   verification_token VARCHAR(100),
+  google_sub     TEXT      UNIQUE,                -- Google account subject ID
+  auth_provider  VARCHAR(20) DEFAULT 'email',     -- 'email' | 'google'
+  google_profile JSONB,                           -- full Google profile on last OAuth login
   followers_count  INT DEFAULT 0,
   following_count  INT DEFAULT 0,
   posts_count      INT DEFAULT 0,
@@ -163,15 +168,28 @@ CREATE TABLE analytics (
 CREATE INDEX idx_analytics_event ON analytics(event);
 CREATE INDEX idx_analytics_created ON analytics(created_at DESC);
 
--- ── LOGIN LOGS ─────────────────────────────────────────────────────────────
-CREATE TABLE login_logs (
-  id         SERIAL PRIMARY KEY,
-  user_id    INT REFERENCES users(id) ON DELETE CASCADE,
-  ip_address VARCHAR(45),
-  user_agent TEXT,
-  device     VARCHAR(50),
-  country    VARCHAR(50),
-  created_at TIMESTAMPTZ DEFAULT NOW()
+-- ── LOGIN EVENTS ───────────────────────────────────────────────────────────
+-- Full auth-event tracking. Identical schema to StartMarket's LoginEvent
+-- Prisma model so rows can be merged if we centralize auth later.
+CREATE TABLE login_events (
+  id                  BIGSERIAL PRIMARY KEY,
+  user_id             INT REFERENCES users(id) ON DELETE SET NULL,
+  email               VARCHAR(255),
+  provider            VARCHAR(20) NOT NULL,        -- 'google' | 'email'
+  event_type          VARCHAR(20) NOT NULL,        -- 'login_success' | 'login_failure' | 'logout' | 'register'
+  success             BOOLEAN     NOT NULL,
+  failure_reason      TEXT,
+  ip_address          VARCHAR(45),
+  user_agent          TEXT,
+  country             VARCHAR(2),
+  tenant_id           VARCHAR(50),
+  google_profile      JSONB,
+  referer             TEXT,
+  utm_source          VARCHAR(100),
+  utm_medium          VARCHAR(100),
+  utm_campaign        VARCHAR(100),
+  device_fingerprint  VARCHAR(100),
+  created_at          TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ── INDEKSER ───────────────────────────────────────────────────────────────
@@ -187,8 +205,13 @@ CREATE INDEX idx_messages_conv       ON messages(sender_id, receiver_id, created
 CREATE INDEX idx_messages_unread     ON messages(receiver_id) WHERE read = FALSE;
 CREATE INDEX idx_polls_post          ON polls(post_id);
 CREATE INDEX idx_posts_content_trgm  ON posts USING gin (content gin_trgm_ops);
-CREATE INDEX idx_login_logs_user     ON login_logs(user_id);
-CREATE INDEX idx_login_logs_created  ON login_logs(created_at DESC);
+CREATE INDEX idx_users_google_sub    ON users(google_sub) WHERE google_sub IS NOT NULL;
+CREATE INDEX idx_login_events_user   ON login_events(user_id);
+CREATE INDEX idx_login_events_email  ON login_events(email);
+CREATE INDEX idx_login_events_created ON login_events(created_at DESC);
+CREATE INDEX idx_login_events_provider ON login_events(provider);
+CREATE INDEX idx_login_events_tenant ON login_events(tenant_id);
+CREATE INDEX idx_login_events_failures ON login_events(created_at DESC) WHERE success = FALSE;
 
 -- ── TESTDATA ───────────────────────────────────────────────────────────────
 INSERT INTO users (name, handle, email, password, bio, avatar, avatar_color, verified) VALUES

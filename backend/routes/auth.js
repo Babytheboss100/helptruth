@@ -7,16 +7,25 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const pool = require("../db/pool");
+const authMiddleware = require("../middleware/auth");
+const { logLoginEvent } = require("../lib/login-event");
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "hemmelig-nøkkel";
 
-// Analytics helper
+// Analytics helper (bred event-logg, separat fra auth-spesifikk login_events)
 function logEvent(event, email, req) {
   const ip = (req.headers["x-forwarded-for"] || req.socket.remoteAddress || "").split(",")[0].trim();
   const ua = req.headers["user-agent"] || "";
   pool.query("INSERT INTO analytics (event, email, ip, user_agent) VALUES ($1, $2, $3, $4)", [event, email, ip, ua])
     .catch(err => console.error("Analytics log error:", err.message));
+}
+
+// Pakker ut tenant + utm fra body (frontend sender disse på login/register)
+function extractContext(req) {
+  const tenant_id = (req.body && req.body.tenant) || null;
+  const utm = (req.body && req.body.utm) || {};
+  return { tenant_id, utm };
 }
 
 // E-post transporter (Gmail SMTP)
@@ -87,6 +96,13 @@ router.post("/register", async (req, res) => {
     const user = result.rows[0];
 
     logEvent("register", email.toLowerCase(), req);
+
+    const { tenant_id, utm } = extractContext(req);
+    logLoginEvent({
+      req, user_id: user.id, email: user.email,
+      provider: "email", event_type: "register", success: true,
+      tenant_id, utm,
+    });
 
     // Oppdater invite-kode
     await pool.query(
@@ -164,8 +180,14 @@ router.get("/verify", async (req, res) => {
 // ── INNLOGGING ────────────────────────────────────────────────────────────
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  const { tenant_id, utm } = extractContext(req);
 
   if (!email || !password) {
+    logLoginEvent({
+      req, email, provider: "email", event_type: "login_failure",
+      success: false, failure_reason: "missing_credentials",
+      tenant_id, utm,
+    });
     return res.status(400).json({ error: "E-post og passord er påkrevd" });
   }
 
@@ -177,14 +199,36 @@ router.post("/login", async (req, res) => {
 
     if (result.rows.length === 0) {
       logEvent("login_fail", email.toLowerCase(), req);
+      logLoginEvent({
+        req, email, provider: "email", event_type: "login_failure",
+        success: false, failure_reason: "user_not_found",
+        tenant_id, utm,
+      });
       return res.status(401).json({ error: "Feil e-post eller passord" });
     }
 
     const user = result.rows[0];
 
+    // OAuth-only bruker uten passord kan ikke logge inn med passord
+    if (!user.password) {
+      logLoginEvent({
+        req, user_id: user.id, email: user.email,
+        provider: "email", event_type: "login_failure",
+        success: false, failure_reason: "oauth_only_account",
+        tenant_id, utm,
+      });
+      return res.status(401).json({ error: "Denne kontoen bruker Google-innlogging" });
+    }
+
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       logEvent("login_fail", email.toLowerCase(), req);
+      logLoginEvent({
+        req, user_id: user.id, email: user.email,
+        provider: "email", event_type: "login_failure",
+        success: false, failure_reason: "wrong_password",
+        tenant_id, utm,
+      });
       return res.status(401).json({ error: "Feil e-post eller passord" });
     }
 
@@ -200,19 +244,12 @@ router.post("/login", async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    // Logg innlogging
-    const ip = (req.headers["x-forwarded-for"] || req.socket.remoteAddress || "").split(",")[0].trim();
-    const ua = req.headers["user-agent"] || "";
-    let device = "Desktop";
-    if (/tablet|ipad/i.test(ua)) device = "Tablet";
-    else if (/mobile|iphone|android.*mobile/i.test(ua)) device = "Mobile";
-
-    pool.query(
-      "INSERT INTO login_logs (user_id, ip_address, user_agent, device) VALUES ($1, $2, $3, $4)",
-      [user.id, ip, ua, device]
-    ).catch(err => console.error("Login log error:", err.message));
-
     logEvent("login_success", user.email, req);
+    logLoginEvent({
+      req, user_id: user.id, email: user.email,
+      provider: "email", event_type: "login_success", success: true,
+      tenant_id, utm,
+    });
 
     delete user.password;
     delete user.verification_token;
@@ -225,13 +262,30 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// ── HENT INNLOGGET BRUKER ─────────────────────────────────────────────────
-const auth = require("../middleware/auth");
+// ── LOGOUT ────────────────────────────────────────────────────────────────
+// JWT er stateless, så logout er bare en event-logg.
+// Frontend rydder localStorage separat.
+router.post("/logout", authMiddleware, async (req, res) => {
+  const { tenant_id } = extractContext(req);
+  try {
+    const r = await pool.query("SELECT email FROM users WHERE id = $1", [req.user.id]);
+    const email = r.rows[0]?.email || null;
+    logLoginEvent({
+      req, user_id: req.user.id, email,
+      provider: "email", event_type: "logout", success: true,
+      tenant_id,
+    });
+  } catch (err) {
+    console.error("Logout log error:", err.message);
+  }
+  res.json({ ok: true });
+});
 
-router.get("/me", auth, async (req, res) => {
+// ── HENT INNLOGGET BRUKER ─────────────────────────────────────────────────
+router.get("/me", authMiddleware, async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT id, name, handle, email, bio, avatar, avatar_color, profile_image, verified, followers_count, following_count, posts_count FROM users WHERE id = $1",
+      "SELECT id, name, handle, email, bio, avatar, avatar_color, avatar_url, profile_image, verified, followers_count, following_count, posts_count, auth_provider, (google_sub IS NOT NULL) AS google_linked FROM users WHERE id = $1",
       [req.user.id]
     );
     if (result.rows.length === 0) return res.status(404).json({ error: "Bruker ikke funnet" });
