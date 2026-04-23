@@ -1,5 +1,9 @@
 {
   "rewrites": [
+    {
+      "source": "/auth/google/callback",
+      "destination": "https://helptruth-backend.onrender.com/api/auth/google/callback"
+    },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
